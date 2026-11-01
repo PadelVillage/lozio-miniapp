@@ -205,7 +205,7 @@ var DATE = { mar:'Martedì 3 novembre', sab:'Sabato 7 novembre', lun:'Lunedì 9 
 var ORA = { mar:'18:00–19:30', sab:'09:30–11:00', lun:'18:00–19:30' };
 function visibile(k){ return k==='mar' ? !S.marOff && S.avv!=='annullata' : k==='sab' ? !S.sabOff : (S.prop==='si' && !S.lunOff); }
 function mHome(){
-  var h = '<div class="top"><small>Lunedì 2 novembre</small><h1>Home</h1></div><div class="pad"><div class="lab">Da decidere con LoZio</div>', vuoto = true;
+  var h = '<div class="top"><small>Lunedì 2 novembre</small><h1>Home</h1></div><div class="pad"><div class="lab">Proposta delle 8:00</div>', vuoto = true;
   if(S.prop==='aperta'){
     vuoto = false;
     h += '<div class="card inv"><div style="font-size:13px;font-weight:700;color:var(--lime)">Aprire una Partita Tattica?</div><h2 style="font-size:21px">Lunedì 9 novembre, 18:00–19:30</h2>'+
@@ -217,13 +217,13 @@ function mHome(){
   } else if(S.prop==='no'){
     h += '<div class="note">Lunedì 9 novembre: nessuna Partita Tattica.<button class="btn" data-a="rip" data-v="prop" style="margin-top:8px;height:40px">Cambia idea</button></div>';
   }
+  h += '<div style="border-top:2px solid var(--line);margin:10px 0 2px"></div><div class="lab" style="color:var(--warn-fg)">Partita non chiusa · da decidere</div>';
   if(S.avv==='aperto'){
     vuoto = false;
     h += '<div class="warn"><b style="font-size:16px">Martedì 3: non si è chiusa</b><div style="font-size:14px">1 posto su 3 coperto, 11 giocatori contattati.</div><div style="display:flex;gap:8px;margin-top:4px"><button class="btn" data-a="avv" data-v="annullata">Annulla</button><button class="btn" data-a="avv" data-v="aspetta">Aspetta</button><button class="btn dark" data-a="avv" data-v="altri">Altri 3</button></div></div>';
   } else {
     h += '<div class="note">Martedì 3: '+ESITO[S.avv]+(S.avv==='aspetta'?'<button class="btn" data-a="rip" data-v="avv" style="margin-top:8px;height:40px">Cambia idea</button>':'')+'</div>';
   }
-  if(vuoto) h += '<div class="dim">Per ora non c\'è altro da decidere. Ti avviso io quando serve.</div>';
   var n = ['mar','sab','lun'].filter(visibile).length;
   h += '<button class="partita" data-a="ms" data-v="tattiche" style="margin-top:6px"><div class="row" style="width:100%"><b style="font-size:16px">Partite Tattiche aperte</b><span class="pill">'+n+'</span></div><div class="dim">Guarda a che punto sono e gestiscile.</div></button>';
   return h+'</div>';
