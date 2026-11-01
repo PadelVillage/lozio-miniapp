@@ -144,7 +144,7 @@ h1{margin:2px 0 0;font-size:28px;font-weight:700;letter-spacing:-.5px;text-wrap:
 <div id="tel">
   <div id="tg"></div>
   <div id="app" hidden>
-    <div class="ahead"><button data-a="close">× Chiudi</button><div class="atit"><b>lozio bot</b><span>mini app</span></div><button data-a="dots" aria-label="Altro">⋯</button></div>
+    <div class="ahead"><button id="hb" data-a="close">× Chiudi</button><div class="atit"><b>lozio bot</b><span>mini app</span></div><button data-a="dots" aria-label="Altro">⋯</button></div>
     <div id="sch"></div>
     <div class="tabs" id="tabs"></div>
     <div id="toast" hidden role="status"></div>
@@ -316,6 +316,9 @@ function renderApp(){
     var sez = S.ms==='partita' ? 'tattiche' : S.ms;
     t = [['home','Home'],['tattiche','Tattiche'],['giocatori','Giocatori']].map(function(x){return '<button class="'+(sez===x[0]?'on':'')+'" data-a="ms" data-v="'+x[0]+'">'+x[1]+'</button>'}).join('');
   }
+  var radice = S.ruolo==='g' ? S.gs==='home' : (S.ms==='home' && !S.edit && !S.pick);
+  var hb = document.getElementById('hb'); hb.dataset.a = radice ? 'close' : 'back'; hb.textContent = radice ? '× Chiudi' : '‹ Indietro';
+  try{ var BB = window.Telegram && Telegram.WebApp && Telegram.WebApp.BackButton; if(BB){ if(radice) BB.hide(); else BB.show(); } }catch(e){}
   sch.innerHTML = h; tabs.innerHTML = t; tabs.hidden = !t;
   if(S.gs==='invito' && S.ruolo==='g'){ sch.style.background='var(--inv-bg)'; } else { sch.style.background=''; }
 }
@@ -338,6 +341,11 @@ function act(a, v){
   else if(a==='bnr'){ hideBanner(); if(v==='invito'){ S.gs='invito'; } else { S.sel='sab'; S.ms='partita'; } }
   else if(a==='bx'){ hideBanner(); }
   else if(a==='open'){ S.open=true; if(S.ruolo==='g') S.gs=v; else S.ms=v; hideBanner(); bt=setTimeout(mostraBanner, 4000); }
+  else if(a==='back'){
+    if(S.ruolo==='g') S.gs='home';
+    else if(S.edit||S.pick){ S.edit=false; S.pick=false; }
+    else S.ms = S.ms==='partita' ? 'tattiche' : 'home';
+  }
   else if(a==='close'){ S.open=false; hideBanner(); }
   else if(a==='dots'){ flash('Menu di Telegram'); }
   else if(a==='gs'){ S.gs=v; }
@@ -374,7 +382,7 @@ document.addEventListener('click', function(e){ var el=e.target.closest('[data-a
     document.body.classList.add('tgm');
     S.ruolo = q.get('v')==='m' ? 'm' : 'g';
     S.open = true;
-    if(WA){ try{ WA.ready(); WA.expand(); }catch(e){} }
+    if(WA){ try{ WA.ready(); WA.expand(); WA.BackButton.onClick(function(){ act('back'); }); }catch(e){} }
     bt = setTimeout(mostraBanner, 4000);
   }
 })();
