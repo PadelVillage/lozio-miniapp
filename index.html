@@ -302,9 +302,8 @@ function renderApp(){
   var sch = document.getElementById('sch'), tabs = document.getElementById('tabs'), h='', t='';
   if(S.ruolo==='g'){
     h = S.gs==='home'?gHome():S.gs==='invito'?gInvito():S.gs==='orari'?gOrari():S.gs==='amico'?gAmico():gInfo();
-    if(S.gs!=='invito'){
-      t = [['home','Tattiche'],['orari','Disponibilità'],['amico','Invita'],['info','Info']].map(function(x){return '<button class="'+(S.gs===x[0]?'on':'')+'" data-a="gs" data-v="'+x[0]+'">'+x[1]+'</button>'}).join('');
-    }
+    var sg = S.gs==='invito' ? 'home' : S.gs;
+    t = [['home','Tattiche'],['orari','Disponibilità'],['amico','Invita'],['info','Info']].map(function(x){return '<button class="'+(sg===x[0]?'on':'')+'" data-a="gs" data-v="'+x[0]+'">'+x[1]+'</button>'}).join('');
   } else {
     h = S.ms==='home'?mHome():S.ms==='tattiche'?mTatt():S.ms==='partita'?mDett():mGioc();
     if(S.ms==='partita'){
