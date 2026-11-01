@@ -191,7 +191,93 @@ var tt;
 function flash(m){ var t=document.getElementById('toast'); t.textContent=m; t.hidden=false; clearTimeout(tt); tt=setTimeout(function(){t.hidden=true},2400); }
 function chips(list, cur, act){ return '<div class="chips">'+list.map(function(k){ return '<button class="chip'+(cur[k[0]]?' on':'')+'" data-a="'+act+'" data-v="'+k[0]+'">'+k[1]+'</button>'; }).join('')+'</div>'; }
 
+
+/* ---- Collegamento ai dati veri (solo dentro Telegram) ---- */
+var LIVE = false, D = null, INIT = '', ERR = '', API = 'https://bckgdriuuueadplwcaog.supabase.co/functions/v1/miniapp-api';
+function api(az, extra){
+  return fetch(API, { method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify(Object.assign({azione:az, initData:INIT}, extra||{})) })
+    .then(function(r){ return r.json(); }).catch(function(){ return { errore:'rete' }; });
+}
+var capz = function(t){ return t.charAt(0).toUpperCase()+t.slice(1); };
+function fGiorno(iso){ return capz(new Intl.DateTimeFormat('it-IT',{timeZone:'Europe/Rome',weekday:'long',day:'numeric',month:'long'}).format(new Date(iso))); }
+function fOra(iso){ return new Intl.DateTimeFormat('it-IT',{timeZone:'Europe/Rome',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(iso)); }
+function fFascia(p){ return fOra(p.inizio)+'–'+fOra(p.fine); }
+var visti = null;
+function carica(silenzioso){
+  return api('me').then(function(d){
+    if(d.errore){ if(!silenzioso || !D){ ERR = d.errore; } render(); return; }
+    ERR = '';
+    var nuovi = (d.inviti||[]).filter(function(i){ return visti && visti.indexOf(i.id) < 0; });
+    visti = (d.inviti||[]).map(function(i){ return i.id; });
+    var primo = !D;
+    D = d; S.ruolo = d.ruolo;
+    if(primo && d.ruolo==='g'){ S.orari = d.fasce; S.due = d.due; }
+    if(S.ruolo==='g' && S.gs==='invito' && !(d.inviti||[]).some(function(i){return i.id===S.invId;})) S.gs = 'home';
+    render();
+    if(nuovi.length && S.ruolo==='g') mostraBannerL(nuovi[0]);
+  });
+}
+function mostraBannerL(i){
+  var b = document.getElementById('banner'); S.bnrInv = i.id;
+  b.innerHTML = '<span><b>Nuovo invito</b><br>'+fGiorno(i.inizio)+', '+fOra(i.inizio)+'</span><button data-a="bnr" data-v="invito">Rispondi</button><button class="x" data-a="bx" aria-label="Chiudi avviso">×</button>';
+  b.hidden = false; clearTimeout(bh); bh = setTimeout(hideBanner, 9000);
+}
+function gHomeL(){
+  var h = '<div class="top"><h1>Le mie Partite Tattiche</h1></div><div class="pad">';
+  var pr = D.prossime||[], inv = D.inviti||[];
+  if(pr.length){
+    h += '<div class="lab">'+(pr.length>1?'Prossime':'Prossima')+'</div>';
+    pr.forEach(function(p){
+      h += '<div class="card"><div class="row"><h2>'+fGiorno(p.inizio)+'</h2><span class="pill">Confermata</span></div><div>'+fFascia(p)+' · Padel Village</div>'+
+        (p.compagni.length ? '<div class="dim">Con: '+p.compagni.join(', ')+'</div>' : '<div class="dim">Ti scrivo appena la Partita Tattica è completa.</div>')+
+        '<button class="btn" data-a="nonRiesco" data-v="'+p.id+'" style="margin-top:6px">Non riesco più</button></div>';
+    });
+  }
+  if(inv.length){
+    h += '<div class="lab" style="margin-top:8px">Inviti</div>';
+    inv.forEach(function(i){
+      h += '<div class="card inv"><div style="font-size:13px;font-weight:700;color:var(--lime)">LoZio ti ha invitato</div><h2 style="font-size:20px">'+fGiorno(i.inizio)+'</h2><div class="dim">'+fFascia(i)+' · Padel Village</div><div class="row" style="margin-top:6px"><span class="dim">'+i.costo+' euro a persona</span><button class="btn lime" style="height:40px;font-size:14px;border-radius:12px" data-a="invRisp" data-v="'+i.id+'">Rispondi</button></div></div>';
+    });
+  }
+  if(!pr.length && !inv.length){
+    h += '<div class="note"><b>Per ora nessuna Partita Tattica</b><div class="dim" style="margin-top:4px">Ti scrivo io quando ce n\'è una per te. Intanto controlla le tue disponibilità.</div></div>';
+  }
+  return h+'</div>';
+}
+function gInvitoL(){
+  var i = (D.inviti||[]).filter(function(x){return x.id===S.invId;})[0];
+  if(!i) return gHomeL();
+  var nome = String(D.nome||'').split(' ')[0];
+  var gd = fGiorno(i.inizio).split(' ');
+  return '<div class="full"><button class="back" data-a="gs" data-v="home">‹ Le mie Partite Tattiche</button>'+
+  '<div style="padding:32px 20px 0;display:flex;flex-direction:column;gap:10px"><div style="font-size:14px;font-weight:700;color:var(--lime)">Ciao '+nome+', LoZio ha aperto una Partita Tattica</div><h1>'+gd[0]+'<br>'+gd.slice(1).join(' ')+'</h1><div style="font-size:18px;color:var(--inv-muted)">'+fFascia(i)+' · Padel Village</div></div>'+
+  '<div class="panel"><div class="row"><span>Costo</span><b>'+i.costo+' euro a persona</b></div><div class="row"><span>Si gioca in</span><b>4, con LoZio</b></div></div>'+
+  '<div style="flex:1 1 auto"></div><div style="padding:24px 20px calc(24px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px"><button class="big" data-a="ciSono">Ci sono</button><div style="display:flex;gap:10px"><button class="ghost" data-a="nonPosso">Non posso</button><button class="ghost" data-a="piuTardi">Più tardi</button></div><div style="text-align:center;font-size:13px;color:var(--inv-muted)">I posti sono pochi: rispondi appena puoi.</div></div></div>';
+}
+var MSG = { confermata:'Segnato, ti aspetta LoZio in campo.', completa_confermata:'Segnato: la partita è completa!', gia:'Eri già segnato.', completa:'Peccato, la partita è già completa.', annullata:'Questa partita è stata annullata.', rifiutata:'Va bene, sarà per la prossima.', dopo:'Va bene, aspetto la tua risposta.', non_valido:'Questo invito non è più valido.' };
+function actL(a, v){
+  if(a==='invRisp'){ S.invId=v; S.gs='invito'; return true; }
+  if(a==='bnr' && v==='invito'){ S.invId=S.bnrInv; S.gs='invito'; hideBanner(); return true; }
+  var sc = { ciSono:'s', nonPosso:'n', piuTardi:'d' }[a];
+  if(sc){
+    var id = S.invId; S.gs='home'; render();
+    api('rispondi',{iscrizione:id, scelta:sc}).then(function(r){ flash(r.errore ? 'Non riesco a salvare, riprova.' : (MSG[r.esito]||'Fatto.')); carica(true); });
+    return true;
+  }
+  if(a==='nonRiesco'){
+    api('nonRiesco',{iscrizione:v}).then(function(r){ flash(r.errore ? 'Non riesco, riprova.' : 'Grazie dell\'avviso: LoZio cerca un sostituto.'); carica(true); });
+    return true;
+  }
+  if(a==='salva'){
+    api('disponibilita',{fasce:S.orari, due:S.due}).then(function(r){ flash(r.errore==='nessuna_fascia' ? 'Scegli almeno una fascia.' : r.errore ? 'Non riesco a salvare, riprova.' : 'Disponibilità salvate.'); });
+    return true;
+  }
+  if(a==='amico'){ flash('Presto: per ora invita a voce.'); return true; }
+  return false;
+}
+
 function gHome(){
+  if(LIVE) return gHomeL();
   var h = '<div class="top"><h1>Le mie Partite Tattiche</h1></div><div class="pad"><div class="lab">Prossima</div>';
   if(!S.nonRiesco){
     h += '<div class="card"><div class="row"><h2>Martedì 3 novembre</h2><span class="pill">Confermata</span></div><div>18:00–19:30 · Padel Village</div><div class="dim">Con: Marco R., Giulia B.</div><button class="btn" data-a="nonRiesco" style="margin-top:6px">Non riesco più</button></div>';
@@ -207,6 +293,7 @@ function gHome(){
   return h+'</div>';
 }
 function gInvito(){
+  if(LIVE) return gInvitoL();
   return '<div class="full"><button class="back" data-a="gs" data-v="home">‹ Le mie Partite Tattiche</button>'+
   '<div style="padding:32px 20px 0;display:flex;flex-direction:column;gap:10px"><div style="font-size:14px;font-weight:700;color:var(--lime)">Ciao Lidia, LoZio ha aperto una Partita Tattica</div><h1>Sabato<br>7 novembre</h1><div style="font-size:18px;color:var(--inv-muted)">09:30–11:00 · Padel Village</div></div>'+
   '<div class="panel"><div class="row"><span>Costo</span><b>20 euro a persona</b></div><div class="row"><span>Si gioca in</span><b>4, con LoZio</b></div></div>'+
@@ -334,6 +421,11 @@ function render(){
 }
 function renderApp(){
   var sch = document.getElementById('sch'), tabs = document.getElementById('tabs'), h='', t='';
+  if(LIVE && !D){
+    sch.style.background=''; tabs.hidden=true; tabs.innerHTML='';
+    sch.innerHTML = '<div class="top"><h1>LoZio</h1></div><div class="pad"><div class="dim">'+(ERR==='non_registrato' ? 'Non ti trovo tra i giocatori. Scrivi a LoZio.' : ERR==='non_riconosciuto' ? 'Riapri la mini app dal bot di LoZio.' : ERR ? 'Non riesco a collegarmi. Riprova tra poco.' : 'Un attimo…')+'</div></div>';
+    return;
+  }
   if(S.ruolo==='g'){
     h = S.gs==='home'?gHome():S.gs==='invito'?gInvito():S.gs==='orari'?gOrari():S.gs==='amico'?gAmico():gInfo();
     var sg = S.gs==='invito' ? 'home' : S.gs;
@@ -370,6 +462,7 @@ function mostraBanner(){
   clearTimeout(bh); bh = setTimeout(hideBanner, 9000);
 }
 function act(a, v){
+  if(LIVE && S.ruolo==='g' && actL(a, v)){ render(); return; }
   if(a==='ruolo'){ S.ruolo=v; S.open=false; hideBanner(); }
   else if(a==='bnr'){ hideBanner(); if(v==='invito'){ S.gs='invito'; } else { S.sel='sab'; S.ms='partita'; } }
   else if(a==='bx'){ hideBanner(); }
@@ -418,7 +511,13 @@ document.addEventListener('click', function(e){ var el=e.target.closest('[data-a
     S.ruolo = q.get('v')==='m' ? 'm' : 'g';
     S.open = true;
     if(WA){ try{ WA.ready(); WA.expand(); WA.BackButton.onClick(function(){ act('back'); }); }catch(e){} }
-    bt = setTimeout(mostraBanner, 4000);
+    if(WA && WA.initData){
+      LIVE = true; INIT = WA.initData;
+      carica();
+      setInterval(function(){ if(!document.hidden) carica(true); }, 20000);
+    } else {
+      bt = setTimeout(mostraBanner, 4000);
+    }
   }
 })();
 function fit(){ var k = Math.max(.45, Math.min(1, (window.innerHeight - 128) / 780)); document.documentElement.style.setProperty('--k', k); }
