@@ -106,6 +106,14 @@ h1{margin:2px 0 0;font-size:28px;font-weight:700;letter-spacing:-.5px;text-wrap:
 .lvl-h b{font-size:17px}
 .lvl-h .n{min-width:26px;text-align:center;font-size:13px;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--inv-bg);color:var(--inv-fg)}
 .lvl .gioc{border:0;border-radius:0;border-top:1px solid var(--line);background:transparent}
+.cbox{flex:1 1 0;min-height:0;overflow-y:auto;padding:8px 16px;display:flex;flex-direction:column;gap:8px}
+.cb{max-width:84%;padding:10px 14px;border-radius:18px;font-size:15px;line-height:1.4}
+.cb.l{align-self:flex-start;background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:6px}
+.cb.g{align-self:flex-end;background:var(--inv-bg);color:var(--inv-fg);border-bottom-right-radius:6px}
+.csug{display:flex;gap:8px;overflow-x:auto;padding:6px 16px 8px;flex:none}
+.csug .chip{white-space:nowrap;flex:none}
+.cin{align-items:center;gap:8px}
+.cin input{flex:1 1 0;min-width:0;height:46px;border-radius:14px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);padding:0 14px;font-size:16px;font-family:inherit}
 .sez{border-radius:24px;overflow:hidden;border:0;background:var(--surface)}
 .sez-h{padding:18px 18px 4px;display:flex;flex-direction:column;gap:1px}
 .sez-h b{font-size:20px;font-weight:700;letter-spacing:-.2px}
@@ -182,7 +190,7 @@ var S = {
   open: false, ruolo: 'g', gs: 'home', invito: 'aperto', nonRiesco: false,
   orari: { fm: false, fp: false, fs: true, wm: true, wp: true }, due: false,
   ms: 'home', gia: {}, edit: false, pick: false, marOff: false, chiusi: {}, liv: 'principiante', tipo: 'mista', prop: 'aperta', avv: 'aperto',
-  sabOff: false, lunOff: false, sel: 'sab'
+  sabOff: false, lunOff: false, sel: 'sab', chat: []
 };
 var NL = { principiante: 'Principianti', base: 'Base', intermedio: 'Intermedi' };
 var NT = { maschile: 'Maschile', femminile: 'Femminile', mista: 'Mista' };
@@ -308,6 +316,35 @@ function gOrari(){
 function gAmico(){
   return '<div class="top"><h1>Porta un amico</h1></div><div class="pad"><div>Vuoi portare un amico a giocare con LoZio? Scegli come mandargli l\'invito.</div><button class="btn dark" style="height:52px;font-size:16px" data-a="amico">Invia su WhatsApp</button><button class="btn" style="height:52px;font-size:16px" data-a="amico">Invia su Telegram</button></div>';
 }
+
+var RISP = {
+  come: 'LoZio organizza Partite Tattiche a Padel Village: si gioca in 4, lui in campo con tre di voi.\n\nLoZio gioca un terzo del tempo con ognuno di voi: lo hai al tuo fianco per i suggerimenti tattici e di fronte, per metterli in pratica contro di lui.\n\nTi scrivo io quando c\'è una partita per te: rispondi con un tocco.\n\nCosto: 20 euro a persona.',
+  orari: 'Vai in Disponibilità e scegli quando sei libero: ti propongo una Partita Tattica solo in quei momenti.',
+  pausa: 'Va bene, ti metto in pausa: non ti scrivo più finché non mi dici di riprendere.',
+  libero: 'Ricevuto, ti rispondo appena posso.'
+};
+var DOM = { come:'Come funziona', orari:'Voglio cambiare le mie disponibilità', pausa:'Per un po\' non posso giocare' };
+function gChat(){
+  var nome = LIVE && D ? String(D.nome||'').split(' ')[0] : 'Lidia';
+  if(!S.chat.length) S.chat = [{ da:'l', t:'Ciao '+nome+', sono LoZio. Qui puoi scrivermi quando vuoi: ti rispondo appena posso.' }];
+  var h = '<div class="top"><small>Chat</small><h1>Scrivi a LoZio</h1></div><div class="cbox" id="cbox">'+
+    S.chat.map(function(m){ return '<div class="cb '+m.da+'">'+m.t.replace(/\n/g,'<br>')+'</div>'; }).join('')+'</div>'+
+    '<div class="csug">'+Object.keys(DOM).map(function(k){ return '<button class="chip" data-a="sug" data-v="'+k+'">'+DOM[k]+'</button>'; }).join('')+'</div>'+
+    '<div class="foot cin"><input id="cin" type="text" placeholder="Scrivi a LoZio" autocomplete="off" enterkeyhint="send"><button class="btn dark" data-a="invia" style="width:84px;height:46px;font-size:15px">Invia</button></div>';
+  return h;
+}
+function inviaChat(testo, chiave){
+  testo = String(testo||'').trim(); if(!testo) return;
+  S.chat.push({ da:'g', t:testo });
+  if(LIVE && chiave!=='come' && chiave!=='orari'){
+    S.chat.push({ da:'l', t:'Messaggio inviato a LoZio: ti risponde appena può.' });
+    api('scrivi',{testo:testo}).then(function(r){
+      if(r.errore){ S.chat.push({ da:'l', t:'Non sono riuscito a inviarlo. Riprova tra poco.' }); render(); }
+    });
+    return;
+  }
+  S.chat.push({ da:'l', t: RISP[chiave] || RISP.libero });
+}
 function gInfo(){
   return '<div class="top"><h1>Come funziona</h1></div><div class="pad" style="line-height:1.45;color:var(--muted)"><div>LoZio organizza Partite Tattiche a Padel Village: si gioca in 4, lui in campo con tre di voi.</div><div>LoZio gioca un terzo del tempo con ognuno di voi: lo hai al tuo fianco per i suggerimenti tattici e di fronte, per metterli in pratica contro di lui.</div><div>Ti scrivo io quando c\'è una partita per te: rispondi con un tocco.</div><div style="font-weight:700;color:var(--ink)">Costo: 20 euro a persona.</div></div>';
 }
@@ -427,9 +464,9 @@ function renderApp(){
     return;
   }
   if(S.ruolo==='g'){
-    h = S.gs==='home'?gHome():S.gs==='invito'?gInvito():S.gs==='orari'?gOrari():S.gs==='amico'?gAmico():gInfo();
+    h = S.gs==='home'?gHome():S.gs==='invito'?gInvito():S.gs==='orari'?gOrari():S.gs==='amico'?gAmico():gChat();
     var sg = S.gs==='invito' ? 'home' : S.gs;
-    t = [['home','Tattiche'],['orari','Disponibilità'],['amico','Invita'],['info','Info']].map(function(x){return '<button class="'+(sg===x[0]?'on':'')+'" data-a="gs" data-v="'+x[0]+'">'+x[1]+'</button>'}).join('');
+    t = [['home','Tattiche'],['orari','Disponibilità'],['amico','Invita'],['chat','Chat']].map(function(x){return '<button class="'+(sg===x[0]?'on':'')+'" data-a="gs" data-v="'+x[0]+'">'+x[1]+'</button>'}).join('');
   } else {
     h = S.ms==='home'?mHome():S.ms==='tattiche'?mTatt():S.ms==='partita'?mDett():mGioc();
     if(S.ms==='partita'){
@@ -444,7 +481,7 @@ function renderApp(){
   var radice = S.ruolo==='g' ? S.gs==='home' : (S.ms==='home' && !S.edit && !S.pick);
   var hb = document.getElementById('hb'); hb.dataset.a = radice ? 'close' : 'back'; hb.textContent = radice ? '× Chiudi' : '‹ Indietro';
   try{ var BB = window.Telegram && Telegram.WebApp && Telegram.WebApp.BackButton; if(BB){ if(radice) BB.hide(); else BB.show(); } }catch(e){}
-  sch.innerHTML = h; tabs.innerHTML = t; tabs.hidden = !t;
+  sch.innerHTML = h; var cb=document.getElementById('cbox'); if(cb) cb.scrollTop=cb.scrollHeight; tabs.innerHTML = t; tabs.hidden = !t;
   if(S.gs==='invito' && S.ruolo==='g'){ sch.style.background='var(--inv-bg)'; } else { sch.style.background=''; }
 }
 
@@ -493,6 +530,8 @@ function act(a, v){
   else if(a==='altri'){ S.pick=false; flash('Invitati altri 3 giocatori.'); }
   else if(a==='rip'){ if(v==='prop') S.prop='aperta'; else S.avv='aperto'; }
   else if(a==='lvl'){ S.chiusi[v]=!S.chiusi[v]; }
+  else if(a==='sug'){ inviaChat(DOM[v], v); }
+  else if(a==='invia'){ var inp=document.getElementById('cin'); inviaChat(inp && inp.value, 'libero'); }
   else if(a==='pick'){ S.pick=true; }
   else if(a==='inv1'){ (S.gia[S.sel]=S.gia[S.sel]||[]).push(v); S.pick=false; flash('Invitato: '+v+'.'); }
   else if(a==='mod'){ S.edit=true; }
@@ -503,6 +542,7 @@ function act(a, v){
   else if(a==='annulla'){ if(S.sel==='sab') S.sabOff=true; else if(S.sel==='mar') S.marOff=true; else S.lunOff=true; S.ms='tattiche'; flash('Partita annullata, giocatori avvisati.'); }
   render();
 }
+document.addEventListener('keydown', function(e){ if(e.key==='Enter' && e.target.id==='cin'){ e.preventDefault(); act('invia'); } });
 document.addEventListener('click', function(e){ var el=e.target.closest('[data-a]'); if(el) act(el.dataset.a, el.dataset.v); });
 (function(){
   var q = new URLSearchParams(location.search), WA = window.Telegram && Telegram.WebApp;
