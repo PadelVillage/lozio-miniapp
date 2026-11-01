@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Prototipo LoZio</title>
+<title>LoZio</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap">
 <style>
@@ -120,6 +121,9 @@ h1{margin:2px 0 0;font-size:28px;font-weight:700;letter-spacing:-.5px;text-wrap:
 .gioc{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
 .gioc b{display:block;font-size:16px}.gioc span{font-size:13px;color:var(--muted)}.gioc em{font-style:normal;font-size:13px;font-weight:700;color:var(--accent)}
 @media (min-width:500px){#tel{border-radius:0 0 28px 28px;box-shadow:0 10px 40px rgba(0,0,0,.18)}}
+.tgm .sw,.tgm .ahead,.tgm #tg{display:none}
+.tgm #tel{max-width:none;max-height:none;border-radius:0;box-shadow:none}
+.tgm .banner{top:10px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
@@ -309,6 +313,16 @@ function act(a, v){
   render();
 }
 document.addEventListener('click', function(e){ var el=e.target.closest('[data-a]'); if(el) act(el.dataset.a, el.dataset.v); });
+(function(){
+  var q = new URLSearchParams(location.search), WA = window.Telegram && Telegram.WebApp;
+  if((WA && WA.initData) || q.get('v')){
+    document.body.classList.add('tgm');
+    S.ruolo = q.get('v')==='m' ? 'm' : 'g';
+    S.open = true;
+    if(WA){ try{ WA.ready(); WA.expand(); }catch(e){} }
+    bt = setTimeout(mostraBanner, 4000);
+  }
+})();
 render();
 </script>
 
