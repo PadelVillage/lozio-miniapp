@@ -121,7 +121,16 @@ h1{margin:2px 0 0;font-size:28px;font-weight:700;letter-spacing:-.5px;text-wrap:
 #toast{position:absolute;left:20px;right:20px;bottom:84px;background:var(--inv-bg);color:var(--inv-fg);border-radius:14px;padding:12px 16px;font-size:14px;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.25)}
 .gioc{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
 .gioc b{display:block;font-size:16px}.gioc span{font-size:13px;color:var(--muted)}.gioc em{font-style:normal;font-size:13px;font-weight:700;color:var(--accent)}
-@media (min-width:500px){#tel{border-radius:0 0 28px 28px;box-shadow:0 10px 40px rgba(0,0,0,.18)}}
+/* Su schermo largo il prototipo si mostra dentro un iPhone mini: area utile 360 x 780 px. */
+@media (min-width:500px){
+  body:not(.tgm){background:var(--soft);overflow-y:auto;padding-bottom:28px}
+  body:not(.tgm) #tel{flex:none;width:360px;height:780px;max-width:360px;max-height:none;margin-top:16px;border-radius:44px;box-shadow:0 0 0 12px #0B0F0D,0 0 0 14px #2A322D,0 18px 50px rgba(0,0,0,.35)}
+  body:not(.tgm) #tg,body:not(.tgm) #app{top:44px}
+  body:not(.tgm) #tel::before{content:"";position:absolute;top:10px;left:50%;transform:translateX(-50%);width:96px;height:26px;border-radius:14px;background:#0B0F0D;z-index:50}
+  body:not(.tgm) #tel::after{content:"9:41";position:absolute;top:0;left:0;right:0;height:44px;padding:14px 30px 0;font-size:15px;font-weight:700;color:var(--ink);background:var(--surface);z-index:40;pointer-events:none}
+  body:not(.tgm) .tabs{padding-bottom:24px}
+  body:not(.tgm) .foot{padding-bottom:24px}
+}
 .tgm .sw,.tgm .ahead,.tgm #tg{display:none}
 .tgm #tel{max-width:none;max-height:none;border-radius:0;box-shadow:none}
 .tgm .banner{top:10px}
