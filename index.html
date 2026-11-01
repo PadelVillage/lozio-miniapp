@@ -195,13 +195,15 @@ var S = {
   open: false, ruolo: 'g', gs: 'home', invito: 'aperto', nonRiesco: false,
   orari: { fm: false, fp: false, fs: true, wm: true, wp: true }, due: false,
   ms: 'home', gia: {}, edit: false, pick: false, marOff: false, chiusi: {}, liv: 'principiante', tipo: 'mista', prop: 'aperta', avv: 'aperto',
-  sabOff: false, lunOff: false, sel: 'sab', chat: [], dirty: false, confAnn: false, cand: null, selId: null, eLiv: null, eTipo: null
+  sabOff: false, lunOff: false, sel: 'sab', chat: [], dirty: false, salvato: '', confAnn: false, cand: null, selId: null, eLiv: null, eTipo: null
 };
 var NL = { principiante: 'Principianti', base: 'Base', intermedio: 'Intermedi' };
 var NT = { maschile: 'Maschile', femminile: 'Femminile', mista: 'Mista' };
 var ESITO = { annullata: 'partita annullata, giocatori avvisati.', aspetta: 'aspetto ancora, ti riscrivo domani alle 9.', altri: 'invitati altri 3 giocatori.' };
 var tt;
 function flash(m){ var t=document.getElementById('toast'); t.textContent=m; t.hidden=false; clearTimeout(tt); tt=setTimeout(function(){t.hidden=true},2400); }
+function snap(){ return JSON.stringify([S.orari, S.due]); }
+function aggiornaDirty(){ S.dirty = snap() !== S.salvato; }
 function chips(list, cur, act){ return '<div class="chips">'+list.map(function(k){ return '<button class="chip'+(cur[k[0]]?' on':'')+'" data-a="'+act+'" data-v="'+k[0]+'">'+k[1]+'</button>'; }).join('')+'</div>'; }
 
 
@@ -224,7 +226,7 @@ function carica(silenzioso){
     visti = (d.inviti||[]).map(function(i){ return i.id; });
     var primo = !D;
     D = d; S.ruolo = d.ruolo;
-    if(primo && d.ruolo==='g'){ S.orari = d.fasce; S.due = d.due; S.dirty = false; }
+    if(primo && d.ruolo==='g'){ S.orari = d.fasce; S.due = d.due; S.salvato = snap(); S.dirty = false; }
     if(S.ruolo==='g' && S.gs==='invito' && !(d.inviti||[]).some(function(i){return i.id===S.invId;})) S.gs = 'home';
     render();
     if(nuovi.length && S.ruolo==='g') mostraBannerL(nuovi[0]);
@@ -298,7 +300,7 @@ function actL(a, v){
     return true;
   }
   if(a==='salva'){
-    api('disponibilita',{fasce:S.orari, due:S.due}).then(function(r){ if(!r.errore){ S.dirty=false; render(); } flash(r.errore==='nessuna_fascia' ? 'Scegli almeno una fascia.' : r.errore ? 'Non riesco a salvare, riprova.' : 'Disponibilità salvate.'); });
+    api('disponibilita',{fasce:S.orari, due:S.due}).then(function(r){ if(!r.errore){ S.salvato=snap(); S.dirty=false; render(); } flash(r.errore==='nessuna_fascia' ? 'Scegli almeno una fascia.' : r.errore ? 'Non riesco a salvare, riprova.' : 'Disponibilità salvate.'); });
     return true;
   }
   if(a==='gs' && v==='amico' && !S.amico){ api('amico').then(function(r){ if(!r.errore) S.amico=r; }); return false; }
@@ -677,9 +679,9 @@ function act(a, v){
   else if(a==='nonPosso'){ S.invito='no'; S.gs='home'; flash('Va bene, sarà per la prossima.'); }
   else if(a==='piuTardi'){ S.invito='dopo'; S.gs='home'; flash('Va bene, aspetto la tua risposta.'); }
   else if(a==='nonRiesco'){ S.nonRiesco=true; flash('LoZio è stato avvisato.'); }
-  else if(a==='orario'){ S.orari[v]=!S.orari[v]; S.dirty=true; }
-  else if(a==='freq'){ S.due = v==='2'; S.dirty=true; }
-  else if(a==='salva'){ S.dirty=false; flash('Disponibilità salvate.'); }
+  else if(a==='orario'){ S.orari[v]=!S.orari[v]; aggiornaDirty(); }
+  else if(a==='freq'){ S.due = v==='2'; aggiornaDirty(); }
+  else if(a==='salva'){ S.salvato=snap(); S.dirty=false; flash('Disponibilità salvate.'); }
   else if(a==='amico'){ flash(v==='wa' ? 'Si apre WhatsApp con il messaggio già scritto.' : 'Si apre Telegram con il messaggio già scritto.'); }
   else if(a==='liv'){ S.liv=v; }
   else if(a==='tipo'){ S.tipo=v; }
@@ -722,6 +724,7 @@ document.addEventListener('click', function(e){ var el=e.target.closest('[data-a
   }
 })();
 function fit(){ var k = Math.max(.45, Math.min(1, (window.innerHeight - 128) / 780)); document.documentElement.style.setProperty('--k', k); }
+S.salvato = snap();
 fit(); window.addEventListener('resize', fit);
 render();
 </script>
