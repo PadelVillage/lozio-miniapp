@@ -165,7 +165,7 @@ function gHome(){
     h += '<div class="note"><b>Martedì 3 novembre: posto liberato</b><div class="dim" style="margin-top:4px">Grazie dell\'avviso. LoZio è stato avvisato e cerca un sostituto.</div></div>';
   }
   if(S.invito==='si'){
-    h += '<div class="card"><div class="row"><h2 style="font-size:20px">Sabato 7 novembre</h2><span class="pill">Confermata</span></div><div>09:30–11:00 · Padel Village</div><div class="dim">Ti scrivo appena la partita tattica è completa.</div></div>';
+    h += '<div class="card"><div class="row"><h2 style="font-size:20px">Sabato 7 novembre</h2><span class="pill">Confermata</span></div><div>09:30–11:00 · Padel Village</div><div class="dim">Ti scrivo appena la Partita Tattica è completa.</div></div>';
   }
   if(S.invito==='aperto'||S.invito==='dopo'){
     h += '<div class="lab" style="margin-top:8px">Inviti</div><div class="card inv"><div style="font-size:13px;font-weight:700;color:var(--lime)">LoZio ti ha invitato</div><h2 style="font-size:20px">Sabato 7 novembre</h2><div class="dim">09:30–11:00 · Padel Village</div><div class="row" style="margin-top:6px"><span class="dim">20 euro a persona</span><button class="btn lime" style="height:40px;font-size:14px;border-radius:12px" data-a="gs" data-v="invito">Rispondi</button></div></div>';
@@ -174,7 +174,7 @@ function gHome(){
 }
 function gInvito(){
   return '<div class="full"><button class="back" data-a="gs" data-v="home">‹ Le mie partite tattiche</button>'+
-  '<div style="padding:32px 20px 0;display:flex;flex-direction:column;gap:10px"><div style="font-size:14px;font-weight:700;color:var(--lime)">Ciao Lidia, LoZio ha aperto una partita tattica</div><h1>Sabato<br>7 novembre</h1><div style="font-size:18px;color:var(--inv-muted)">09:30–11:00 · Padel Village</div></div>'+
+  '<div style="padding:32px 20px 0;display:flex;flex-direction:column;gap:10px"><div style="font-size:14px;font-weight:700;color:var(--lime)">Ciao Lidia, LoZio ha aperto una Partita Tattica</div><h1>Sabato<br>7 novembre</h1><div style="font-size:18px;color:var(--inv-muted)">09:30–11:00 · Padel Village</div></div>'+
   '<div class="panel"><div class="row"><span>Costo</span><b>20 euro a persona</b></div><div class="row"><span>Si gioca in</span><b>4, con LoZio</b></div></div>'+
   '<div style="flex:1 1 auto"></div><div style="padding:24px 20px calc(24px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px"><button class="big" data-a="ciSono">Ci sono</button><div style="display:flex;gap:10px"><button class="ghost" data-a="nonPosso">Non posso</button><button class="ghost" data-a="piuTardi">Più tardi</button></div><div style="text-align:center;font-size:13px;color:var(--inv-muted)">I posti sono pochi: rispondi appena puoi.</div></div></div>';
 }
@@ -212,7 +212,7 @@ function mOggi(){
   h += '<div class="lab" style="margin-top:6px">Partite tattiche aperte</div>';
   if(!S.sabOff) h += '<button class="partita" data-a="det" data-v="sab"><div class="row" style="width:100%"><b style="font-size:17px">Sabato 7, 09:30</b><span class="dim">Base · mista</span></div><div class="barre" style="width:100%"><i class="p"></i><i class="p"></i><i></i></div><div class="dim" style="color:var(--ink)">2 su 3 · 5 invitati, 2 non hanno risposto</div></button>';
   if(apertaLun) h += '<button class="partita" data-a="det" data-v="lun"><div class="row" style="width:100%"><b style="font-size:17px">Lunedì 9, 18:00</b><span class="dim">'+NL[S.liv]+', '+S.tipo+'</span></div><div class="barre" style="width:100%"><i></i><i></i><i></i></div><div class="dim" style="color:var(--ink)">0 su 3 · 5 invitati, nessuna risposta</div></button>';
-  if(S.sabOff && !apertaLun) h += '<div class="dim">Nessuna partita tattica aperta.</div>';
+  if(S.sabOff && !apertaLun) h += '<div class="dim">Nessuna Partita Tattica aperta.</div>';
   return h+'</div>';
 }
 function mDett(){
@@ -238,8 +238,8 @@ function renderChat(){
   var g = S.ruolo==='g';
   var h = '<div class="tghead"><div class="av">L</div><div><b>lozio bot</b><span>bot</span></div></div><div id="chat"><div class="dia">Oggi</div>';
   if(g){
-    h += msg('Ciao Lidia, LoZio ha aperto una partita tattica.<br>Sabato 7 novembre, 09:30-11:00, Padel Village.<br>20 euro a persona.<br>Ci sei?', '20:40', kbBtn('Rispondi','invito'));
-    h += msg('Promemoria: martedì 3 novembre alle 18:00 hai la partita tattica con LoZio a Padel Village.', '20:45', kbBtn('Vedi partita tattica','home'));
+    h += msg('Ciao Lidia, LoZio ha aperto una Partita Tattica.<br>Sabato 7 novembre, 09:30-11:00, Padel Village.<br>20 euro a persona.<br>Ci sei?', '20:40', kbBtn('Rispondi','invito'));
+    h += msg('Promemoria: martedì 3 novembre alle 18:00 hai la Partita Tattica con LoZio a Padel Village.', '20:45', kbBtn('Vedi Partita Tattica','home'));
   } else {
     h += msg('Lunedì 9 novembre, 18:00-19:30: vuoi aprire una tattica?', '08:00', kbBtn('Decidi','oggi'));
     h += msg('La tattica di martedì 3 novembre non si è chiusa: 1 posto su 3 coperto, 11 giocatori contattati. Che facciamo?', '09:00', kbBtn('Decidi','oggi'));
