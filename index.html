@@ -157,7 +157,7 @@ function flash(m){ var t=document.getElementById('toast'); t.textContent=m; t.hi
 function chips(list, cur, act){ return '<div class="chips">'+list.map(function(k){ return '<button class="chip'+(cur[k[0]]?' on':'')+'" data-a="'+act+'" data-v="'+k[0]+'">'+k[1]+'</button>'; }).join('')+'</div>'; }
 
 function gHome(){
-  var h = '<div class="top"><small>Ciao Lidia</small><h1>Le mie partite</h1></div><div class="pad"><div class="lab">Prossima</div>';
+  var h = '<div class="top"><h1>Le mie partite tattiche</h1></div><div class="pad"><div class="lab">Prossima</div>';
   if(!S.nonRiesco){
     h += '<div class="card"><div class="row"><h2>Martedì 3 novembre</h2><span class="pill">Confermata</span></div><div>18:00–19:30 · Padel Village</div><div class="dim">Con: Marco R., Giulia B.</div><button class="btn" data-a="nonRiesco" style="margin-top:6px">Non riesco più</button></div>';
   } else {
@@ -172,7 +172,7 @@ function gHome(){
   return h+'</div>';
 }
 function gInvito(){
-  return '<div class="full"><button class="back" data-a="gs" data-v="home">‹ Le mie partite</button>'+
+  return '<div class="full"><button class="back" data-a="gs" data-v="home">‹ Le mie partite tattiche</button>'+
   '<div style="padding:32px 20px 0;display:flex;flex-direction:column;gap:10px"><div style="font-size:14px;font-weight:700;color:var(--lime)">Ciao Lidia, LoZio ha aperto una partita tattica</div><h1>Sabato<br>7 novembre</h1><div style="font-size:18px;color:var(--inv-muted)">09:30–11:00 · Padel Village</div></div>'+
   '<div class="panel"><div class="row"><span>Costo</span><b>20 euro a persona</b></div><div class="row"><span>Si gioca in</span><b>4, con LoZio</b></div></div>'+
   '<div style="flex:1 1 auto"></div><div style="padding:24px 20px calc(24px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px"><button class="big" data-a="ciSono">Ci sono</button><div style="display:flex;gap:10px"><button class="ghost" data-a="nonPosso">Non posso</button><button class="ghost" data-a="piuTardi">Più tardi</button></div><div style="text-align:center;font-size:13px;color:var(--inv-muted)">I posti sono pochi: rispondi appena puoi.</div></div></div>';
