@@ -96,7 +96,7 @@ h1{margin:2px 0 0;font-size:28px;font-weight:700;letter-spacing:-.5px;text-wrap:
 .panel .row span:first-child{color:var(--inv-muted)}
 .big{height:58px;border-radius:16px;border:0;background:var(--lime);color:var(--lime-ink);font-size:18px;font-weight:700;width:100%}
 .ghost{flex:1 1 0;height:52px;border-radius:16px;border:1.5px solid var(--inv-line);background:transparent;color:var(--inv-fg);font-size:16px;font-weight:500}
-.tabs{display:flex;justify-content:space-around;padding:8px 8px calc(10px + env(safe-area-inset-bottom,0px));background:var(--surface);border-top:1px solid var(--line)}
+.tabs{display:flex;justify-content:space-around;padding:4px 8px calc(2px + env(safe-area-inset-bottom,0px));background:var(--surface);border-top:1px solid var(--line)}
 .tabs button{white-space:nowrap;border:0;background:none;font-size:14px;color:var(--muted);padding:8px 10px;border-radius:10px}
 .tabs button.on{color:var(--accent);font-weight:700}
 .lvl{background:var(--surface);border:1px solid var(--line);border-radius:20px;overflow:hidden}
@@ -156,7 +156,7 @@ h1{margin:2px 0 0;font-size:28px;font-weight:700;letter-spacing:-.5px;text-wrap:
 .ond span{flex:1 1 auto;min-width:0}
 .ond em{font-style:normal;color:var(--muted);font-size:14px}
 .stato-s{color:var(--ok-fg);font-weight:700}.stato-t{color:var(--amber)}.stato-n{color:var(--muted)}.stato-x{color:var(--danger)}
-.foot{display:flex;gap:10px;padding:12px 20px calc(16px + env(safe-area-inset-bottom,0px));background:var(--surface);border-top:1px solid var(--line)}
+.foot{display:flex;gap:10px;padding:10px 16px 10px;background:var(--surface);border-top:1px solid var(--line)}
 #toast{position:absolute;left:20px;right:20px;bottom:84px;background:var(--inv-bg);color:var(--inv-fg);border-radius:14px;padding:12px 16px;font-size:14px;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.25)}
 .gioc{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
 .gioc b{display:block;font-size:16px}.gioc span{font-size:13px;color:var(--muted)}.gioc em{font-style:normal;font-size:13px;font-weight:700;color:var(--accent)}
@@ -167,8 +167,8 @@ h1{margin:2px 0 0;font-size:28px;font-weight:700;letter-spacing:-.5px;text-wrap:
   body:not(.tgm) #tg,body:not(.tgm) #app{top:44px}
   body:not(.tgm) #tel::before{content:"";position:absolute;top:10px;left:50%;transform:translateX(-50%);width:96px;height:26px;border-radius:14px;background:#0B0F0D;z-index:50}
   body:not(.tgm) #tel::after{content:"9:41";position:absolute;top:0;left:0;right:0;height:44px;padding:14px 30px 0;font-size:15px;font-weight:700;color:var(--ink);background:var(--surface);z-index:40;pointer-events:none}
-  body:not(.tgm) .tabs{padding-bottom:24px}
-  body:not(.tgm) .foot{padding-bottom:24px}
+  body:not(.tgm) .tabs{padding-bottom:20px}
+  body:not(.tgm) .foot{padding-bottom:10px}
 }
 .tgm .sw,.tgm .ahead,.tgm #tg{display:none}
 .tgm #tel{max-width:none;max-height:none;border-radius:0;box-shadow:none}
@@ -487,25 +487,33 @@ var RISP = {
   libero: 'Ricevuto, ti rispondo appena posso.'
 };
 var DOM = { come:'Come funziona', orari:'Voglio cambiare le mie disponibilità', pausa:'Per un po\' non posso giocare' };
+function chatVisto(){ try{ return Number(localStorage.getItem('chatVisto')||0); }catch(e){ return 0; } }
+function chatVista(){ try{ var m=0; ((D&&D.chat)||[]).forEach(function(x){ if(x.id>m) m=x.id; }); if(m>chatVisto()) localStorage.setItem('chatVisto', String(m)); }catch(e){} }
+function chatNuovi(){ var v=chatVisto(); return ((D&&D.chat)||[]).filter(function(x){ return x.da==='l' && x.id>v; }).length; }
 function gChat(){
   var nome = LIVE && D ? String(D.nome||'').split(' ')[0] : 'Lidia';
-  if(!S.chat.length) S.chat = [{ da:'l', t:'Ciao '+nome+', sono LoZio. Qui puoi scrivermi quando vuoi: ti rispondo appena posso.' }];
+  var ben = { da:'l', t:'Ciao '+nome+', sono LoZio. Qui puoi scrivermi quando vuoi: ti rispondo appena posso.' };
+  if(!LIVE && !S.chat.length) S.chat = [ben];
+  var msgs = LIVE ? [ben].concat((D && D.chat)||[], S.chat) : S.chat;
+  if(LIVE) chatVista();
   var h = '<div class="top"><small>Chat</small><h1>Scrivi a LoZio</h1></div><div class="cbox" id="cbox">'+
-    S.chat.map(function(m){ return '<div class="cb '+m.da+'">'+m.t.replace(/\n/g,'<br>')+'</div>'; }).join('')+'</div>'+
+    msgs.map(function(m){ return '<div class="cb '+m.da+'">'+m.t.replace(/\n/g,'<br>')+'</div>'; }).join('')+'</div>'+
     '<div class="csug">'+Object.keys(DOM).map(function(k){ return '<button class="chip" data-a="sug" data-v="'+k+'">'+DOM[k]+'</button>'; }).join('')+'</div>'+
     '<div class="foot cin"><input id="cin" type="text" placeholder="Scrivi a LoZio" autocomplete="off" enterkeyhint="send"><button class="btn dark" data-a="invia" style="width:84px;height:46px;font-size:15px">Invia</button></div>';
   return h;
 }
 function inviaChat(testo, chiave){
   testo = String(testo||'').trim(); if(!testo) return;
-  S.chat.push({ da:'g', t:testo });
   if(LIVE && chiave!=='come' && chiave!=='orari'){
-    S.chat.push({ da:'l', t:'Messaggio inviato a LoZio: ti risponde appena può.' });
+    if(!D.chat) D.chat = [];
+    D.chat.push({ id:0, da:'g', t:testo }); render();
     api('scrivi',{testo:testo}).then(function(r){
-      if(r.errore){ S.chat.push({ da:'l', t:'Non sono riuscito a inviarlo. Riprova tra poco.' }); render(); }
+      if(r.errore){ flash('Non sono riuscito a inviarlo. Riprova tra poco.'); }
+      carica(true);
     });
     return;
   }
+  S.chat.push({ da:'g', t:testo });
   S.chat.push({ da:'l', t: RISP[chiave] || RISP.libero });
 }
 function gInfo(){
@@ -629,7 +637,7 @@ function renderApp(){
   if(S.ruolo==='g'){
     h = S.gs==='home'?gHome():S.gs==='invito'?gInvito():S.gs==='orari'?gOrari():S.gs==='amico'?gAmico():gChat();
     var sg = S.gs==='invito' ? 'home' : S.gs;
-    t = [['home','Tattiche'],['orari','Disponibilità'],['amico','Invita'],['chat','Chat']].map(function(x){return '<button class="'+(sg===x[0]?'on':'')+'" data-a="gs" data-v="'+x[0]+'">'+x[1]+'</button>'}).join('');
+    t = [['home','Tattiche'],['orari','Disponibilità'],['amico','Invita'],['chat','Chat']].map(function(x){var nn = (x[0]==='chat' && LIVE && sg!=='chat') ? chatNuovi() : 0; return '<button class="'+(sg===x[0]?'on':'')+'" data-a="gs" data-v="'+x[0]+'">'+x[1]+(nn?'<span class="bd">'+nn+'</span>':'')+'</button>'}).join('');
   } else {
     h = S.ms==='home'?mHome():S.ms==='tattiche'?mTatt():S.ms==='partita'?mDett():mGioc();
     if(S.ms==='partita'){
