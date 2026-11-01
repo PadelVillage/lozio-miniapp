@@ -215,6 +215,19 @@ function chips(list, cur, act){ return '<div class="chips">'+list.map(function(k
 
 
 /* ---- Collegamento ai dati veri (solo dentro Telegram) ---- */
+var APP_VER = '20261102a';
+// Versione nuova online? Se sì, ricarico la pagina (non mentre scrivi). Una sola volta per versione, per non ricaricare all'infinito.
+function controllaVersione(){
+  if(!LIVE) return;
+  var a = document.activeElement;
+  if((a && /^(INPUT|TEXTAREA)$/.test(a.tagName)) || S.dirty) return;
+  fetch(location.pathname + '?chk=' + Date.now(), { cache:'no-store' }).then(function(r){ return r.text(); }).then(function(t){
+    var m = t.match(/APP_VER = '(\d{8}[a-z])'/);
+    if(!m || m[1]===APP_VER) return;
+    try{ if(sessionStorage.getItem('rl')===m[1]) return; sessionStorage.setItem('rl', m[1]); }catch(e){}
+    var u = new URL(location.href); u.searchParams.set('r', m[1]); location.replace(u.toString());
+  }).catch(function(){});
+}
 var LIVE = false, D = null, INIT = '', ERR = '', API = 'https://bckgdriuuueadplwcaog.supabase.co/functions/v1/miniapp-api';
 function api(az, extra){
   return fetch(API, { method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify(Object.assign({azione:az, initData:INIT}, extra||{})) })
@@ -784,6 +797,12 @@ document.addEventListener('click', function(e){ var el=e.target.closest('[data-a
       LIVE = true; INIT = WA.initData; START = { s:q.get('s'), p:q.get('p'), i:q.get('i') };
       carica();
       setInterval(function(){ if(!document.hidden) carica(true); }, 20000);
+      // Telegram tiene la mini app "chiusa ma contratta": alla riapertura ricarico i dati e controllo se c'è una versione nuova dell'app
+      var risveglio = function(){ carica(true); controllaVersione(); };
+      document.addEventListener('visibilitychange', function(){ if(!document.hidden) risveglio(); });
+      try{ WA.onEvent('activated', risveglio); }catch(e){}
+      setTimeout(controllaVersione, 3000);
+      setInterval(function(){ if(!document.hidden) controllaVersione(); }, 300000);
     } else {
       bt = setTimeout(mostraBanner, 4000);
     }
