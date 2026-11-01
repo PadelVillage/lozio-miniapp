@@ -179,10 +179,10 @@ function gInvito(){
   '<div style="flex:1 1 auto"></div><div style="padding:24px 20px calc(24px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px"><button class="big" data-a="ciSono">Ci sono</button><div style="display:flex;gap:10px"><button class="ghost" data-a="nonPosso">Non posso</button><button class="ghost" data-a="piuTardi">Più tardi</button></div><div style="text-align:center;font-size:13px;color:var(--inv-muted)">I posti sono pochi: rispondi appena puoi.</div></div></div>';
 }
 function gOrari(){
-  return '<div class="top"><h1>Orari e frequenza</h1></div><div class="pad"><div class="lab">Da lunedì a venerdì</div>'+chips([['fm','Mattina'],['fp','Pranzo'],['fs','Sera']],S.orari,'orario')+
+  return '<div class="top"><h1>Le mie disponibilità</h1></div><div class="pad"><div style="line-height:1.45;color:var(--muted)">Qui scegli quando sei libero. LoZio ti propone una Partita Tattica solo in questi momenti.</div><div class="lab">Da lunedì a venerdì</div>'+chips([['fm','Mattina'],['fp','Pranzo'],['fs','Sera']],S.orari,'orario')+
   '<div class="lab" style="margin-top:6px">Sabato e domenica</div>'+chips([['wm','Mattina'],['wp','Pomeriggio']],S.orari,'orario')+
   '<div class="lab" style="margin-top:6px">Partite a settimana</div>'+chips([['1','Una basta'],['2','Anche una seconda']],{1:!S.due,2:S.due},'freq')+
-  '<div class="dim">Ti contatto per una partita a settimana. La seconda solo se la vuoi tu.</div><button class="btn dark" style="height:52px;font-size:16px" data-a="salva">Salva</button></div>';
+  '<div class="dim">Ti contatto per una partita a settimana. La seconda solo se la vuoi tu.</div><button class="btn dark" style="height:52px;font-size:16px" data-a="salva">Salva le disponibilità</button></div>';
 }
 function gAmico(){
   return '<div class="top"><h1>Porta un amico</h1></div><div class="pad"><div>Vuoi portare un amico a giocare con LoZio? Scegli come mandargli l\'invito.</div><button class="btn dark" style="height:52px;font-size:16px" data-a="amico">Invia su WhatsApp</button><button class="btn" style="height:52px;font-size:16px" data-a="amico">Invia su Telegram</button></div>';
