@@ -215,13 +215,13 @@ function mHome(){
   } else if(S.prop==='si' && !S.lunOff){
     h += '<div class="ok"><b>Partita aperta: lunedì 9, '+NL[P.lun.liv]+', '+NT[P.lun.tipo].toLowerCase()+'</b><div style="margin-top:4px;font-size:14px">Ho invitato 5 giocatori. Alle 12:30 altri 3, se servono.</div></div>';
   } else if(S.prop==='no'){
-    h += '<div class="note">Lunedì 9 novembre: nessuna Partita Tattica.</div>';
+    h += '<div class="note">Lunedì 9 novembre: nessuna Partita Tattica.<button class="btn" data-a="rip" data-v="prop" style="margin-top:8px;height:40px">Cambia idea</button></div>';
   }
   if(S.avv==='aperto'){
     vuoto = false;
     h += '<div class="warn"><b style="font-size:16px">Martedì 3: non si è chiusa</b><div style="font-size:14px">1 posto su 3 coperto, 11 giocatori contattati.</div><div style="display:flex;gap:8px;margin-top:4px"><button class="btn" data-a="avv" data-v="annullata">Annulla</button><button class="btn" data-a="avv" data-v="aspetta">Aspetta</button><button class="btn dark" data-a="avv" data-v="altri">Altri 3</button></div></div>';
   } else {
-    h += '<div class="note">Martedì 3: '+ESITO[S.avv]+'</div>';
+    h += '<div class="note">Martedì 3: '+ESITO[S.avv]+(S.avv==='aspetta'?'<button class="btn" data-a="rip" data-v="avv" style="margin-top:8px;height:40px">Cambia idea</button>':'')+'</div>';
   }
   if(vuoto) h += '<div class="dim">Per ora non c\'è altro da decidere. Ti avviso io quando serve.</div>';
   var n = ['mar','sab','lun'].filter(visibile).length;
@@ -364,6 +364,7 @@ function act(a, v){
   else if(a==='det'){ S.sel=v; S.ms='partita'; S.edit=false; S.pick=false; }
   else if(a==='ms'){ S.ms=v; S.edit=false; S.pick=false; }
   else if(a==='altri'){ S.pick=false; flash('Invitati altri 3 giocatori.'); }
+  else if(a==='rip'){ if(v==='prop') S.prop='aperta'; else S.avv='aperto'; }
   else if(a==='pick'){ S.pick=true; }
   else if(a==='inv1'){ (S.gia[S.sel]=S.gia[S.sel]||[]).push(v); S.pick=false; flash('Invitato: '+v+'.'); }
   else if(a==='mod'){ S.edit=true; }
