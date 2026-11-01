@@ -164,7 +164,7 @@ function gHome(){
     h += '<div class="note"><b>Martedì 3 novembre: posto liberato</b><div class="dim" style="margin-top:4px">Grazie dell\'avviso. LoZio è stato avvisato e cerca un sostituto.</div></div>';
   }
   if(S.invito==='si'){
-    h += '<div class="card"><div class="row"><h2 style="font-size:20px">Sabato 7 novembre</h2><span class="pill">Confermata</span></div><div>09:30–11:00 · Padel Village</div><div class="dim">Ti scrivo appena la partita è completa.</div></div>';
+    h += '<div class="card"><div class="row"><h2 style="font-size:20px">Sabato 7 novembre</h2><span class="pill">Confermata</span></div><div>09:30–11:00 · Padel Village</div><div class="dim">Ti scrivo appena la partita tattica è completa.</div></div>';
   }
   if(S.invito==='aperto'||S.invito==='dopo'){
     h += '<div class="lab" style="margin-top:8px">Inviti</div><div class="card inv"><div style="font-size:13px;font-weight:700;color:var(--lime)">LoZio ti ha invitato</div><h2 style="font-size:20px">Sabato 7 novembre</h2><div class="dim">09:30–11:00 · Padel Village</div><div class="row" style="margin-top:6px"><span class="dim">20 euro a persona</span><button class="btn lime" style="height:40px;font-size:14px;border-radius:12px" data-a="gs" data-v="invito">Rispondi</button></div></div>';
@@ -208,10 +208,10 @@ function mOggi(){
   } else {
     h += '<div class="note">Martedì 3: '+ESITO[S.avv]+'</div>';
   }
-  h += '<div class="lab" style="margin-top:6px">Partite aperte</div>';
+  h += '<div class="lab" style="margin-top:6px">Partite tattiche aperte</div>';
   if(!S.sabOff) h += '<button class="partita" data-a="det" data-v="sab"><div class="row" style="width:100%"><b style="font-size:17px">Sabato 7, 09:30</b><span class="dim">Base · mista</span></div><div class="barre" style="width:100%"><i class="p"></i><i class="p"></i><i></i></div><div class="dim" style="color:var(--ink)">2 su 3 · 5 invitati, 2 non hanno risposto</div></button>';
   if(apertaLun) h += '<button class="partita" data-a="det" data-v="lun"><div class="row" style="width:100%"><b style="font-size:17px">Lunedì 9, 18:00</b><span class="dim">'+NL[S.liv]+', '+S.tipo+'</span></div><div class="barre" style="width:100%"><i></i><i></i><i></i></div><div class="dim" style="color:var(--ink)">0 su 3 · 5 invitati, nessuna risposta</div></button>';
-  if(S.sabOff && !apertaLun) h += '<div class="dim">Nessuna partita aperta.</div>';
+  if(S.sabOff && !apertaLun) h += '<div class="dim">Nessuna partita tattica aperta.</div>';
   return h+'</div>';
 }
 function mDett(){
@@ -238,7 +238,7 @@ function renderChat(){
   var h = '<div class="tghead"><div class="av">L</div><div><b>lozio bot</b><span>bot</span></div></div><div id="chat"><div class="dia">Oggi</div>';
   if(g){
     h += msg('Ciao Lidia, LoZio ha aperto una partita tattica.<br>Sabato 7 novembre, 09:30-11:00, Padel Village.<br>20 euro a persona.<br>Ci sei?', '20:40', kbBtn('Rispondi','invito'));
-    h += msg('Promemoria: martedì 3 novembre alle 18:00 hai la partita tattica con LoZio a Padel Village.', '20:45', kbBtn('Vedi partita','home'));
+    h += msg('Promemoria: martedì 3 novembre alle 18:00 hai la partita tattica con LoZio a Padel Village.', '20:45', kbBtn('Vedi partita tattica','home'));
   } else {
     h += msg('Lunedì 9 novembre, 18:00-19:30: vuoi aprire una tattica?', '08:00', kbBtn('Decidi','oggi'));
     h += msg('La tattica di martedì 3 novembre non si è chiusa: 1 posto su 3 coperto, 11 giocatori contattati. Che facciamo?', '09:00', kbBtn('Decidi','oggi'));
@@ -258,7 +258,7 @@ function renderApp(){
   if(S.ruolo==='g'){
     h = S.gs==='home'?gHome():S.gs==='invito'?gInvito():S.gs==='orari'?gOrari():S.gs==='amico'?gAmico():gInfo();
     if(S.gs!=='invito'){
-      t = [['home','Partite'],['orari','Orari'],['amico','Amico'],['info','Info']].map(function(x){return '<button class="'+(S.gs===x[0]?'on':'')+'" data-a="gs" data-v="'+x[0]+'">'+x[1]+'</button>'}).join('');
+      t = [['home','Tattiche'],['orari','Orari'],['amico','Amico'],['info','Info']].map(function(x){return '<button class="'+(S.gs===x[0]?'on':'')+'" data-a="gs" data-v="'+x[0]+'">'+x[1]+'</button>'}).join('');
     }
   } else {
     h = S.ms==='oggi'?mOggi():S.ms==='partita'?mDett():mGioc();
