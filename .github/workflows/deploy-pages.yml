@@ -1,4 +1,4 @@
-# Deploy statico dell'emulatore su GitHub Pages via GitHub Actions.
+# Deploy statico della mini app LoZio su GitHub Pages via GitHub Actions.
 # Sostituisce la vecchia pipeline "legacy" (Jekyll), che era LENTISSIMA/incastrata
 # in coda (build da 15+ min per un solo index.html). Questa è veloce e osservabile.
 #
