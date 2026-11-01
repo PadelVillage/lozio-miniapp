@@ -202,7 +202,7 @@ var S = {
   open: false, ruolo: 'g', gs: 'home', invito: 'aperto', nonRiesco: false,
   orari: { fm: false, fp: false, fs: true, wm: true, wp: true }, due: false,
   ms: 'home', gia: {}, edit: false, pick: false, marOff: false, chiusi: {}, liv: 'principiante', tipo: 'mista', prop: 'aperta', avv: 'aperto',
-  sabOff: false, lunOff: false, sel: 'sab', chat: [], dirty: false, salvato: '', confAnn: false, cand: null, selId: null, eLiv: null, eTipo: null
+  ninv: '', invPronto: null, sabOff: false, lunOff: false, sel: 'sab', chat: [], dirty: false, salvato: '', confAnn: false, cand: null, selId: null, eLiv: null, eTipo: null
 };
 var NL = { principiante: 'Principianti', base: 'Base', intermedio: 'Intermedi' };
 var NT = { maschile: 'Maschile', femminile: 'Femminile', mista: 'Mista' };
@@ -606,6 +606,40 @@ function mDett(){
   }
   return h+'</div>';
 }
+function mInvita(){
+  var pr = S.invPronto;
+  var h = '<div class="top"><h1>Invita un giocatore</h1></div><div class="pad">';
+  if(pr){
+    h += '<div class="ok"><b>Invito pronto per '+pr.nome+'</b><div style="margin-top:4px;font-size:14px">Il messaggio è già scritto: scegli come mandarlo.</div></div>'+
+      '<button class="btn verde" style="height:52px;font-size:16px" data-a="invGio" data-v="wa">Invia da WhatsApp</button>'+
+      '<button class="btn" style="height:52px;font-size:16px" data-a="invGio" data-v="tg">Invia da Telegram</button>'+
+      '<button class="btn" style="height:44px;font-weight:500" data-a="nuovoInv">Invita un altro giocatore</button>';
+  } else {
+    h += '<div style="line-height:1.45;color:var(--muted)">Scrivi nome e cognome del giocatore: preparo l\'invito già pronto da mandare.</div>'+
+      '<div class="cin" style="display:flex"><input id="ninv" type="text" placeholder="Nome e cognome" autocomplete="off" value="'+String(S.ninv||'').replace(/"/g,'&quot;')+'"></div>'+
+      '<button class="btn dark" style="height:52px;font-size:16px" data-a="prepInv">Prepara l\'invito</button>';
+  }
+  return h+'</div>';
+}
+function invitaG(a, v){
+  if(a==='nuovoInv'){ S.invPronto=null; S.ninv=''; render(); return; }
+  if(a==='invGio'){
+    var pr = S.invPronto;
+    if(LIVE && pr && pr.whatsapp) apri(v==='wa' ? pr.whatsapp : pr.telegram, v==='tg');
+    else flash(v==='wa' ? 'Si apre WhatsApp con il messaggio già scritto.' : 'Si apre Telegram con il messaggio già scritto.');
+    return;
+  }
+  var inp = document.getElementById('ninv'); if(inp) S.ninv = inp.value;
+  var nome = String(S.ninv||'').replace(/\s+/g,' ').trim();
+  if(nome.split(' ').length < 2){ flash('Scrivi nome e cognome.'); return; }
+  if(!LIVE){ S.invPronto = { nome: nome }; render(); flash('Invito pronto.'); return; }
+  api('invitaGiocatore',{nome:nome}).then(function(r){
+    if(r.errore==='gia_iscritto') flash(r.giocatore+' è già iscritto.');
+    else if(r.errore==='cognome') flash('Scrivi nome e cognome.');
+    else if(r.errore) flash('Non riesco, riprova tra poco.');
+    else { S.invPronto = { nome:r.giocatore, whatsapp:r.whatsapp, telegram:r.telegram }; render(); }
+  });
+}
 function mGioc(){
   if(LIVE && D && D.ruolo==='m') return mGiocL();
   var l=[['Giulia Bianchi','donna · omogenea e mista','base'],['Marco Rossi','uomo · mista','base'],['Sara Conte','donna · mista','principiante'],['Luca Moretti','uomo · omogenea e mista','intermedio'],['Paola Greco','donna · omogenea','base','s'],['Lidia Ferri','donna · omogenea e mista','principiante']];
@@ -653,7 +687,7 @@ function renderApp(){
     var sg = S.gs==='invito' ? 'home' : S.gs;
     t = [['home','Tattiche'],['orari','Disponibilità'],['amico','Invita'],['chat','Chat']].map(function(x){var nn = (x[0]==='chat' && LIVE && sg!=='chat') ? chatNuovi() : 0; return '<button class="'+(sg===x[0]?'on':'')+'" data-a="gs" data-v="'+x[0]+'">'+x[1]+(nn?'<span class="bd">'+nn+'</span>':'')+'</button>'}).join('');
   } else {
-    h = S.ms==='home'?mHome():S.ms==='tattiche'?mTatt():S.ms==='partita'?mDett():mGioc();
+    h = S.ms==='home'?mHome():S.ms==='tattiche'?mTatt():S.ms==='partita'?mDett():S.ms==='invita'?mInvita():mGioc();
     if(S.ms==='partita'){
       h += '<div style="flex:1 1 auto"></div><div class="foot">'+
         (S.edit ? '<button class="btn dark" style="flex:1 1 0;height:52px;font-size:16px" data-a="salvaMod">Salva modifiche</button><button class="btn" style="width:110px;height:52px;font-size:16px" data-a="chiudiMod">Indietro</button>'
@@ -666,7 +700,7 @@ function renderApp(){
     var nHome = live ? (D.proposta && D.proposta.stato==='in_attesa' ? 1 : 0) : (S.prop==='aperta' ? 1 : 0);
     var nTatt = live ? (D.nonChiuse||[]).length : (S.avv==='aperto' && !S.marOff ? 1 : 0);
     var bad = { home:nHome, tattiche:nTatt };
-    t = [['home','Home'],['tattiche','Tattiche'],['giocatori','Giocatori']].map(function(x){return '<button class="'+(sez===x[0]?'on':'')+'" data-a="ms" data-v="'+x[0]+'">'+x[1]+(bad[x[0]]?'<span class="bd">'+bad[x[0]]+'</span>':'')+'</button>'}).join('');
+    t = [['home','Home'],['tattiche','Tattiche'],['giocatori','Giocatori'],['invita','Invita']].map(function(x){return '<button class="'+(sez===x[0]?'on':'')+'" data-a="ms" data-v="'+x[0]+'">'+x[1]+(bad[x[0]]?'<span class="bd">'+bad[x[0]]+'</span>':'')+'</button>'}).join('');
   }
   var radice = S.ruolo==='g' ? S.gs==='home' : (S.ms==='home' && !S.edit && !S.pick && !S.confAnn);
   var hb = document.getElementById('hb'); hb.dataset.a = radice ? 'close' : 'back'; hb.textContent = radice ? '× Chiudi' : '‹ Indietro';
@@ -689,6 +723,7 @@ function mostraBanner(){
   clearTimeout(bh); bh = setTimeout(hideBanner, 9000);
 }
 function act(a, v){
+  if(a==='prepInv' || a==='invGio' || a==='nuovoInv'){ invitaG(a, v); return; }
   if(LIVE && S.ruolo==='g' && actL(a, v)){ render(); return; }
   if(LIVE && S.ruolo==='m' && actM(a, v)){ render(); return; }
   if(a==='ruolo'){ S.ruolo=v; S.open=false; hideBanner(); }
@@ -735,7 +770,8 @@ function act(a, v){
   else if(a==='annulla'){ if(S.sel==='sab') S.sabOff=true; else if(S.sel==='mar') S.marOff=true; else S.lunOff=true; S.ms='tattiche'; flash('Partita annullata, giocatori avvisati.'); }
   render();
 }
-document.addEventListener('keydown', function(e){ if(e.key==='Enter' && e.target.id==='cin'){ e.preventDefault(); act('invia'); } });
+document.addEventListener('input', function(e){ if(e.target.id==='ninv') S.ninv = e.target.value; });
+document.addEventListener('keydown', function(e){ if(e.key==='Enter' && e.target.id==='cin'){ e.preventDefault(); act('invia'); } if(e.key==='Enter' && e.target.id==='ninv'){ e.preventDefault(); act('prepInv'); } });
 document.addEventListener('click', function(e){ var el=e.target.closest('[data-a]'); if(el) act(el.dataset.a, el.dataset.v); });
 (function(){
   var q = new URLSearchParams(location.search), WA = window.Telegram && Telegram.WebApp;
