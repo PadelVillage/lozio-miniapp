@@ -14,7 +14,7 @@
   --accent:#135C36; --lime:#C6F135; --lime-ink:#14201A;
   --inv-bg:#14201A; --inv-fg:#FFFFFF; --inv-muted:#AEBBB3; --inv-panel:#1F3027; --inv-line:#3C5446;
   --ok-bg:#DDF3E4; --ok-fg:#135C36; --warn-bg:#FFF4E0; --warn-fg:#5A4A2A; --warn-line:#E7D5B0;
-  --soft:#E9EDE4; --danger:#8E1B1B; --danger-line:#E2B8B8; --amber:#8A5A00; --track:#DDE3D7; --bar:#1F7A4D;
+  --sez-b:#F2B84B; --sez-b-fg:#2B1D00; --soft:#E9EDE4; --danger:#8E1B1B; --danger-line:#E2B8B8; --amber:#8A5A00; --track:#DDE3D7; --bar:#1F7A4D;
   --font:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
@@ -22,14 +22,14 @@
   --accent:#6FD39A; --lime:#C6F135; --lime-ink:#14201A;
   --inv-bg:#223A2D; --inv-fg:#FFFFFF; --inv-muted:#B6C6BC; --inv-panel:#2B4838; --inv-line:#4A6857;
   --ok-bg:#1D3D2B; --ok-fg:#8FE3B1; --warn-bg:#3A301B; --warn-fg:#EAD9AE; --warn-line:#5A4A2A;
-  --soft:#1E2D24; --danger:#F0A3A3; --danger-line:#5A2E2E; --amber:#E8B85A; --track:#2A3C31; --bar:#4FBF86;
+  --sez-b:#B5832A; --sez-b-fg:#FFF8E8; --soft:#1E2D24; --danger:#F0A3A3; --danger-line:#5A2E2E; --amber:#E8B85A; --track:#2A3C31; --bar:#4FBF86;
   color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0E1511; --surface:#18241D; --ink:#EEF3EF; --muted:#9FB0A5; --line:#263A2E;
   --accent:#6FD39A; --lime:#C6F135; --lime-ink:#14201A;
   --inv-bg:#223A2D; --inv-fg:#FFFFFF; --inv-muted:#B6C6BC; --inv-panel:#2B4838; --inv-line:#4A6857;
   --ok-bg:#1D3D2B; --ok-fg:#8FE3B1; --warn-bg:#3A301B; --warn-fg:#EAD9AE; --warn-line:#5A4A2A;
-  --soft:#1E2D24; --danger:#F0A3A3; --danger-line:#5A2E2E; --amber:#E8B85A; --track:#2A3C31; --bar:#4FBF86;
+  --sez-b:#B5832A; --sez-b-fg:#FFF8E8; --soft:#1E2D24; --danger:#F0A3A3; --danger-line:#5A2E2E; --amber:#E8B85A; --track:#2A3C31; --bar:#4FBF86;
   color-scheme:dark}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -98,6 +98,17 @@ h1{margin:2px 0 0;font-size:28px;font-weight:700;letter-spacing:-.5px;text-wrap:
 .tabs{display:flex;justify-content:space-around;padding:8px 8px calc(10px + env(safe-area-inset-bottom,0px));background:var(--surface);border-top:1px solid var(--line)}
 .tabs button{white-space:nowrap;border:0;background:none;font-size:14px;color:var(--muted);padding:8px 10px;border-radius:10px}
 .tabs button.on{color:var(--accent);font-weight:700}
+.sez{border-radius:24px;overflow:hidden;border:1.5px solid var(--line);background:var(--surface)}
+.sez-h{padding:14px 18px;display:flex;flex-direction:column;gap:1px}
+.sez-h b{font-size:20px;font-weight:700;letter-spacing:-.2px}
+.sez-h span{font-size:13px}
+.sez-h.a{background:var(--lime);color:var(--lime-ink)}
+.sez-h.b{background:var(--sez-b);color:var(--sez-b-fg)}
+.sez-h.c{background:var(--soft);color:var(--ink)}
+.sez-h.c span{color:var(--muted)}
+.sez-b{padding:10px;display:flex;flex-direction:column;gap:10px}
+.sez-b .card.inv{padding:14px}
+.sez-b .chip{padding:8px 12px}
 .warn{background:var(--warn-bg);color:var(--warn-fg);border-radius:20px;padding:16px 18px;display:flex;flex-direction:column;gap:8px;border:0}
 .warn b{color:var(--ink)}
 .warn .btn{flex:1 1 0;height:42px;font-size:14px;font-weight:700;padding:0;border-color:var(--warn-line);background:var(--surface)}
@@ -204,28 +215,30 @@ var P = { mar:{liv:'principiante',tipo:'mista'}, sab:{liv:'base',tipo:'mista'}, 
 var DATE = { mar:'Martedì 3 novembre', sab:'Sabato 7 novembre', lun:'Lunedì 9 novembre' };
 var ORA = { mar:'18:00–19:30', sab:'09:30–11:00', lun:'18:00–19:30' };
 function visibile(k){ return k==='mar' ? !S.marOff && S.avv!=='annullata' : k==='sab' ? !S.sabOff : (S.prop==='si' && !S.lunOff); }
+function sez(cls, titolo, sub, corpo){
+  return '<section class="sez"><div class="sez-h '+cls+'"><b>'+titolo+'</b><span>'+sub+'</span></div><div class="sez-b">'+corpo+'</div></section>';
+}
 function mHome(){
-  var h = '<div class="top"><small>Lunedì 2 novembre</small><h1>Home</h1></div><div class="pad"><div class="lab">Proposta delle 8:00</div>', vuoto = true;
+  var h = '<div class="top"><small>Lunedì 2 novembre</small><h1>Home</h1></div><div class="pad" style="gap:22px">', a = '', m = '';
   if(S.prop==='aperta'){
-    vuoto = false;
-    h += '<div class="card inv"><div style="font-size:13px;font-weight:700;color:var(--lime)">Aprire una Partita Tattica?</div><h2 style="font-size:21px">Lunedì 9 novembre, 18:00–19:30</h2>'+
+    a = '<div class="card inv"><h2 style="font-size:21px">Lunedì 9 novembre, 18:00–19:30</h2>'+
       chips([['principiante','Principianti'],['base','Base'],['intermedio','Intermedi']],{principiante:S.liv==='principiante',base:S.liv==='base',intermedio:S.liv==='intermedio'},'liv')+
       chips([['maschile','Maschile'],['femminile','Femminile'],['mista','Mista']],{maschile:S.tipo==='maschile',femminile:S.tipo==='femminile',mista:S.tipo==='mista'},'tipo')+
       '<div style="display:flex;gap:10px;margin-top:4px"><button class="btn lime" style="flex:1 1 0;height:50px;font-size:16px" data-a="apri">Apri e invita 5</button><button class="btn" style="width:90px;height:50px;background:transparent;border-color:var(--inv-line);color:var(--inv-fg)" data-a="no">No</button></div></div>';
   } else if(S.prop==='si' && !S.lunOff){
-    h += '<div class="ok"><b>Partita aperta: lunedì 9, '+NL[P.lun.liv]+', '+NT[P.lun.tipo].toLowerCase()+'</b><div style="margin-top:4px;font-size:14px">Ho invitato 5 giocatori. Alle 12:30 altri 3, se servono.</div></div>';
+    a = '<div class="ok"><b>Partita aperta: lunedì 9, '+NL[P.lun.liv]+', '+NT[P.lun.tipo].toLowerCase()+'</b><div style="margin-top:4px;font-size:14px">Ho invitato 5 giocatori. Alle 12:30 altri 3, se servono.</div></div>';
   } else if(S.prop==='no'){
-    h += '<div class="note">Lunedì 9 novembre: nessuna Partita Tattica.<button class="btn" data-a="rip" data-v="prop" style="margin-top:8px;height:40px">Cambia idea</button></div>';
+    a = '<div class="note">Lunedì 9 novembre: nessuna Partita Tattica.<button class="btn" data-a="rip" data-v="prop" style="margin-top:8px;height:40px">Cambia idea</button></div>';
   }
-  h += '<div style="border-top:2px solid var(--line);margin:10px 0 2px"></div><div class="lab" style="color:var(--warn-fg)">Partita non chiusa · da decidere</div>';
+  h += sez('a','Proposta delle 8:00','Una nuova Partita Tattica da aprire', a);
   if(S.avv==='aperto'){
-    vuoto = false;
-    h += '<div class="warn"><b style="font-size:16px">Martedì 3: non si è chiusa</b><div style="font-size:14px">1 posto su 3 coperto, 11 giocatori contattati.</div><div style="display:flex;gap:8px;margin-top:4px"><button class="btn" data-a="avv" data-v="annullata">Annulla</button><button class="btn" data-a="avv" data-v="aspetta">Aspetta</button><button class="btn dark" data-a="avv" data-v="altri">Altri 3</button></div></div>';
+    m = '<div class="warn"><b style="font-size:16px">Martedì 3 novembre, 18:00</b><div style="font-size:14px">1 posto su 3 coperto, 11 giocatori contattati. Non si è chiusa.</div><div style="display:flex;gap:8px;margin-top:4px"><button class="btn" data-a="avv" data-v="annullata">Annulla</button><button class="btn" data-a="avv" data-v="aspetta">Aspetta</button><button class="btn dark" data-a="avv" data-v="altri">Altri 3</button></div></div>';
   } else {
-    h += '<div class="note">Martedì 3: '+ESITO[S.avv]+(S.avv==='aspetta'?'<button class="btn" data-a="rip" data-v="avv" style="margin-top:8px;height:40px">Cambia idea</button>':'')+'</div>';
+    m = '<div class="note">Martedì 3: '+ESITO[S.avv]+(S.avv==='aspetta'?'<button class="btn" data-a="rip" data-v="avv" style="margin-top:8px;height:40px">Cambia idea</button>':'')+'</div>';
   }
+  h += sez('b','Partita non chiusa','Una Partita Tattica già aperta: decidi tu', m);
   var n = ['mar','sab','lun'].filter(visibile).length;
-  h += '<button class="partita" data-a="ms" data-v="tattiche" style="margin-top:6px"><div class="row" style="width:100%"><b style="font-size:16px">Partite Tattiche aperte</b><span class="pill">'+n+'</span></div><div class="dim">Guarda a che punto sono e gestiscile.</div></button>';
+  h += sez('c','Partite Tattiche aperte', n+(n===1?' in corso':' in corso'), '<button class="btn" data-a="ms" data-v="tattiche" style="height:46px">Guarda a che punto sono</button>');
   return h+'</div>';
 }
 function riga(k){
