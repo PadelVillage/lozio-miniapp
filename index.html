@@ -217,7 +217,7 @@ var capz = function(t){ return t.charAt(0).toUpperCase()+t.slice(1); };
 function fGiorno(iso){ return capz(new Intl.DateTimeFormat('it-IT',{timeZone:'Europe/Rome',weekday:'long',day:'numeric',month:'long'}).format(new Date(iso))); }
 function fOra(iso){ return new Intl.DateTimeFormat('it-IT',{timeZone:'Europe/Rome',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(iso)); }
 function fFascia(p){ return fOra(p.inizio)+'–'+fOra(p.fine); }
-var visti = null;
+var visti = null, START = null;
 function carica(silenzioso){
   return api('me').then(function(d){
     if(d.errore){ if(!silenzioso || !D){ ERR = d.errore; } render(); return; }
@@ -228,6 +228,11 @@ function carica(silenzioso){
     D = d; S.ruolo = d.ruolo;
     if(primo && d.ruolo==='g'){ S.orari = d.fasce; S.due = d.due; S.salvato = snap(); S.dirty = false; }
     if(S.ruolo==='g' && S.gs==='invito' && !(d.inviti||[]).some(function(i){return i.id===S.invId;})) S.gs = 'home';
+    if(primo && START){
+      if(d.ruolo==='m'){ if(START.p && pAp(START.p)){ S.selId=START.p; S.ms='partita'; } else if(START.s==='tattiche'){ S.ms='tattiche'; } }
+      else if(START.i && (d.inviti||[]).length){ S.invId=d.inviti[0].id; S.gs='invito'; }
+      START = null;
+    }
     render();
     if(nuovi.length && S.ruolo==='g') mostraBannerL(nuovi[0]);
     if(d.ruolo==='m'){
@@ -715,7 +720,7 @@ document.addEventListener('click', function(e){ var el=e.target.closest('[data-a
     S.open = true;
     if(WA){ try{ WA.ready(); WA.expand(); WA.BackButton.onClick(function(){ act('back'); }); }catch(e){} }
     if(WA && WA.initData){
-      LIVE = true; INIT = WA.initData;
+      LIVE = true; INIT = WA.initData; START = { s:q.get('s'), p:q.get('p'), i:q.get('i') };
       carica();
       setInterval(function(){ if(!document.hidden) carica(true); }, 20000);
     } else {
