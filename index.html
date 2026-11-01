@@ -106,7 +106,8 @@ h1{margin:2px 0 0;font-size:28px;font-weight:700;letter-spacing:-.5px;text-wrap:
 .lvl-h b{font-size:17px}
 .lvl-h .n{min-width:26px;text-align:center;font-size:13px;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--inv-bg);color:var(--inv-fg)}
 .lvl .gioc{border:0;border-radius:0;border-top:1px solid var(--line);background:transparent}
-.salvab{flex-direction:column;gap:8px;border-top:2px solid var(--lime);box-shadow:0 -6px 18px rgba(0,0,0,.08)}
+.btn.verde{background:var(--sez-c);color:#FFFFFF;border-color:transparent}
+.salvab{flex-direction:column;gap:8px;border-top:2px solid var(--sez-c);box-shadow:0 -6px 18px rgba(0,0,0,.08)}
 .salvab .avv{font-size:13px;font-weight:700;color:var(--amber);text-align:center}
 .cbox{flex:1 1 0;min-height:0;overflow-y:auto;padding:8px 16px;display:flex;flex-direction:column;gap:8px}
 .cb{max-width:84%;padding:10px 14px;border-radius:18px;font-size:15px;line-height:1.4}
@@ -265,6 +266,11 @@ function gInvitoL(){
   '<div style="flex:1 1 auto"></div><div style="padding:24px 20px calc(24px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px"><button class="big" data-a="ciSono">Ci sono</button><div style="display:flex;gap:10px"><button class="ghost" data-a="nonPosso">Non posso</button><button class="ghost" data-a="piuTardi">Più tardi</button></div><div style="text-align:center;font-size:13px;color:var(--inv-muted)">I posti sono pochi: rispondi appena puoi.</div></div></div>';
 }
 var MSG = { confermata:'Segnato, ti aspetta LoZio in campo.', completa_confermata:'Segnato: la partita è completa!', gia:'Eri già segnato.', completa:'Peccato, la partita è già completa.', annullata:'Questa partita è stata annullata.', rifiutata:'Va bene, sarà per la prossima.', dopo:'Va bene, aspetto la tua risposta.', non_valido:'Questo invito non è più valido.' };
+function apri(url, eTelegram){
+  var W = window.Telegram && Telegram.WebApp;
+  try{ if(eTelegram && W && W.openTelegramLink) W.openTelegramLink(url); else if(W && W.openLink) W.openLink(url); else window.open(url,'_blank'); }
+  catch(e){ window.open(url,'_blank'); }
+}
 function actL(a, v){
   if(a==='invRisp'){ S.invId=v; S.gs='invito'; return true; }
   if(a==='bnr' && v==='invito'){ S.invId=S.bnrInv; S.gs='invito'; hideBanner(); return true; }
@@ -282,7 +288,13 @@ function actL(a, v){
     api('disponibilita',{fasce:S.orari, due:S.due}).then(function(r){ if(!r.errore){ S.dirty=false; render(); } flash(r.errore==='nessuna_fascia' ? 'Scegli almeno una fascia.' : r.errore ? 'Non riesco a salvare, riprova.' : 'Disponibilità salvate.'); });
     return true;
   }
-  if(a==='amico'){ flash('Presto: per ora invita a voce.'); return true; }
+  if(a==='gs' && v==='amico' && !S.amico){ api('amico').then(function(r){ if(!r.errore) S.amico=r; }); return false; }
+  if(a==='amico'){
+    var go = function(l){ apri(v==='wa' ? l.whatsapp : l.telegram, v==='tg'); };
+    if(S.amico) go(S.amico);
+    else api('amico').then(function(r){ if(r.errore){ flash('Non riesco, riprova tra poco.'); } else { S.amico=r; go(r); } });
+    return true;
+  }
   return false;
 }
 
@@ -316,12 +328,12 @@ function gOrari(){
   '<div class="dim">Ti contatto per una partita a settimana. La seconda solo se la vuoi tu.</div>'+
   (S.dirty ? '' : '<div class="dim" style="color:var(--ok-fg);font-weight:700">✓ Disponibilità salvate</div>')+'</div>';
   if(S.dirty){
-    h += '<div style="flex:1 1 auto"></div><div class="foot salvab"><div class="avv">Hai modifiche non salvate</div><button class="btn dark" style="height:52px;font-size:16px;width:100%" data-a="salva">Salva le disponibilità</button></div>';
+    h += '<div style="flex:1 1 auto"></div><div class="foot salvab"><div class="avv">Hai modifiche non salvate</div><button class="btn verde" style="height:52px;font-size:16px;width:100%" data-a="salva">Salva le disponibilità</button></div>';
   }
   return h;
 }
 function gAmico(){
-  return '<div class="top"><h1>Porta un amico</h1></div><div class="pad"><div>Vuoi portare un amico a giocare con LoZio? Scegli come mandargli l\'invito.</div><button class="btn dark" style="height:52px;font-size:16px" data-a="amico">Invia su WhatsApp</button><button class="btn" style="height:52px;font-size:16px" data-a="amico">Invia su Telegram</button></div>';
+  return '<div class="top"><h1>Invita un amico</h1></div><div class="pad"><div style="line-height:1.45;color:var(--muted)">Vuoi far giocare un amico con LoZio? Scegli come mandargli l\'invito: il messaggio è già pronto.</div><button class="btn verde" style="height:52px;font-size:16px" data-a="amico" data-v="wa">Invita da WhatsApp</button><button class="btn" style="height:52px;font-size:16px" data-a="amico" data-v="tg">Invita da Telegram</button></div>';
 }
 
 var RISP = {
@@ -526,7 +538,7 @@ function act(a, v){
   else if(a==='orario'){ S.orari[v]=!S.orari[v]; S.dirty=true; }
   else if(a==='freq'){ S.due = v==='2'; S.dirty=true; }
   else if(a==='salva'){ S.dirty=false; flash('Disponibilità salvate.'); }
-  else if(a==='amico'){ flash('Invito pronto da inviare.'); }
+  else if(a==='amico'){ flash(v==='wa' ? 'Si apre WhatsApp con il messaggio già scritto.' : 'Si apre Telegram con il messaggio già scritto.'); }
   else if(a==='liv'){ S.liv=v; }
   else if(a==='tipo'){ S.tipo=v; }
   else if(a==='apri'){ S.prop='si'; P.lun={liv:S.liv,tipo:S.tipo}; flash('Invitati 5 giocatori.'); }
