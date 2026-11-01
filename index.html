@@ -236,6 +236,7 @@ function carica(silenzioso){
     if(S.ruolo==='g' && S.gs==='invito' && !(d.inviti||[]).some(function(i){return i.id===S.invId;})) S.gs = 'home';
     if(primo && START){
       if(d.ruolo==='m'){ if(START.p && pAp(START.p)){ S.selId=START.p; S.ms='partita'; } else if(START.s==='tattiche'){ S.ms='tattiche'; } }
+      else if(START.s==='orari'){ S.gs='orari'; }
       else if(START.i && (d.inviti||[]).length){ S.invId=d.inviti[0].id; S.gs='invito'; }
       START = null;
     }
@@ -482,7 +483,7 @@ function gOrari(){
   '<div class="dim">Ti contatto per una partita a settimana. La seconda solo se la vuoi tu.</div>'+
   (S.dirty ? '' : '<div class="dim" style="color:var(--ok-fg);font-weight:700">✓ Disponibilità salvate</div>')+
   '<div class="lab" style="margin-top:10px">Sospensione</div>'+
-  (function(){ var on = LIVE && D ? !!D.sospeso : !!S.sosp; return '<button class="susp'+(on?' on':'')+'" data-a="susp"><span><b>Sospendi le Partite Tattiche</b><small>'+(on?'Sospese: non ricevi inviti. Ti riattivi tu quando vuoi.':'Per un periodo in cui non puoi giocare.')+'</small></span><i aria-hidden="true"></i></button>'; })()+'</div>';
+  (function(){ var on = LIVE && D ? !!D.sospeso : !!S.sosp; return '<button class="susp'+(on?' on':'')+'" data-a="susp"><span><b>Sospendi le Partite Tattiche</b><small>'+(on?'Sospese: non ricevi inviti. Ti riattivi tu quando vuoi. Ti ricordo che sei sospeso ogni 45 giorni.':'Per un periodo in cui non puoi giocare. Ti ricordo ogni 45 giorni che sei sospeso.')+'</small></span><i aria-hidden="true"></i></button>'; })()+'</div>';
   if(S.dirty){
     h += '<div style="flex:1 1 auto"></div><div class="foot salvab"><div class="avv">Hai modifiche non salvate</div><button class="btn verde" style="height:52px;font-size:16px;width:100%" data-a="salva">Salva le disponibilità</button></div>';
   }
