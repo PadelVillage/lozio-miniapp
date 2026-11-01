@@ -450,7 +450,7 @@ function gHome(){
     h += '<div class="note"><b>Martedì 3 novembre: posto liberato</b><div class="dim" style="margin-top:4px">Grazie dell\'avviso. LoZio è stato avvisato e cerca un sostituto.</div></div>';
   }
   if(S.invito==='si'){
-    h += '<div class="card"><div class="row"><h2 style="font-size:20px">Sabato 7 novembre</h2><span class="pill">Confermata</span></div><div>09:30–11:00 · Padel Village</div><div class="dim">Ti scrivo appena la Partita Tattica è completa.</div></div>';
+    h += '<div class="card"><div class="row"><h2 style="font-size:20px">Sabato 7 novembre</h2><span class="pill">Confermata</span></div><div>09:30–11:00 · Padel Village</div><div class="dim">Ti scrivo appena la Partita Tattica è completa.</div><button class="btn" data-a="nonRiesco2" style="margin-top:6px">Non riesco più</button></div>';
   }
   if(S.invito==='aperto'||S.invito==='dopo'){
     h += '<div class="lab" style="margin-top:8px">Inviti</div><div class="card inv"><div style="font-size:13px;font-weight:700;color:var(--lime)">LoZio ti ha invitato</div><h2 style="font-size:20px">Sabato 7 novembre</h2><div class="dim">09:30–11:00 · Padel Village</div><div class="row" style="margin-top:6px"><span class="dim">20 euro a persona</span><button class="btn lime" style="height:40px;font-size:14px;border-radius:12px" data-a="gs" data-v="invito">Rispondi</button></div></div>';
@@ -683,6 +683,7 @@ function act(a, v){
   else if(a==='ciSono'){ S.invito='si'; S.gs='home'; flash('Segnato, ti aspetta LoZio in campo.'); }
   else if(a==='nonPosso'){ S.invito='no'; S.gs='home'; flash('Va bene, sarà per la prossima.'); }
   else if(a==='piuTardi'){ S.invito='dopo'; S.gs='home'; flash('Va bene, aspetto la tua risposta.'); }
+  else if(a==='nonRiesco2'){ S.invito='no'; flash('LoZio è stato avvisato.'); }
   else if(a==='nonRiesco'){ S.nonRiesco=true; flash('LoZio è stato avvisato.'); }
   else if(a==='orario'){ S.orari[v]=!S.orari[v]; aggiornaDirty(); }
   else if(a==='freq'){ S.due = v==='2'; aggiornaDirty(); }
