@@ -156,7 +156,7 @@ h1{margin:2px 0 0;font-size:28px;font-weight:700;letter-spacing:-.5px;text-wrap:
 var S = {
   open: false, ruolo: 'g', gs: 'home', invito: 'aperto', nonRiesco: false,
   orari: { fm: false, fp: false, fs: true, wm: true, wp: true }, due: false,
-  ms: 'oggi', liv: 'principiante', tipo: 'mista', prop: 'aperta', avv: 'aperto',
+  ms: 'home', gia: {}, edit: false, pick: false, marOff: false, liv: 'principiante', tipo: 'mista', prop: 'aperta', avv: 'aperto',
   sabOff: false, lunOff: false, sel: 'sab'
 };
 var NL = { principiante: 'Principianti', base: 'Base', intermedio: 'Intermedi' };
@@ -200,41 +200,76 @@ function gInfo(){
   return '<div class="top"><h1>Come funziona</h1></div><div class="pad" style="line-height:1.45;color:var(--muted)"><div>LoZio organizza Partite Tattiche a Padel Village: si gioca in 4, lui in campo con tre di voi.</div><div>LoZio gioca un terzo del tempo con ognuno di voi: lo hai al tuo fianco per i suggerimenti tattici e di fronte, per metterli in pratica contro di lui.</div><div>Ti scrivo io quando c\'è una partita per te: rispondi con un tocco.</div><div style="font-weight:700;color:var(--ink)">Costo: 20 euro a persona.</div></div>';
 }
 
-function mOggi(){
-  var apertaLun = S.prop==='si' && !S.lunOff;
-  var h = '<div class="top"><small>Lunedì 2 novembre</small><h1>Oggi</h1></div><div class="pad"><div class="lab">Da decidere</div>';
+var P = { mar:{liv:'principiante',tipo:'mista'}, sab:{liv:'base',tipo:'mista'}, lun:{liv:'principiante',tipo:'mista'} };
+var DATE = { mar:'Martedì 3 novembre', sab:'Sabato 7 novembre', lun:'Lunedì 9 novembre' };
+var ORA = { mar:'18:00–19:30', sab:'09:30–11:00', lun:'18:00–19:30' };
+function visibile(k){ return k==='mar' ? !S.marOff && S.avv!=='annullata' : k==='sab' ? !S.sabOff : (S.prop==='si' && !S.lunOff); }
+function mHome(){
+  var h = '<div class="top"><small>Lunedì 2 novembre</small><h1>Home</h1></div><div class="pad"><div class="lab">Da decidere con LoZio</div>', vuoto = true;
   if(S.prop==='aperta'){
-    h += '<div class="card inv"><div style="font-size:13px;font-weight:700;color:var(--lime)">Aprire una tattica?</div><h2 style="font-size:21px">Lunedì 9 novembre, 18:00–19:30</h2>'+
+    vuoto = false;
+    h += '<div class="card inv"><div style="font-size:13px;font-weight:700;color:var(--lime)">Aprire una Partita Tattica?</div><h2 style="font-size:21px">Lunedì 9 novembre, 18:00–19:30</h2>'+
       chips([['principiante','Principianti'],['base','Base'],['intermedio','Intermedi']],{principiante:S.liv==='principiante',base:S.liv==='base',intermedio:S.liv==='intermedio'},'liv')+
       chips([['maschile','Maschile'],['femminile','Femminile'],['mista','Mista']],{maschile:S.tipo==='maschile',femminile:S.tipo==='femminile',mista:S.tipo==='mista'},'tipo')+
       '<div style="display:flex;gap:10px;margin-top:4px"><button class="btn lime" style="flex:1 1 0;height:50px;font-size:16px" data-a="apri">Apri e invita 5</button><button class="btn" style="width:90px;height:50px;background:transparent;border-color:var(--inv-line);color:var(--inv-fg)" data-a="no">No</button></div></div>';
   } else if(S.prop==='si' && !S.lunOff){
-    h += '<div class="ok"><b>Partita aperta: lunedì 9, '+NL[S.liv]+', '+S.tipo+'</b><div style="margin-top:4px;font-size:14px">Ho invitato 5 giocatori. Alle 12:30 altri 3, se servono.</div></div>';
+    h += '<div class="ok"><b>Partita aperta: lunedì 9, '+NL[P.lun.liv]+', '+NT[P.lun.tipo].toLowerCase()+'</b><div style="margin-top:4px;font-size:14px">Ho invitato 5 giocatori. Alle 12:30 altri 3, se servono.</div></div>';
   } else if(S.prop==='no'){
-    h += '<div class="note">Lunedì 9 novembre: nessuna tattica.</div>';
+    h += '<div class="note">Lunedì 9 novembre: nessuna Partita Tattica.</div>';
   }
   if(S.avv==='aperto'){
+    vuoto = false;
     h += '<div class="warn"><b style="font-size:16px">Martedì 3: non si è chiusa</b><div style="font-size:14px">1 posto su 3 coperto, 11 giocatori contattati.</div><div style="display:flex;gap:8px;margin-top:4px"><button class="btn" data-a="avv" data-v="annullata">Annulla</button><button class="btn" data-a="avv" data-v="aspetta">Aspetta</button><button class="btn dark" data-a="avv" data-v="altri">Altri 3</button></div></div>';
   } else {
     h += '<div class="note">Martedì 3: '+ESITO[S.avv]+'</div>';
   }
-  h += '<div class="lab" style="margin-top:6px">Partite Tattiche aperte</div>';
-  if(!S.sabOff) h += '<button class="partita" data-a="det" data-v="sab"><div class="row" style="width:100%"><b style="font-size:17px">Sabato 7, 09:30</b><span class="dim">Base · mista</span></div><div class="barre" style="width:100%"><i class="p"></i><i class="p"></i><i></i></div><div class="dim" style="color:var(--ink)">2 su 3 · 5 invitati, 2 non hanno risposto</div></button>';
-  if(apertaLun) h += '<button class="partita" data-a="det" data-v="lun"><div class="row" style="width:100%"><b style="font-size:17px">Lunedì 9, 18:00</b><span class="dim">'+NL[S.liv]+', '+S.tipo+'</span></div><div class="barre" style="width:100%"><i></i><i></i><i></i></div><div class="dim" style="color:var(--ink)">0 su 3 · 5 invitati, nessuna risposta</div></button>';
-  if(S.sabOff && !apertaLun) h += '<div class="dim">Nessuna Partita Tattica aperta.</div>';
+  if(vuoto) h += '<div class="dim">Per ora non c\'è altro da decidere. Ti avviso io quando serve.</div>';
+  var n = ['mar','sab','lun'].filter(visibile).length;
+  h += '<button class="partita" data-a="ms" data-v="tattiche" style="margin-top:6px"><div class="row" style="width:100%"><b style="font-size:16px">Partite Tattiche aperte</b><span class="pill">'+n+'</span></div><div class="dim">Guarda a che punto sono e gestiscile.</div></button>';
+  return h+'</div>';
+}
+function riga(k){
+  var d = { mar:['Martedì 3, 18:00','1 su 3 · 11 contattati, non si è chiusa',[1,0,0]], sab:['Sabato 7, 09:30','2 su 3 · 5 invitati, 2 non hanno risposto',[1,1,0]], lun:['Lunedì 9, 18:00','0 su 3 · 5 invitati, nessuna risposta',[0,0,0]] }[k];
+  var x = d[2];
+  var n = k==='mar' ? 0 : 0;
+  return '<button class="partita" data-a="det" data-v="'+k+'"><div class="row" style="width:100%"><b style="font-size:17px">'+d[0]+'</b><span class="dim">'+NL[P[k].liv]+' · '+NT[P[k].tipo].toLowerCase()+'</span></div><div class="barre" style="width:100%">'+
+    (k==='sab'?'<i class="p"></i><i class="p"></i><i></i>':k==='mar'?'<i class="p"></i><i></i><i></i>':'<i></i><i></i><i></i>')+'</div><div class="dim" style="color:var(--ink)">'+d[1]+'</div></button>';
+}
+function mTatt(){
+  var l = ['mar','sab','lun'].filter(visibile);
+  var h = '<div class="top"><small>'+(l.length===1?'1 aperta':l.length+' aperte')+'</small><h1>Partite Tattiche</h1></div><div class="pad">';
+  h += l.length ? l.map(riga).join('') : '<div class="dim">Nessuna Partita Tattica aperta. Le proposte nuove le trovi in Home.</div>';
   return h+'</div>';
 }
 function mDett(){
-  var sab = S.sel==='sab';
-  var posti = sab ? ['Giulia Bianchi','Marco Rossi',''] : ['','',''];
-  var ond = sab ? [['1ª ondata · 5 invitati','ieri 08:05',1],['2ª ondata · 3 invitati','ieri 12:30',1],['3ª ondata · 3 invitati','ieri 20:30',0]] : [['1ª ondata · 5 invitati','adesso',1],['2ª ondata · 3 invitati','oggi 12:30',0],['3ª ondata · 3 invitati','oggi 20:30',0]];
-  var inv = sab ? [['Giulia Bianchi','Ci sono','s'],['Marco Rossi','Ci sono','s'],['Sara Conte','Più tardi','t'],['Luca Moretti','Non ha risposto','n'],['Paola Greco','Non può','x']] : ['Anna Villa','Paolo Neri','Elena Costa','Davide Fabbri','Chiara Serra'].map(function(n){return [n,'Non ha risposto','n']});
-  var h = '<button class="back" data-a="ms" data-v="oggi" style="align-self:flex-start;margin:20px 20px 0;padding:0;border:0;background:none;font-size:14px;font-weight:700;color:var(--accent)">‹ Oggi</button>'+
-    '<div class="top" style="padding-top:12px"><h1 style="font-size:28px">'+(sab?'Sabato 7 novembre':'Lunedì 9 novembre')+'</h1><small style="margin-top:2px">'+(sab?'09:30–11:00 · Base · mista':'18:00–19:30 · '+NL[S.liv]+' · '+S.tipo)+'</small></div><div class="pad">'+
+  var k = S.sel;
+  var posti = k==='sab' ? ['Giulia Bianchi','Marco Rossi',''] : k==='mar' ? ['Lidia Ferri','',''] : ['','',''];
+  var ond = k==='sab' ? [['1ª ondata · 5 invitati','ieri 08:05',1],['2ª ondata · 3 invitati','ieri 12:30',1],['3ª ondata · 3 invitati','ieri 20:30',0]]
+    : k==='mar' ? [['1ª ondata · 5 invitati','sab 08:05',1],['2ª ondata · 3 invitati','sab 12:30',1],['3ª ondata · 3 invitati','sab 20:30',1]]
+    : [['1ª ondata · 5 invitati','adesso',1],['2ª ondata · 3 invitati','oggi 12:30',0],['3ª ondata · 3 invitati','oggi 20:30',0]];
+  var inv = k==='sab' ? [['Giulia Bianchi','Ci sono','s'],['Marco Rossi','Ci sono','s'],['Sara Conte','Più tardi','t'],['Luca Moretti','Non ha risposto','n'],['Paola Greco','Non può','x']]
+    : k==='mar' ? [['Lidia Ferri','Ci sono','s'],['Paola Greco','Più tardi','t'],['Sara Conte','Non può','x'],['Luca Moretti','Non ha risposto','n'],['Anna Villa','Non ha risposto','n']]
+    : ['Anna Villa','Paolo Neri','Elena Costa','Davide Fabbri','Chiara Serra'].map(function(n){return [n,'Non ha risposto','n']});
+  (S.gia[k]||[]).forEach(function(n){ inv.push([n,'Invitato adesso','n']); });
+  var h = '<button class="back" data-a="ms" data-v="tattiche" style="align-self:flex-start;margin:20px 20px 0;padding:0;border:0;background:none;font-size:14px;font-weight:700;color:var(--accent)">‹ Partite Tattiche</button>'+
+    '<div class="top" style="padding-top:12px"><h1 style="font-size:28px">'+DATE[k]+'</h1><small style="margin-top:2px">'+ORA[k]+' · '+NL[P[k].liv]+' · '+NT[P[k].tipo].toLowerCase()+'</small></div><div class="pad">'+
     '<div class="card"><div class="lab">Posti</div><div class="posti">'+posti.map(function(p){return '<div class="posto'+(p?'':' v')+'">'+(p||'libero')+'</div>'}).join('')+'</div></div>'+
     '<div class="card"><div class="lab">Ondate</div>'+ond.map(function(o){return '<div class="ond"><i class="'+(o[2]?'':'f')+'"></i><span style="'+(o[2]?'':'color:var(--muted)')+'">'+o[0]+'</span><em>'+o[1]+'</em></div>'}).join('')+'</div>'+
-    '<div class="card"><div class="lab">Invitati</div>'+inv.map(function(i){return '<div class="row"><span>'+i[0]+'</span><span class="stato-'+i[2]+'">'+i[1]+'</span></div>'}).join('')+'</div></div>';
-  return h;
+    '<div class="card"><div class="lab">Invitati</div>'+inv.map(function(i){return '<div class="row"><span>'+i[0]+'</span><span class="stato-'+i[2]+'">'+i[1]+'</span></div>'}).join('')+'</div>';
+  if(S.edit){
+    h += '<div class="card"><div class="lab">Modifica</div>'+
+      chips([['principiante','Principianti'],['base','Base'],['intermedio','Intermedi']],{principiante:P[k].liv==='principiante',base:P[k].liv==='base',intermedio:P[k].liv==='intermedio'},'eliv')+
+      chips([['maschile','Maschile'],['femminile','Femminile'],['mista','Mista']],{maschile:P[k].tipo==='maschile',femminile:P[k].tipo==='femminile',mista:P[k].tipo==='mista'},'etipo')+
+      '<div class="dim">Chi ha già risposto Ci sono resta dentro: ti chiedo prima di toccarlo.</div></div>';
+  }
+  if(S.pick){
+    var gi = S.gia[k]||[];
+    var cand = ['Anna Villa','Paolo Neri','Elena Costa','Davide Fabbri','Chiara Serra','Marta Gallo','Nico Bassi'].filter(function(n){ return gi.indexOf(n)<0 && !(k==='lun'||k==='mar'&&n==='Anna Villa'); });
+    if(k==='lun') cand = ['Marta Gallo','Nico Bassi','Elisa Monti','Gabriele Riva'].filter(function(n){return gi.indexOf(n)<0});
+    h += '<div class="card"><div class="lab">Chi invito?</div><button class="btn dark" data-a="altri" style="height:46px">Altri 3 scelti da LoZio</button>'+
+      cand.slice(0,4).map(function(n){return '<button class="btn" data-a="inv1" data-v="'+n+'" style="height:44px;font-weight:500">Invita '+n+'</button>'}).join('')+'</div>';
+  }
+  return h+'</div>';
 }
 function mGioc(){
   var l=[['Giulia Bianchi','donna · omogenea e mista','Base'],['Marco Rossi','uomo · mista','Base'],['Sara Conte','donna · mista','Principiante'],['Luca Moretti','uomo · omogenea e mista','Intermedio'],['Paola Greco','donna · omogenea','Base'],['Lidia Ferri','donna · omogenea e mista','Principiante']];
@@ -250,10 +285,10 @@ function renderChat(){
     h += msg('Ciao Lidia, LoZio ha aperto una Partita Tattica.<br>Sabato 7 novembre, 09:30-11:00, Padel Village.<br>20 euro a persona.<br>Ci sei?', '20:40', kbBtn('Rispondi','invito'));
     h += msg('Promemoria: martedì 3 novembre alle 18:00 hai la Partita Tattica con LoZio a Padel Village.', '20:45', kbBtn('Vedi Partita Tattica','home'));
   } else {
-    h += msg('Lunedì 9 novembre, 18:00-19:30: vuoi aprire una tattica?', '08:00', kbBtn('Decidi','oggi'));
-    h += msg('La tattica di martedì 3 novembre non si è chiusa: 1 posto su 3 coperto, 11 giocatori contattati. Che facciamo?', '09:00', kbBtn('Decidi','oggi'));
+    h += msg('Lunedì 9 novembre, 18:00-19:30: vuoi aprire una tattica?', '08:00', kbBtn('Decidi','home'));
+    h += msg('La tattica di martedì 3 novembre non si è chiusa: 1 posto su 3 coperto, 11 giocatori contattati. Che facciamo?', '09:00', kbBtn('Decidi','home'));
   }
-  h += '</div><div class="inbar"><button class="menub" data-a="open" data-v="'+(g?'home':'oggi')+'">'+(g?'Apri app':'Gestione')+'</button><div class="fake">Messaggio</div></div>';
+  h += '</div><div class="inbar"><button class="menub" data-a="open" data-v="'+(g?'home':'home')+'">'+(g?'Apri app':'Gestione')+'</button><div class="fake">Messaggio</div></div>';
   document.getElementById('tg').innerHTML = h;
 }
 function render(){
@@ -271,11 +306,14 @@ function renderApp(){
       t = [['home','Tattiche'],['orari','Disponibilità'],['amico','Invita'],['info','Info']].map(function(x){return '<button class="'+(S.gs===x[0]?'on':'')+'" data-a="gs" data-v="'+x[0]+'">'+x[1]+'</button>'}).join('');
     }
   } else {
-    h = S.ms==='oggi'?mOggi():S.ms==='partita'?mDett():mGioc();
+    h = S.ms==='home'?mHome():S.ms==='tattiche'?mTatt():S.ms==='partita'?mDett():mGioc();
     if(S.ms==='partita'){
-      h += '<div style="flex:1 1 auto"></div><div class="foot"><button class="btn dark" style="flex:1 1 0;height:52px;font-size:16px" data-a="altri">Invita altri</button><button class="btn danger" style="width:130px;height:52px;font-size:16px" data-a="annulla">Annulla</button></div>';
+      h += '<div style="flex:1 1 auto"></div><div class="foot">'+
+        (S.edit ? '<button class="btn dark" style="flex:1 1 0;height:52px;font-size:16px" data-a="salvaMod">Salva modifiche</button><button class="btn" style="width:110px;height:52px;font-size:16px" data-a="chiudiMod">Indietro</button>'
+        : S.pick ? '<button class="btn" style="flex:1 1 0;height:52px;font-size:16px" data-a="chiudiMod">Indietro</button>'
+        : '<button class="btn dark" style="flex:1 1 0;height:52px;font-size:15px;padding:0 6px" data-a="pick">Invita altri</button><button class="btn" style="flex:1 1 0;height:52px;font-size:15px;padding:0 6px" data-a="mod">Modifica</button><button class="btn danger" style="flex:1 1 0;height:52px;font-size:15px;padding:0 6px" data-a="annulla">Annulla</button>')+'</div>';
     } else {
-      t = [['oggi','Oggi'],['giocatori','Giocatori']].map(function(x){return '<button class="'+(S.ms===x[0]?'on':'')+'" data-a="ms" data-v="'+x[0]+'">'+x[1]+'</button>'}).join('');
+      t = [['home','Home'],['tattiche','Tattiche'],['giocatori','Giocatori']].map(function(x){return '<button class="'+(S.ms===x[0]?'on':'')+'" data-a="ms" data-v="'+x[0]+'">'+x[1]+'</button>'}).join('');
     }
   }
   sch.innerHTML = h; tabs.innerHTML = t; tabs.hidden = !t;
@@ -313,13 +351,20 @@ function act(a, v){
   else if(a==='amico'){ flash('Invito pronto da inviare.'); }
   else if(a==='liv'){ S.liv=v; }
   else if(a==='tipo'){ S.tipo=v; }
-  else if(a==='apri'){ S.prop='si'; flash('Invitati 5 giocatori.'); }
+  else if(a==='apri'){ S.prop='si'; P.lun={liv:S.liv,tipo:S.tipo}; flash('Invitati 5 giocatori.'); }
   else if(a==='no'){ S.prop='no'; }
   else if(a==='avv'){ S.avv=v; }
-  else if(a==='det'){ S.sel=v; S.ms='partita'; }
-  else if(a==='ms'){ S.ms=v; }
-  else if(a==='altri'){ flash('Invitati altri 3 giocatori.'); }
-  else if(a==='annulla'){ if(S.sel==='sab') S.sabOff=true; else S.lunOff=true; S.ms='oggi'; flash('Partita annullata, giocatori avvisati.'); }
+  else if(a==='det'){ S.sel=v; S.ms='partita'; S.edit=false; S.pick=false; }
+  else if(a==='ms'){ S.ms=v; S.edit=false; S.pick=false; }
+  else if(a==='altri'){ S.pick=false; flash('Invitati altri 3 giocatori.'); }
+  else if(a==='pick'){ S.pick=true; }
+  else if(a==='inv1'){ (S.gia[S.sel]=S.gia[S.sel]||[]).push(v); S.pick=false; flash('Invitato: '+v+'.'); }
+  else if(a==='mod'){ S.edit=true; }
+  else if(a==='chiudiMod'){ S.edit=false; S.pick=false; }
+  else if(a==='eliv'){ P[S.sel].liv=v; }
+  else if(a==='etipo'){ P[S.sel].tipo=v; }
+  else if(a==='salvaMod'){ S.edit=false; flash('Modifica salvata, gli invitati sono avvisati.'); }
+  else if(a==='annulla'){ if(S.sel==='sab') S.sabOff=true; else if(S.sel==='mar') S.marOff=true; else S.lunOff=true; S.ms='tattiche'; flash('Partita annullata, giocatori avvisati.'); }
   render();
 }
 document.addEventListener('click', function(e){ var el=e.target.closest('[data-a]'); if(el) act(el.dataset.a, el.dataset.v); });
