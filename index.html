@@ -158,7 +158,7 @@ function flash(m){ var t=document.getElementById('toast'); t.textContent=m; t.hi
 function chips(list, cur, act){ return '<div class="chips">'+list.map(function(k){ return '<button class="chip'+(cur[k[0]]?' on':'')+'" data-a="'+act+'" data-v="'+k[0]+'">'+k[1]+'</button>'; }).join('')+'</div>'; }
 
 function gHome(){
-  var h = '<div class="top"><h1>Le mie partite tattiche</h1></div><div class="pad"><div class="lab">Prossima</div>';
+  var h = '<div class="top"><h1>Le mie Partite Tattiche</h1></div><div class="pad"><div class="lab">Prossima</div>';
   if(!S.nonRiesco){
     h += '<div class="card"><div class="row"><h2>Martedì 3 novembre</h2><span class="pill">Confermata</span></div><div>18:00–19:30 · Padel Village</div><div class="dim">Con: Marco R., Giulia B.</div><button class="btn" data-a="nonRiesco" style="margin-top:6px">Non riesco più</button></div>';
   } else {
@@ -173,7 +173,7 @@ function gHome(){
   return h+'</div>';
 }
 function gInvito(){
-  return '<div class="full"><button class="back" data-a="gs" data-v="home">‹ Le mie partite tattiche</button>'+
+  return '<div class="full"><button class="back" data-a="gs" data-v="home">‹ Le mie Partite Tattiche</button>'+
   '<div style="padding:32px 20px 0;display:flex;flex-direction:column;gap:10px"><div style="font-size:14px;font-weight:700;color:var(--lime)">Ciao Lidia, LoZio ha aperto una Partita Tattica</div><h1>Sabato<br>7 novembre</h1><div style="font-size:18px;color:var(--inv-muted)">09:30–11:00 · Padel Village</div></div>'+
   '<div class="panel"><div class="row"><span>Costo</span><b>20 euro a persona</b></div><div class="row"><span>Si gioca in</span><b>4, con LoZio</b></div></div>'+
   '<div style="flex:1 1 auto"></div><div style="padding:24px 20px calc(24px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px"><button class="big" data-a="ciSono">Ci sono</button><div style="display:flex;gap:10px"><button class="ghost" data-a="nonPosso">Non posso</button><button class="ghost" data-a="piuTardi">Più tardi</button></div><div style="text-align:center;font-size:13px;color:var(--inv-muted)">I posti sono pochi: rispondi appena puoi.</div></div></div>';
@@ -188,7 +188,7 @@ function gAmico(){
   return '<div class="top"><h1>Porta un amico</h1></div><div class="pad"><div>Vuoi portare un amico a giocare con LoZio? Scegli come mandargli l\'invito.</div><button class="btn dark" style="height:52px;font-size:16px" data-a="amico">Invia su WhatsApp</button><button class="btn" style="height:52px;font-size:16px" data-a="amico">Invia su Telegram</button></div>';
 }
 function gInfo(){
-  return '<div class="top"><h1>Come funziona</h1></div><div class="pad" style="line-height:1.45;color:var(--muted)"><div>LoZio organizza partite tattiche a Padel Village: si gioca in 4, lui in campo con tre di voi.</div><div>LoZio gioca un terzo del tempo con ognuno di voi: lo hai al tuo fianco per i suggerimenti tattici e di fronte, per metterli in pratica contro di lui.</div><div>Ti scrivo io quando c\'è una partita per te: rispondi con un tocco.</div><div style="font-weight:700;color:var(--ink)">Costo: 20 euro a persona.</div></div>';
+  return '<div class="top"><h1>Come funziona</h1></div><div class="pad" style="line-height:1.45;color:var(--muted)"><div>LoZio organizza Partite Tattiche a Padel Village: si gioca in 4, lui in campo con tre di voi.</div><div>LoZio gioca un terzo del tempo con ognuno di voi: lo hai al tuo fianco per i suggerimenti tattici e di fronte, per metterli in pratica contro di lui.</div><div>Ti scrivo io quando c\'è una partita per te: rispondi con un tocco.</div><div style="font-weight:700;color:var(--ink)">Costo: 20 euro a persona.</div></div>';
 }
 
 function mOggi(){
@@ -209,7 +209,7 @@ function mOggi(){
   } else {
     h += '<div class="note">Martedì 3: '+ESITO[S.avv]+'</div>';
   }
-  h += '<div class="lab" style="margin-top:6px">Partite tattiche aperte</div>';
+  h += '<div class="lab" style="margin-top:6px">Partite Tattiche aperte</div>';
   if(!S.sabOff) h += '<button class="partita" data-a="det" data-v="sab"><div class="row" style="width:100%"><b style="font-size:17px">Sabato 7, 09:30</b><span class="dim">Base · mista</span></div><div class="barre" style="width:100%"><i class="p"></i><i class="p"></i><i></i></div><div class="dim" style="color:var(--ink)">2 su 3 · 5 invitati, 2 non hanno risposto</div></button>';
   if(apertaLun) h += '<button class="partita" data-a="det" data-v="lun"><div class="row" style="width:100%"><b style="font-size:17px">Lunedì 9, 18:00</b><span class="dim">'+NL[S.liv]+', '+S.tipo+'</span></div><div class="barre" style="width:100%"><i></i><i></i><i></i></div><div class="dim" style="color:var(--ink)">0 su 3 · 5 invitati, nessuna risposta</div></button>';
   if(S.sabOff && !apertaLun) h += '<div class="dim">Nessuna Partita Tattica aperta.</div>';
