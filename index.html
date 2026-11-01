@@ -312,9 +312,9 @@ function renderApp(){
         (S.edit ? '<button class="btn dark" style="flex:1 1 0;height:52px;font-size:16px" data-a="salvaMod">Salva modifiche</button><button class="btn" style="width:110px;height:52px;font-size:16px" data-a="chiudiMod">Indietro</button>'
         : S.pick ? '<button class="btn" style="flex:1 1 0;height:52px;font-size:16px" data-a="chiudiMod">Indietro</button>'
         : '<button class="btn dark" style="flex:1 1 0;height:52px;font-size:15px;padding:0 6px" data-a="pick">Invita altri</button><button class="btn" style="flex:1 1 0;height:52px;font-size:15px;padding:0 6px" data-a="mod">Modifica</button><button class="btn danger" style="flex:1 1 0;height:52px;font-size:15px;padding:0 6px" data-a="annulla">Annulla</button>')+'</div>';
-    } else {
-      t = [['home','Home'],['tattiche','Tattiche'],['giocatori','Giocatori']].map(function(x){return '<button class="'+(S.ms===x[0]?'on':'')+'" data-a="ms" data-v="'+x[0]+'">'+x[1]+'</button>'}).join('');
     }
+    var sez = S.ms==='partita' ? 'tattiche' : S.ms;
+    t = [['home','Home'],['tattiche','Tattiche'],['giocatori','Giocatori']].map(function(x){return '<button class="'+(sez===x[0]?'on':'')+'" data-a="ms" data-v="'+x[0]+'">'+x[1]+'</button>'}).join('');
   }
   sch.innerHTML = h; tabs.innerHTML = t; tabs.hidden = !t;
   if(S.gs==='invito' && S.ruolo==='g'){ sch.style.background='var(--inv-bg)'; } else { sch.style.background=''; }
