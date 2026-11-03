@@ -362,7 +362,7 @@ function pScheda(){
  return h+(me.schede.length?'':'<button class="lnk" data-act="sheet" data-a="guida">Guida regolazione</button>');
 }
 function pCreate(){
- const C=S.create;let h='<h2>Crea la tua scheda</h2><div><p class="fh">Il tuo livello</p><div style="display:flex;flex-direction:column;gap:8px">'+
+ const C=S.create;const tot=2+MARG+C.mins.reduce((x,y)=>x+y,0),ok=tot===20;let h='<div class="totbar" style="position:sticky;top:-16px;z-index:6;margin:-16px -16px 0;padding:10px 16px;background:var(--card);border-bottom:2px solid '+(ok?'var(--brand)':'var(--accent)')+';display:flex;justify-content:space-between;align-items:center"><span>Totale scheda</span><b style="font-weight:700;font-size:18px;color:'+(ok?'var(--brand)':'var(--accent)')+'">'+tot+' / 20 min</b></div><h2>Crea la tua scheda</h2><div><p class="fh">Il tuo livello</p><div style="display:flex;flex-direction:column;gap:8px">'+
   ['base','mid','adv'].map(l=>'<button class="opt'+(C.level===l?' on':'')+'" data-act="clevel" data-a="'+l+'"><span class="dot"></span><span><b>'+LV[l].name+'</b><span class="sm mut">'+LV[l].desc+'</span></span></button>').join('')+'</div></div>';
  if(C.level){h+='<div><p class="fh">Scegli gli allenamenti (fino a 6 blocchi) · '+C.sel.length+' scelti</p><div style="display:flex;flex-direction:column;gap:8px">'+
   drillsOf(C.level).map(d=>'<button class="opt'+(C.sel.indexOf(d.id)>=0?' on':'')+'" data-act="cdr" data-a="'+d.id+'"><span class="dot"></span><span><b>'+esc(d.name)+'</b><span class="sm mut">'+esc(d.focus)+(d.colpo?' \u00b7 '+esc(d.colpo):'')+'</span></span></button>').join('')+'</div></div>'+
@@ -531,7 +531,7 @@ const ACT={
  cadd(){keepMsg();const l=drillsOf(S.comp.level);if(S.comp.sel.length>=6)return say('Al massimo 6 blocchi.');S.comp.sel.push(l[0].id);S.comp.mins.push(2);render();},
  cdel(a){keepMsg();S.comp.sel.splice(+a,1);S.comp.mins.splice(+a,1);render();},
  csave(){const C=S.create;if(C.sel.length<1){S.err='Scegli almeno un allenamento.';render();return;}
-  const tm=C.mins.reduce((x,y)=>x+y,0);if(tm!==WORK){S.err='I blocchi devono fare '+WORK+' minuti in totale (ora '+tm+').';render();return;}
+  const tm=C.mins.reduce((x,y)=>x+y,0);if(tm!==WORK){S.err='Riscaldamento, blocchi e margine devono fare 20 minuti in totale (ora '+(2+MARG+tm)+').';render();return;}
   S.me.level=C.level;S.me.schede.unshift({id:'s'+Date.now(),by:'me',level:C.level,date:'3 novembre',blocks:[WARM].concat(C.sel.map(id=>blockOf(id,C.mins[C.sel.indexOf(id)])))});
   S.sView='main';S.sIdx=0;S.hist=[];say('Scheda creata. La trovi qui quando arrivi alla macchina.');top0();},
  sidx(a){S.sIdx=+a;render();top0();},
@@ -639,7 +639,7 @@ if(LIVE){
   async cancelok(a){try{const r=await api('annulla',{gruppo:a});S.sheet=null;await reload(true);
    say(r.errore==='troppo_tardi'?'Mancano meno di 2 ore: da qui non puoi più disdire. Scrivi al coach.':r.errore?ERRMSG.x:'Sessione disdetta. Lo slot è di nuovo libero.');}catch(e){FAIL(e);}},
   async csave(){const C=S.create;if(C.sel.length<1){S.err='Scegli almeno un allenamento.';render();return;}
-   const tm=C.mins.reduce((x,y)=>x+y,0);if(tm!==WORK){S.err='I blocchi devono fare '+WORK+' minuti in totale (ora '+tm+').';render();return;}
+   const tm=C.mins.reduce((x,y)=>x+y,0);if(tm!==WORK){S.err='Riscaldamento, blocchi e margine devono fare 20 minuti in totale (ora '+(2+MARG+tm)+').';render();return;}
    try{const r=await api('crea_scheda',{livello:C.level,blocchi:C.sel.map((id,i)=>({id:id,mins:C.mins[i]}))});if(r.errore){S.err=ERRMSG.x;render();return;}
     await reload(true);}catch(e){return FAIL(e);}
    S.sView='main';S.sIdx=0;S.hist=[];say('Scheda creata. La trovi qui quando arrivi alla macchina.');top0();},
