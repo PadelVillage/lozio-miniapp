@@ -646,6 +646,7 @@ const msgBox=t=>'<div style="padding:32px 24px;text-align:center"><p style="font
 async function boot(){
  const root=document.getElementById('root');
  try{WA.ready();WA.expand();}catch(e){}
+ try{WA.disableVerticalSwipes();}catch(e){}
  document.body.classList.add('live');
  root.innerHTML=msgBox('Caricamento…');
  S=seed('player');S.sc='live';
