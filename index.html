@@ -288,18 +288,18 @@ function tgView(){
  '<button class="btn" style="background:var(--soft);color:var(--brand);max-width:86%;min-height:44px" data-act="tgopen">'+esc(S.tgmsg.btn)+'</button></div></div>';
 }
 function secTitle(){
- if(S.area==='coach')return S.ctab==='slot'?'Slot':S.ctab==='msg'?(S.thread?S.thread.name:'Messaggi'):(S.comp?'Nuova scheda':'Schede');
+ if(S.area==='coach')return S.ctab==='slot'?(S.asv?'Assenze':'Slot'):S.ctab==='msg'?(S.thread?S.thread.name:'Messaggi'):(S.comp?'Nuova scheda':'Schede');
  if(S.tab==='prenota')return 'Prenota';
  if(S.tab==='scheda')return S.sView==='create'?'Crea scheda':S.sView==='open'?'Scheda':'Sessioni';
  return 'Coach';
 }
 function appView(){
  const coach=S.area==='coach';
- const canBack=S.hist.length>0||!!S.comp||!!(S.area==='coach'&&S.ctab==='msg'&&S.thread);
+ const canBack=S.hist.length>0||!!S.comp||!!(S.area==='coach'&&S.ctab==='slot'&&S.asv)||!!(S.area==='coach'&&S.ctab==='msg'&&S.thread);
  const head='<div class="appbar"><div class="row" style="min-width:0">'+(canBack?'<button class="tb" data-act="goback" aria-label="Indietro" style="font-size:18px;padding:5px 12px">\u2190</button>':'')+'<div class="brand" style="min-width:0;text-transform:uppercase">'+secTitle()+'<small>Il Muro \u00b7 '+(coach?'Area coach':'Padel Village')+'</small></div></div>'+
   '<div class="row" style="flex:none;gap:6px">'+((coach||S.me.played)?'<button class="tb" data-act="sheet" data-a="invita" aria-label="Consiglia Il Muro a un amico" style="width:40px;padding:0;display:flex;align-items:center;justify-content:center">'+ic('share')+'</button>':'')+'</div>'+'</div>';
  let body,nav;
- if(coach){body=S.ctab==='slot'?'<div class="seg"><button class="sg'+(S.cview==='week'?'':' on')+'" data-act="cview" data-a="day">Giorno</button><button class="sg'+(S.cview==='week'?' on':'')+'" data-act="cview" data-a="week">Settimana</button></div>'+coachSlots():S.ctab==='msg'?coachMsgs():coachSchede();
+ if(coach){body=S.ctab==='slot'&&S.asv?coachAbs():S.ctab==='slot'?'<div class="seg"><button class="sg'+(S.cview==='week'?'':' on')+'" data-act="cview" data-a="day">Giorno</button><button class="sg'+(S.cview==='week'?' on':'')+'" data-act="cview" data-a="week">Settimana</button></div>'+coachSlots():S.ctab==='msg'?coachMsgs():coachSchede();
   const n=S.requests.length+S.levelTests.length,pm=S.inbox.filter(x=>x.pending).length;
   nav='<nav class="nav n3"><button class="'+(S.ctab==='slot'?'on':'')+'" data-act="ctab" data-a="slot">'+ic('cal')+'Slot</button><button class="'+(S.ctab==='sch'?'on':'')+'" data-act="ctab" data-a="sch">'+ic('list')+'Schede'+(n?'<span class="bdg">'+n+'</span>':'')+'</button><button class="'+(S.ctab==='msg'?'on':'')+'" data-act="ctab" data-a="msg">'+ic('chat')+'Messaggi'+(pm?'<span class="bdg">'+pm+'</span>':'')+'</button></nav>';}
  else{body=S.tab==='prenota'?pBook():S.tab==='scheda'?pScheda():pChat();
@@ -442,6 +442,27 @@ function coachWeek(){
  h+='</div><div class="sm row wrap" style="gap:6px 14px">'+sw('var(--brand)','Con coach')+sw('var(--solo)','Da solo')+sw('var(--accent)','Da risolvere')+'<span style="display:inline-flex;align-items:center;gap:5px"><i style="width:12px;height:12px;border-radius:3px;background:var(--abs);display:inline-block"></i>Non ci sei</span></div><p class="mut" style="font-size:12px">Ogni casella \u00e8 un\u2019ora, divisa nei suoi slot da 20 minuti: una sola sessione per slot. Tocca una casella per aprire il giorno.</p>';
  return h;
 }
+function absItems(){
+ const out=[],days={};
+ Object.keys(S.absent).filter(k=>S.absent[k]).forEach(k=>{const p=k.split('|');(days[p[0]]=days[p[0]]||[]).push(p[1]);});
+ Object.keys(days).sort().forEach(d=>{let rest=days[d].slice();
+  fasce(d).forEach(f=>{if(f.slots.every(t=>rest.indexOf(t)>=0)){out.push({d:d,label:f.a+'\u2013'+f.b+' \u00b7 tutta la fascia',keys:f.slots.map(t=>sk(d,t))});rest=rest.filter(t=>f.slots.indexOf(t)<0);}});
+  rest.sort().forEach(t=>out.push({d:d,label:t,keys:[sk(d,t)]}));});
+ return out;}
+function coachAbs(){
+ const d=S.cday,fs=fasce(d),items=absItems();
+ let h='<h2>Le tue assenze</h2>';
+ if(!items.length)h+='<div class="card"><p class="mut">Non hai segnato nessuna assenza.</p></div>';
+ else h+='<div class="card" style="padding:4px 14px">'+items.map((x,i)=>'<div class="row sp" style="padding:9px 0;'+(i?'border-top:1px solid var(--line)':'')+'"><span><b style="font-weight:600">'+shortDay(x.d)+'</b> \u00b7 '+x.label+'</span><button class="lnk" style="width:auto;min-height:32px;color:var(--accent)" data-act="asrem" data-a="'+x.keys.join(',')+'">Togli</button></div>').join('')+'</div>';
+ h+='<p class="fh">Segna una nuova assenza \u00b7 scegli il giorno</p><div style="display:flex;gap:6px">'+DAYS.map(x=>{const dd=dOf(x);return '<button class="tb'+(x===d?' on':'')+'" data-act="asday" data-a="'+x+'" style="flex:1;padding:6px 0;border-radius:10px;'+(x===d?'background:var(--ink);color:var(--card);border-color:var(--ink)':'')+'"><span style="display:block;font-size:11px">'+DOWS[dd.getDay()].toUpperCase().slice(0,3)+'</span><b style="font-size:16px">'+dd.getDate()+'</b></button>';}).join('')+'</div>';
+ const sw=on=>'<span aria-hidden="true" style="flex:none;width:42px;height:24px;border-radius:12px;background:'+(on?'var(--abs)':'var(--line)')+';position:relative"><i style="position:absolute;top:2px;left:'+(on?'20':'2')+'px;width:20px;height:20px;border-radius:50%;background:#fff"></i></span>';
+ const allDay=fs.flatMap(f=>f.slots).every(t=>isAbs(d,t));
+ h+='<button class="card row sp" data-act="asall" role="switch" aria-checked="'+allDay+'" style="width:100%;margin-top:10px;text-align:left"><b style="font-weight:600">Tutto il giorno \u00b7 '+longDay(d).toLowerCase()+'</b>'+sw(allDay)+'</button>';
+ fs.forEach((f,i)=>{const all=f.slots.every(t=>isAbs(d,t));
+  h+='<div class="card"><button class="row sp" data-act="fas" data-a="'+i+'" role="switch" aria-checked="'+all+'" style="width:100%;background:none;border:0;padding:0;text-align:left;color:inherit;font:inherit"><span><b style="font-weight:600">'+f.a+'\u2013'+f.b+'</b><span class="sm mut" style="display:block">Tutta la fascia</span></span>'+sw(all)+'</button><p class="fh" style="margin:12px 0 6px">Oppure scegli gli slot</p><div class="grid4">'+f.slots.map(t=>{const q=bookingAt(d,t),ab=isAbs(d,t);
+   return '<button class="cc'+(q&&!ab?(q.who==='coach'?' coach':' solo'):'')+(ab?' abs':'')+'" data-act="cslot" data-a="'+t+'"><b>'+t+'</b><i>'+(ab?'Assente':q?(q.slots[0]===t?esc(q.player):'\u2193 segue'):'Libero')+'</i></button>';}).join('')+'</div></div>';});
+ return h+'<p class="sm mut">Se in uno slot c\u2019\u00e8 una prenotazione con il coach, il giocatore riceve un avviso su Telegram.</p>';
+}
 function coachSlots(){
  if(S.cview==='week')return coachWeek();
  const d=S.cday,fs=fasce(d),fi=Math.min(S.cfi||0,fs.length-1),f=fs[fi];
@@ -451,7 +472,7 @@ function coachSlots(){
  h+='<div class="grid4">'+f.slots.map(t=>{const q=bookingAt(d,t),ab=isAbs(d,t);
   if(q){const first=q.slots[0]===t,nm=q.player.split(' ')[0]+(q.player.split(' ')[1]?' '+q.player.split(' ')[1]:'');return '<button class="cc '+(q.away?'warn':q.who==='coach'?'coach':'solo')+(S.hl&&S.hl.date===d&&S.hl.slot===t?' hl':'')+'" data-act="cslot" data-a="'+t+'"><b>'+t+'</b><i>'+(first?esc(nm):'\u2193 segue')+'</i></button>';}
   return '<button class="cc'+(ab?' abs':'')+'" data-act="cslot" data-a="'+t+'"><b>'+t+'</b><i>'+(ab?'Non ci sei':'Libero')+'</i></button>';}).join('')+'</div>';
- h+=''+legendHtml()+'<p class="sm mut">Tocca uno slot per segnarti assente solo in quell\u2019orario.</p><button class="btn sec" data-act="sheet" data-a="fascia">Assente per tutta una fascia</button>';
+ h+=''+legendHtml()+'<button class="btn sec" data-act="asopen">Gestisci assenze</button>';
  return h;
 }
 function coachSchede(){
@@ -520,7 +541,7 @@ function sheetView(){
 /* ---------- azioni ---------- */
 const snap=()=>({tab:S.tab,pv:S.pv,sView:S.sView,sIdx:S.sIdx,ctab:S.ctab});
 const ACT={
- goback(){if(S.comp){S.comp=null;}else if(S.area==='coach'&&S.ctab==='msg'&&S.thread){S.thread=null;}else{const x=S.hist.pop();if(x)Object.assign(S,x);}S.err='';render();top0();},
+ goback(){if(S.comp){S.comp=null;}else if(S.area==='coach'&&S.ctab==='slot'&&S.asv){S.asv=false;}else if(S.area==='coach'&&S.ctab==='msg'&&S.thread){S.thread=null;}else{const x=S.hist.pop();if(x)Object.assign(S,x);}S.err='';render();top0();},
  scen(a){S=seed(a);render();top0();},
  late(){S.late=!S.late;render();},
  skip(){try{localStorage.setItem('muro_intro','1');}catch(e){}S.hist=[];S.intro=false;S.introPlay=false;S.pv='home';S.tab='prenota';render();},
@@ -528,7 +549,7 @@ const ACT={
  video(){S.intro=true;S.introPlay=false;render();},
  area(a){S.area=a;S.hist=[];S.comp=null;render();top0();},
  ptab(a){S.hist=[];S.tab=a;if(a==='prenota')S.pv='home';S.sView='main';S.err='';render();top0();},
- ctab(a){S.hist=[];S.ctab=a;S.comp=null;S.thread=null;render();top0();},
+ ctab(a){S.hist=[];S.asv=false;S.ctab=a;S.comp=null;S.thread=null;render();top0();},
  mopen(a){const x=S.inbox.find(q=>q.id===a);if(!x)return;S.thread={id:a,name:x.name,msgs:(S.threads[a]||[]).slice()};render();top0();},
  newbook(){S.hist.push(snap());S.pv='book';S.err='';S.draft.sel=[];render();top0();},
  back(){S.pv='home';render();},
@@ -609,6 +630,10 @@ const ACT={
  cfas(a){S.cfi=+a;render();},
  cnav(a){S.hl=null;const i=DAYS.indexOf(S.cday)+(+a);if(i>=0&&i<DAYS.length){S.cday=DAYS[i];S.cfi=0;}render();},
  fdel(a){S.feed=S.feed.filter(f=>f.id!==a);render();},
+ asopen(){S.asv=true;S.hl=null;render();top0();},
+ asday(a){S.cday=a;S.cfi=0;render();},
+ asall(){const d=S.cday,sl=fasce(d).flatMap(f=>f.slots),all=sl.every(t=>isAbs(d,t));let n=0;sl.forEach(t=>{if(all)delete S.absent[sk(d,t)];else{S.absent[sk(d,t)]=true;const b=bookingAt(d,t);if(b&&b.who==='coach'&&!b.away){b.away=true;n++;}}});say(all?'Assenza tolta.':'Tutto il giorno segnato assente.'+(n?' Avvisati '+n+' giocatori.':''));},
+ asrem(a){a.split(',').forEach(k=>{delete S.absent[k];});say('Assenza tolta.');},
  cslot(a){const d=S.cday,b=bookingAt(d,a);
   if(b){S.sheet={t:'slot',d:d,a:a};render();return;}
   if(isAbs(d,a)){delete S.absent[sk(d,a)];say('Di nuovo libero: '+a);}else{S.absent[sk(d,a)]=true;say('Assente alle '+a+'. Da solo si può ancora prenotare.');}},
@@ -733,6 +758,9 @@ if(LIVE){
   async absok(a,b){const bk=bookingAt(a,b);try{await api('assenza_avvisa',{data:a,inizio:b});S.sheet=null;await reload(true);say('Avviso inviato a '+(bk?bk.player:'')+' su Telegram.');}catch(e){FAIL(e);}},
   async fas(a){const f=fasce(S.cday)[+a],all=f.slots.every(t=>isAbs(S.cday,t));
    try{const r=await api('assenza_fascia',{data:S.cday,fascia:+a,on:!all});S.sheet=null;await reload(true);say(all?'Assenza tolta.':'Fascia segnata assente.'+(r.avvisati?' Avvisati '+r.avvisati+' giocatori.':''));}catch(e){FAIL(e);}},
+  async asall(){const d=S.cday,fs=fasce(d),all=fs.flatMap(f=>f.slots).every(t=>isAbs(d,t));let n=0;
+   try{for(let i=0;i<fs.length;i++){const r=await api('assenza_fascia',{data:d,fascia:i,on:!all});n+=r.avvisati||0;}await reload(true);say(all?'Assenza tolta.':'Tutto il giorno segnato assente.'+(n?' Avvisati '+n+' giocatori.':''));}catch(e){FAIL(e);}},
+  async asrem(a){try{for(const k of a.split(',')){const p=k.split('|');await api('assenza',{data:p[0],inizio:p[1],on:false});}await reload(true);say('Assenza tolta.');}catch(e){FAIL(e);}},
   async mopen(a){try{await loadThread(a);top0();}catch(e){FAIL(e);}},
   async csend(){keepMsg();const C=S.comp,tot=cTot(C);
    if(tot!==20){S.err='La scheda deve durare 20 minuti in totale (ora '+tot+').';render();return;}
