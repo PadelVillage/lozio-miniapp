@@ -204,6 +204,7 @@ const WA=window.Telegram&&window.Telegram.WebApp;
 const INIT=(WA&&WA.initData)||'';
 const Q=new URLSearchParams(location.search);
 const LIVE=!!INIT;
+if(LIVE&&!Q.get('t')){try{const u=new URL(location.href);u.searchParams.set('t',Date.now());location.replace(u.toString());}catch(e){}}
 function top0(){const m=document.querySelector('.main');if(m)m.scrollTop=0;}
 
 function seed(sc){
