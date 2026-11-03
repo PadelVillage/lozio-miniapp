@@ -382,11 +382,10 @@ function pCreate(){
 
 /* ---------- area giocatore: chat col coach ---------- */
 function pChat(){
- if(!unlocked())return '<h2>Il tuo coach</h2><div class="card"><p>La chat si apre quando prenoti una sessione. Con il coach puoi chiedere una scheda su misura.</p></div><button class="btn" data-act="gocoach">Prenota una sessione con il coach</button>';
  const m=S.me.chat.map(x=>{if(x.card){const s=S.me.schede.find(q=>q.id===x.card);return '<div class="bub co">'+esc(x.text)+'<div class="card" style="margin-top:8px;padding:10px"><p class="fh" style="margin:0 0 4px">Nuova scheda</p><p class="sm">'+(s?LV[s.level].name+' · '+s.blocks.reduce((a,b)=>a+b.mins,0)+' minuti':'')+'</p><button class="btn sm2" style="margin-top:8px" data-act="opencard" data-a="'+x.card+'">Apri scheda</button></div></div>';}
   return '<div class="bub '+(x.from==='me'?'me':'co')+'">'+esc(x.text)+'</div>';}).join('');
  const pend=S.requests.some(r=>r.player===S.me.name);
- return '<h2>Il tuo coach</h2><div class="msgs">'+(m||'<p class="mut sm">Scrivi al coach: ti risponde qui.</p>')+'</div>'+
+ return '<h2>Il tuo coach</h2><div class="msgs">'+(m||'<p class="mut sm">Scrivi al coach: la risposta la trovi qui.</p>')+'</div>'+
   (hasCoachSess()?'<button class="btn sec" data-act="askscheda">'+(pend?'Scheda già richiesta':'Chiedi una scheda')+'</button>':'')+
   '<form data-form="chat" class="row"><input class="inp" id="chat-in" type="text" placeholder="Scrivi al coach" autocomplete="off"><button class="btn sm2" style="min-height:46px" type="submit">Invia</button></form>'+
   '<p class="sm mut">Quando il coach ti risponde ti arriva un avviso su Telegram.</p>';
