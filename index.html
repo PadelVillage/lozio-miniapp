@@ -3,7 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<style>:root{color-scheme:light}html,body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>:root{color-scheme:light}html,body{margin:0}img{max-width:100%}[hidden]{display:none!important}body.live{padding:0}.live .col{max-width:none;margin:0}.live .phone{width:100%;padding:0;background:transparent;box-shadow:none;border-radius:0;margin:0;transform:none}.live .screen{height:100vh;height:100dvh;min-height:0;border-radius:0;border:0}.live .notch,.live .home,.live .stat{display:none}.live .shw{inset:0;border-radius:0}
+</style>
 <title>Il Muro</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&display=swap">
@@ -184,7 +186,8 @@ const dOf=k=>{const p=k.split('-').map(Number);return new Date(p[0],p[1]-1,p[2])
 const keyOf=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 const DAYS=[0,1,2,3,4,5,6].map(i=>keyOf(new Date(2026,10,3+i)));
 const longDay=k=>{const d=dOf(k),w=DOWL[d.getDay()];return w[0].toUpperCase()+w.slice(1)+' '+d.getDate()+' '+MON[d.getMonth()];};
-const shortDay=k=>{const d=dOf(k);return DOWS[d.getDay()]+' '+d.getDate()+' nov';};
+const MONS=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
+const shortDay=k=>{const d=dOf(k);return DOWS[d.getDay()]+' '+d.getDate()+' '+MONS[d.getMonth()];};
 const mm=t=>{const p=t.split(':').map(Number);return p[0]*60+p[1];};
 const tt=m=>String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
 function fasce(k){const w=dOf(k).getDay();const f=(w===0||w===6)?[['09:30','12:30'],['15:00','18:00']]:[['12:00','15:00'],['17:00','23:00']];
@@ -197,6 +200,10 @@ function maxRun(times){const a=times.map(mm).sort((x,y)=>x-y);let best=0,run=0,p
 const rangeOf=b=>b.slots[0]+'–'+tt(mm(b.slots[b.slots.length-1])+20);
 const cmpB=(a,b)=>(a.date+a.slots[0]).localeCompare(b.date+b.slots[0]);
 let S,TO;
+const WA=window.Telegram&&window.Telegram.WebApp;
+const INIT=(WA&&WA.initData)||'';
+const Q=new URLSearchParams(location.search);
+const LIVE=!!INIT;
 function top0(){const m=document.querySelector('.main');if(m)m.scrollTop=0;}
 
 function seed(sc){
@@ -227,7 +234,7 @@ function seed(sc){
 /* ---------- helpers di stato ---------- */
 const bookingAt=(d,t)=>S.bookings.find(b=>b.date===d&&b.slots.indexOf(t)>=0);
 const isAbs=(d,t)=>!!S.absent[sk(d,t)];
-const mineB=()=>S.bookings.filter(b=>b.player===S.me.name).sort(cmpB);
+const mineB=()=>S.bookings.filter(b=>b.player===S.me.name&&!b.past).sort(cmpB);
 const unlocked=()=>S.me.hadCoach||mineB().length>0;
 const hasCoachSess=()=>S.me.hadCoach||mineB().some(b=>b.who==='coach');
 const myTimes=d=>S.bookings.filter(b=>b.player===S.me.name&&b.date===d).reduce((a,b)=>a.concat(b.slots),[]);
@@ -246,6 +253,7 @@ function render(){
  const m=document.querySelector('.main');if(m)m.scrollTop=st;
 }
 function toolbar(){
+ if(LIVE)return '';
  const b=(sc,l)=>'<button class="tb'+(S.sc===sc?' on':'')+'" data-act="scen" data-a="'+sc+'">'+l+'</button>';
  return '<div class="bar"><div class="lbl">Prototipo · tocca per provare</div>'+b('new','Nuovo giocatore')+b('player','Giocatore con sessione')+b('coach','Coach')+b('arrivo','Scheda in arrivo')+b('prenota','Notifica al coach')+
   (S.sc!=='new'&&S.area==='player'?'<button class="tb'+(S.late?' on':'')+'" data-act="late">Mancano meno di 2 ore</button>':'')+'</div>';
@@ -290,7 +298,7 @@ function pHome(){
  if(S.pnotif&&!S.tg)h+='<div class="card" style="border-color:var(--brand);background:var(--soft)"><p class="fh" style="margin:0 0 4px">Notifica Telegram \u00b7 IL MURO</p><p><b style="font-weight:600">Il tuo coach ti ha preparato la scheda'+(S.pnotif.sess?' per la sessione di '+esc(S.pnotif.sess):'')+'.</b></p><button class="btn sm2" style="margin-top:10px" data-act="pnot" data-a="'+S.pnotif.id+'">Apri scheda</button></div>';
  if(!mine.length){h+='<div class="card"><h2>Ciao '+esc(S.me.name.split(' ')[0])+'</h2><p class="mut" style="margin-top:6px">Non hai ancora nessuna sessione in programma. Una sessione dura 20 minuti: 5 € da solo, 10 € con il coach. Si paga al circolo.</p></div>';}
  else{h+='<p class="fh">La tua prossima sessione</p>';
-  mine.forEach((b,i)=>{const late=i===0&&S.late;
+  mine.forEach((b,i)=>{const late=i===0&&(LIVE?isLate(b):S.late);
    h+='<div class="card"><p class="mut sm">'+longDay(b.date)+'</p><p style="font:700 28px/1.1 var(--disp);letter-spacing:.03em;margin:2px 0 8px">'+rangeOf(b)+'</p><div class="row wrap">'+'<span class="pill none">'+PURP[b.purpose]+'</span>'+whoPill(b)+(b.level?lvPill(b.level):'')+'</div>'+
    '<p class="sm" style="margin:10px 0 4px">'+esc(bring(b))+'</p><p class="sm mut">Prezzo '+price(b.who)*b.slots.length+' €, da pagare al circolo. Poi '+remind(b)+'.</p>'+
    (b.focus?'<p class="sm" style="margin-top:6px"><span class="mut">Vuoi allenare:</span> '+esc(b.focus)+'. Il coach ti prepara la scheda.</p>':'')+(b.away?'<p class="sm err" style="margin-top:8px">Il coach non c’è in quell’orario: ti ha scritto su Telegram per decidere.</p>':'')+
@@ -298,9 +306,11 @@ function pHome(){
  h+='<button class="btn" data-act="newbook">Prenota una nuova sessione</button><button class="lnk" data-act="video">Come funziona Il Muro</button><button class="lnk sm" style="color:var(--ink2);font-weight:500" data-act="sheet" data-a="privacy">Privacy</button>';
  return h;
 }
+const isLate=b=>{if(b.away||!S.today)return false;const dd=Math.round((dOf(b.date)-dOf(S.today))/86400000);return dd*1440+mm(b.slots[0])-S.nowMin<120;};
 function slotState(d,t){
  const b=bookingAt(d,t);
  if(S.draft.sel.indexOf(sk(d,t))>=0)return 'on';
+ if(LIVE&&S.today&&(d<S.today||(d===S.today&&mm(t)<=S.nowMin)))return 'busy';
  if(b&&b.player===S.me.name)return 'mine';
  if(b)return 'busy';
  if(S.draft.who==='coach'&&isAbs(d,t))return 'away';
@@ -410,7 +420,7 @@ function coachSchede(){
  let h='<h2>Da fare</h2><p class="sm mut" style="margin-top:-6px">Schede da preparare e test di livello da chiudere.</p>';
  const so=S.sopen||(S.sopen={});
  Object.keys(grp).sort().forEach(d=>{
-  const lab=d==='none'?'Senza sessione prenotata':(d===DAYS[0]?'Oggi \u00b7 ':d===DAYS[1]?'Domani \u00b7 ':'')+shortDay(d).replace(' nov',' novembre');
+  const lab=d==='none'?'Senza sessione prenotata':(d===DAYS[0]?'Oggi \u00b7 ':d===DAYS[1]?'Domani \u00b7 ':'')+shortDay(d).replace(/ [a-z]{3}$/,' '+MON[dOf(d).getMonth()]);
   const op=d in so?so[d]:(d==='none'||d<=DAYS[1]);
   h+='<div style="margin-top:-4px"><button class="card" data-act="dtog" data-a="'+d+'" aria-expanded="'+op+'" style="width:100%;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:11px 14px;text-align:left;'+(op?'border-bottom-left-radius:0;border-bottom-right-radius:0;border-bottom-color:transparent;':'')+'"><b style="font-weight:600;'+(d===DAYS[0]?'color:var(--accent)':'')+'">'+lab+'</b><span class="row" style="gap:8px"><span class="pill none">'+grp[d].length+'</span><span aria-hidden="true" style="color:var(--ink2)">'+(op?'\u25BE':'\u25B8')+'</span></span></button>';
   if(op){h+='<div class="card" style="padding:0 14px;border-top-left-radius:0;border-top-right-radius:0;border-top:0">';
@@ -462,7 +472,7 @@ const ACT={
  goback(){if(S.comp){S.comp=null;}else{const x=S.hist.pop();if(x)Object.assign(S,x);}S.err='';render();top0();},
  scen(a){S=seed(a);render();top0();},
  late(){S.late=!S.late;render();},
- skip(){S.hist=[];S.intro=false;S.introPlay=false;S.pv='home';S.tab='prenota';render();},
+ skip(){try{localStorage.setItem('muro_intro','1');}catch(e){}S.hist=[];S.intro=false;S.introPlay=false;S.pv='home';S.tab='prenota';render();},
  play(){S.introPlay=true;render();},
  video(){S.intro=true;S.introPlay=false;render();},
  area(a){S.area=a;S.hist=[];S.comp=null;render();top0();},
@@ -561,9 +571,98 @@ function keepMsg(){const e=document.getElementById('cmsg');if(e&&S.comp)S.comp.m
 document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(!t)return;const f=ACT[t.dataset.act];if(f)f(t.dataset.a,t.dataset.b);});
 document.addEventListener('change',e=>{const t=e.target;if(t.dataset&&t.dataset.chg==='csel'){keepMsg();S.comp.sel[+t.dataset.a]=t.value;render();}});
 document.addEventListener('submit',e=>{const f=e.target;if(f.dataset&&f.dataset.form==='chat'){e.preventDefault();const v=document.getElementById('chat-in').value.trim();if(!v)return;
+ if(LIVE){api('scrivi',{testo:v}).then(()=>reload(true)).then(()=>{const i=document.getElementById('chat-in');if(i)i.focus();}).catch(FAIL);return;}
  S.me.chat.push({from:'me',text:v});S.feed.unshift({id:'f'+Date.now(),text:S.me.name+' ti scrive: '+v});render();const i=document.getElementById('chat-in');if(i)i.focus();}});
 document.addEventListener('ended',e=>{if(e.target.id==='vid'&&S&&S.intro)ACT.skip();},true);
-S=seed('new');render();
+
+/* ---------- modalità reale: dentro Telegram, collegata al database ---------- */
+const API='https://bckgdriuuueadplwcaog.supabase.co/functions/v1/muro-api';
+const ERRMSG={occupato:'Questo slot è appena stato prenotato da un altro giocatore.',coach_assente:'Con il coach non è disponibile in questo orario. Da solo sì.',max_due_di_fila:'Al massimo 2 slot di fila.',slot_passato:'Questo slot è già passato.',giorno_non_valido:'Questo giorno non è prenotabile.',x:'Non è stato possibile completare l’operazione. Riprova.'};
+async function api(az,extra){
+ const r=await fetch(API,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(Object.assign({azione:az,initData:INIT},extra||{}))});
+ let j={};try{j=await r.json();}catch(e){}
+ if(r.status===401)throw new Error('auth');
+ if(!r.ok&&!j.errore)throw new Error('rete');
+ return j;}
+function FAIL(e){say(e&&e.message==='auth'?'Apri Il Muro da Telegram per continuare.':'Non riesco a collegarmi. Riprova tra poco.');}
+let lastJson='';
+function applyState(r){
+ DAYS.length=0;r.giorni.forEach(x=>DAYS.push(x));
+ S.today=r.oggi;S.nowMin=r.adesso;
+ S.me=Object.assign({},r.me,{schede:r.me.schede.map(s=>Object.assign({},s,{blocks:[WARM].concat((s.blocks||[]).filter(b=>drill(b.id)).map(b=>blockOf(b.id,b.mins)))}))});
+ S.bookings=r.bookings;S.absent=r.absent;S.requests=r.requests;S.levelTests=r.levelTests;
+ S.role=r.ruolo==='c'?'coach':'player';
+ if(DAYS.indexOf(S.draft.day)<0)S.draft.day=DAYS[0];
+ if(DAYS.indexOf(S.cday)<0)S.cday=DAYS[0];}
+async function reload(force){
+ const r=await api('stato');const js=JSON.stringify(r);
+ if(!force&&js===lastJson)return false;
+ lastJson=js;applyState(r);render();return true;}
+function applyStart(){
+ const s=Q.get('s');
+ if(s==='giorno'&&S.role==='coach'){const d=Q.get('d'),t=Q.get('t');S.intro=false;S.area='coach';S.ctab='slot';S.cview='day';S.cday=d;S.cfi=Math.max(0,fasce(d).findIndex(f=>f.slots.indexOf(t)>=0));S.hl={date:d,slot:t};}
+ else if(s==='scheda'){S.intro=false;S.tab='scheda';S.sView='main';S.sIdx=Math.max(0,S.me.schede.findIndex(x=>x.id===Q.get('i')));}
+ else if(s==='chat'){S.intro=false;S.tab='coach';}
+ else if(s==='prenota'){S.intro=false;S.tab='prenota';S.pv='book';S.draft.sel=[];}}
+const msgBox=t=>'<div style="padding:32px 24px;text-align:center"><p style="font:700 28px/1.1 var(--disp);letter-spacing:.04em">IL MURO</p><p style="margin-top:12px">'+t+'</p></div>';
+async function boot(){
+ const root=document.getElementById('root');
+ try{WA.ready();WA.expand();}catch(e){}
+ document.body.classList.add('live');
+ root.innerHTML=msgBox('Caricamento…');
+ S=seed('player');S.sc='live';
+ let seen='';try{seen=localStorage.getItem('muro_intro')||'';}catch(e){}
+ S.intro=!seen;S.cview='day';
+ try{await reload(true);}catch(e){root.innerHTML=msgBox(e&&e.message==='auth'?'Apri Il Muro da Telegram per continuare.':'Non riesco a collegarmi. <button class="btn sec" style="margin-top:16px" onclick="location.reload()">Riprova</button>');return;}
+ S.area=S.role==='coach'?'coach':'player';
+ applyStart();render();
+ setInterval(()=>{if(document.hidden||S.comp)return;const a=document.activeElement;if(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))return;reload().catch(()=>{});},45000);
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!S.comp)reload().catch(()=>{});});}
+
+if(LIVE){
+ Object.assign(ACT,{
+  async confirm(){const D=S.draft;if(!D.sel.length){S.err='Scegli almeno uno slot.';render();return;}
+   const byDay={};D.sel.forEach(k=>{const p=k.split('|');(byDay[p[0]]=byDay[p[0]]||[]).push(p[1]);});
+   const made=[];let first=null,erro=null;
+   try{for(const d of Object.keys(byDay).sort()){const r=await api('prenota',{data:d,inizi:byDay[d],scopo:D.purpose,con_coach:D.who==='coach'});if(r.errore){erro=r.errore;break;}r.gruppi.forEach(g=>{made.push(g.id);if(!first)first={date:d,slots:g.slots};});}}catch(e){return FAIL(e);}
+   const ps={purpose:D.purpose,who:D.who};
+   await reload(true).catch(()=>{});
+   if(erro){S.draft.sel=[];render();return say(ERRMSG[erro]||ERRMSG.x);}
+   S.draft={purpose:'allenamento',who:'solo',day:DAYS[0],fi:0,sel:[]};S.pv='home';S.hist=[];
+   say('Prenotato. Si paga al circolo e '+remind(first)+'.');top0();
+   if(ps.who==='coach'&&ps.purpose!=='livello'){S.fsel=[];S.toast=null;S.sheet={t:'focus',ids:made};render();}},
+  async fok(){const ids=S.sheet.ids;const lab=S.fsel.length?(S.fsel[0]==='coach'?'sceglie il coach':S.fsel.map(x=>FOC[x]).join(', ').toLowerCase()):'';
+   try{for(const id of ids)await api('obiettivo',{gruppo:id,obiettivo:lab});await reload(true);}catch(e){return FAIL(e);}
+   S.sheet={t:'sent',what:lab?'Hai scelto: '+lab+'.':'Il coach sceglie lui cosa farti allenare.'};render();},
+  async fskip(){try{for(const id of S.sheet.ids)await api('obiettivo',{gruppo:id,obiettivo:''});await reload(true);}catch(e){return FAIL(e);}
+   S.sheet={t:'sent',what:'Il coach sceglie lui cosa farti allenare.'};render();},
+  async cancelok(a){try{const r=await api('annulla',{gruppo:a});S.sheet=null;await reload(true);
+   say(r.errore==='troppo_tardi'?'Mancano meno di 2 ore: da qui non puoi più disdire. Scrivi al coach.':r.errore?ERRMSG.x:'Sessione disdetta. Lo slot è di nuovo libero.');}catch(e){FAIL(e);}},
+  async csave(){const C=S.create;if(C.sel.length<1){S.err='Scegli almeno un allenamento.';render();return;}
+   const tm=C.mins.reduce((x,y)=>x+y,0);if(tm!==WORK){S.err='I blocchi devono fare '+WORK+' minuti in totale (ora '+tm+').';render();return;}
+   try{const r=await api('crea_scheda',{livello:C.level,blocchi:C.sel.map((id,i)=>({id:id,mins:C.mins[i]}))});if(r.errore){S.err=ERRMSG.x;render();return;}
+    await reload(true);}catch(e){return FAIL(e);}
+   S.sView='main';S.sIdx=0;S.hist=[];say('Scheda creata. La trovi qui quando arrivi alla macchina.');top0();},
+  async askscheda(){if(S.requests.some(r=>r.player===S.me.name))return say('Hai già chiesto una scheda: il coach la sta preparando.');
+   try{const r=await api('chiedi_scheda');await reload(true);say(r.errore==='gia_chiesta'?'Hai già chiesto una scheda: il coach la sta preparando.':'Richiesta inviata al coach.');}catch(e){FAIL(e);}},
+  async cslot(a){const d=S.cday,b=bookingAt(d,a);
+   if(b){S.sheet={t:'slot',d:d,a:a};render();return;}
+   const on=!isAbs(d,a);
+   try{await api('assenza',{data:d,inizio:a,on:on});await reload(true);say(on?'Assente alle '+a+'. Da solo si può ancora prenotare.':'Di nuovo libero: '+a);}catch(e){FAIL(e);}},
+  async abssolo(a,b){try{await api('assenza',{data:a,inizio:b,on:true});S.sheet=null;await reload(true);say('Assente alle '+b+'. La sessione da solo resta valida.');}catch(e){FAIL(e);}},
+  async absok(a,b){const bk=bookingAt(a,b);try{await api('assenza_avvisa',{data:a,inizio:b});S.sheet=null;await reload(true);say('Avviso inviato a '+(bk?bk.player:'')+' su Telegram.');}catch(e){FAIL(e);}},
+  async fas(a){const f=fasce(S.cday)[+a],all=f.slots.every(t=>isAbs(S.cday,t));
+   try{const r=await api('assenza_fascia',{data:S.cday,fascia:+a,on:!all});S.sheet=null;await reload(true);say(all?'Assenza tolta.':'Fascia segnata assente.'+(r.avvisati?' Avvisati '+r.avvisati+' giocatori.':''));}catch(e){FAIL(e);}},
+  async csend(){keepMsg();const C=S.comp,tot=2+MARG+C.mins.reduce((x,y)=>x+y,0);
+   if(tot!==20){S.err='Riscaldamento, blocchi e margine devono fare 20 minuti in totale (ora '+tot+').';render();return;}
+   try{const r=await api('prepara',{richiesta:C.reqId,livello:C.level,blocchi:C.sel.map((id,i)=>({id:id,mins:C.mins[i]})),messaggio:C.msg});
+    if(r.errore){S.err=ERRMSG.x;render();return;}
+    S.comp=null;S.err='';await reload(true);say('Scheda inviata. Notifica Telegram a '+C.player);top0();}catch(e){FAIL(e);}},
+  async setlv(a,b){const t=S.levelTests.find(q=>q.id===a);try{await api('livello',{gruppo:a,livello:b});S.sheet=null;await reload(true);say((t?t.player:'Il giocatore')+' ora è '+LV[b].name+'.');}catch(e){FAIL(e);}}
+ });
+ boot();
+}else if(Q.get('demo')){S=seed('new');render();}
+else{document.getElementById('root').innerHTML='<div style="padding:40px 24px;text-align:center;font-family:system-ui,sans-serif"><p style="font:700 28px/1.1 system-ui;letter-spacing:.04em">IL MURO</p><p style="margin-top:12px">Apri Il Muro da Telegram per prenotare.</p></div>';}
 </script>
 </body>
 </html>
