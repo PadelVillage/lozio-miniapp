@@ -398,8 +398,7 @@ function pChat(){
   return '<div class="bub '+(x.from==='me'?'me':'co')+'">'+esc(x.text)+'</div>';}).join('');
  const pend=S.requests.some(r=>r.player===S.me.name);
  return '<h2>Il tuo coach</h2><div class="msgs">'+(m||'<p class="mut sm">Scrivi al coach: la risposta la trovi qui.</p>')+'</div>'+
-  (hasCoachSess()?'<button class="btn sec" data-act="askscheda">'+(pend?'Scheda già richiesta':'Chiedi una scheda')+'</button>':'')+
-  '<form data-form="chat" class="row"><input class="inp" id="chat-in" type="text" placeholder="Scrivi al coach" autocomplete="off"><button class="btn sm2" style="min-height:46px" type="submit">Invia</button></form>'+
+    '<form data-form="chat" class="row"><input class="inp" id="chat-in" type="text" placeholder="Scrivi al coach" autocomplete="off"><button class="btn sm2" style="min-height:46px" type="submit">Invia</button></form>'+
   '<p class="sm mut">Quando il coach ti risponde ti arriva un avviso su Telegram.</p>';
 }
 
