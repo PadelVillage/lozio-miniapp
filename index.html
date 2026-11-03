@@ -643,7 +643,18 @@ async function boot(){
  S.area=S.role==='coach'?'coach':'player';
  applyStart();render();
  setInterval(()=>{if(document.hidden||S.comp)return;const a=document.activeElement;if(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))return;reload().catch(()=>{});},45000);
- document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!S.comp)reload().catch(()=>{});});}
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!S.comp)reload().catch(()=>{});});
+ // con la chat aperta i messaggi nuovi arrivano in pochi secondi; quello che stai scrivendo non si perde
+ let chatBusy=false;
+ setInterval(async()=>{
+  const coach=S.role==='coach';
+  const inChat=coach?(S.area==='coach'&&S.ctab==='msg'&&S.thread):(S.area!=='coach'&&S.tab==='coach');
+  if(document.hidden||!inChat||S.comp||chatBusy)return;
+  const id=coach?'cchat-in':'chat-in';const i=document.getElementById(id);
+  const v=i?i.value:'',foc=!!i&&document.activeElement===i,ss=i?i.selectionStart:0;
+  chatBusy=true;
+  try{if(await reload()){const j=document.getElementById(id);if(j){j.value=v;if(foc){j.focus();try{j.setSelectionRange(ss,ss);}catch(e){}}}}}catch(e){}
+  chatBusy=false;},4000);}
 
 if(LIVE){
  Object.assign(ACT,{
