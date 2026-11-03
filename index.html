@@ -141,7 +141,7 @@ p{margin:0}
 <body>
 <div class="col" id="root"></div>
 <script>
-const ICON={cal:'<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',list:'<rect x="5" y="3.5" width="14" height="17" rx="2.5"/><path d="M9 9h6M9 13h6M9 17h3"/>',chat:'<path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v7a2.5 2.5 0 0 1-2.5 2.5H10l-4 4v-4h-0A2.5 2.5 0 0 1 4 13.5z"/>',play:'<path d="M8 5.5v13l11-6.5z" fill="currentColor"/>'};
+const ICON={cal:'<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',list:'<rect x="5" y="3.5" width="14" height="17" rx="2.5"/><path d="M9 9h6M9 13h6M9 17h3"/>',chat:'<path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v7a2.5 2.5 0 0 1-2.5 2.5H10l-4 4v-4h-0A2.5 2.5 0 0 1 4 13.5z"/>',play:'<path d="M8 5.5v13l11-6.5z" fill="currentColor"/>',share:'<path d="M12 15V4M8.2 7.6L12 3.8l3.8 3.8"/><path d="M8 10.5H6.5A1.5 1.5 0 0 0 5 12v6.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V12a1.5 1.5 0 0 0-1.5-1.5H16"/>'};
 const ic=n=>'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">'+ICON[n]+'</svg>';
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
@@ -179,7 +179,7 @@ EX.forEach(e=>{const par=DR.find(d=>d.id===e[1]);DR.push(Object.assign({},par,{i
 {const std=DR.filter(d=>!d.colpo),out=[];std.forEach(s=>{out.push(s);DR.filter(d=>d.colpo===s.name).forEach(v=>out.push(v));});DR.length=0;out.forEach(x=>DR.push(x));}
 const drill=id=>DR.find(d=>d.id===id);
 const drillsOf=lv=>DR.filter(d=>d.lv===lv);
-const WARM={name:'Riscaldamento · dritto e rovescio',focus:'Per abituare vista e braccio',mins:2,spin:'1–3',spinD:'Palla piatta',dist:'2–4',distD:'Medio-corta',freq:'3,4 sec',freqD:'Lento',pos:'Metà campo (4-5 m dalla macchina)'};
+const WARM={name:'Riscaldamento',focus:'Uguale per tutti i livelli',mins:2,spin:'1–3',spinD:'Palla piatta',dist:'2–4',distD:'Medio-corta',freq:'3,4 sec',freqD:'Lento',pos:'Metà campo (4-5 m dalla macchina)'};
 const blockOf=(id,mins)=>{const d=drill(id);return Object.assign({},d,{mins:mins});};
 
 const DOWL=['domenica','lunedì','martedì','mercoledì','giovedì','venerdì','sabato'],DOWS=['dom','lun','mar','mer','gio','ven','sab'];
@@ -229,16 +229,16 @@ function seed(sc){
  const base={hist:[],sc:sc,role:'player',area:'player',tab:'prenota',pv:'home',sView:'main',sIdx:0,ctab:'slot',intro:false,introPlay:false,late:false,sheet:null,toast:null,cday:DAYS[0],comp:null,err:'',
   draft:{purpose:'allenamento',who:'solo',day:DAYS[0],fi:0,sel:[]},create:{level:null,sel:[]},
   absent:{'2026-11-03|13:00':true},feed:[],
-  requests:[{id:'r1',player:'Marco R.',level:'mid',date:'2026-11-03',slot:'12:00',focus:'dritto e rovescio'},{id:'r2',player:'Anna M.',level:'adv',date:'2026-11-03',slot:'21:00',focus:'bandeja e vibora'},{id:'r3',player:'Paolo G.',level:'base',date:'2026-11-04',slot:'12:20',focus:'dritto e rovescio'},{id:'r4',player:'Elisa C.',level:'mid',date:'2026-11-04',slot:'18:20',focus:'palleggio di fondo'},{id:'r5',player:'Giulia B.',level:'mid',date:'2026-11-05',slot:'17:20',focus:'volée'},{id:'r6',player:'Chiara L.',level:'mid',date:'2026-11-05',slot:'13:00',focus:'dritto e rovescio',purp:'racchette'},{id:'r7',player:'Nicola S.',level:'adv',date:'2026-11-06',slot:'17:00',focus:'dritto e rovescio, volée'},{id:'r8',player:'Marta V.',level:'base',date:'2026-11-06',slot:'22:00',focus:'palleggio di fondo'},{id:'r9',player:'Fabio D.',level:'mid',date:'2026-11-07',slot:'09:30',focus:'sceglie il coach'},{id:'r10',player:'Davide F.',level:'adv',date:'2026-11-07',slot:'10:30',focus:'volée'},{id:'r11',player:'Irene B.',level:'adv',date:'2026-11-08',slot:'15:20',focus:'bandeja e vibora'},{id:'r12',player:'Stefano R.',level:'mid',date:'2026-11-08',slot:'16:40',focus:'smash e por 3'},{id:'r13',player:'Laura P.',level:'base',date:'2026-11-09',slot:'12:40',focus:'dritto e rovescio'},{id:'r14',player:'Elena P.',level:null,note:'Chiede una scheda'}],
+  requests:[{id:'r0',player:'Luca T.',level:'base',date:'2026-11-02',slot:'18:20',focus:'palleggio di fondo'},{id:'r1',player:'Marco R.',level:'mid',date:'2026-11-03',slot:'12:00',focus:'dritto e rovescio'},{id:'r2',player:'Anna M.',level:'adv',date:'2026-11-03',slot:'21:00',focus:'bandeja e vibora'},{id:'r3',player:'Paolo G.',level:'base',date:'2026-11-04',slot:'12:20',focus:'dritto e rovescio'},{id:'r4',player:'Elisa C.',level:'mid',date:'2026-11-04',slot:'18:20',focus:'palleggio di fondo'},{id:'r5',player:'Giulia B.',level:'mid',date:'2026-11-05',slot:'17:20',focus:'volée'},{id:'r6',player:'Chiara L.',level:'mid',date:'2026-11-05',slot:'13:00',focus:'dritto e rovescio',purp:'racchette'},{id:'r7',player:'Nicola S.',level:'adv',date:'2026-11-06',slot:'17:00',focus:'dritto e rovescio, volée'},{id:'r8',player:'Marta V.',level:'base',date:'2026-11-06',slot:'22:00',focus:'palleggio di fondo'},{id:'r9',player:'Fabio D.',level:'mid',date:'2026-11-07',slot:'09:30',focus:'sceglie il coach'},{id:'r10',player:'Davide F.',level:'adv',date:'2026-11-07',slot:'10:30',focus:'volée'},{id:'r11',player:'Irene B.',level:'adv',date:'2026-11-08',slot:'15:20',focus:'bandeja e vibora'},{id:'r12',player:'Stefano R.',level:'mid',date:'2026-11-08',slot:'16:40',focus:'smash e por 3'},{id:'r13',player:'Laura P.',level:'base',date:'2026-11-09',slot:'12:40',focus:'dritto e rovescio'},{id:'r14',player:'Elena P.',level:null,note:'Chiede una scheda'},{id:'r15',player:'Sofia C.',level:'mid',date:'2026-11-06',slot:'17:00',focus:'dritto e rovescio'}],
   levelTests:[{id:'t1',player:'Davide F.',when:'lunedì 2 novembre',date:'2026-11-02'}],
   inbox:[{id:'p1',name:'Lidia B.',last:'Ciao coach, posso spostare la sessione di domani?',pending:true},{id:'p2',name:'Marco R.',last:'Grazie coach!',pending:false},{id:'p3',name:'Marco R. (2)',last:'A che ora finisce la mia sessione?',pending:true}],
   threads:{p1:[{from:'pl',text:'Ciao coach, posso spostare la sessione di domani?'}],p2:[{from:'pl',text:'Posso venire anche venerdì?'},{from:'co',text:'Certo, prenota pure lo slot che preferisci.'},{from:'pl',text:'Grazie coach!'}],p3:[{from:'pl',text:'A che ora finisce la mia sessione?'}]},thread:null};
  if(sc==='new'){
   return Object.assign(base,{intro:true,me:{name:'Paolo V.',level:null,schede:[],chat:[],hadCoach:false,played:false},bookings:others});}
  const sofia={name:'Sofia C.',level:'mid',hadCoach:true,played:true,
-  schede:[{id:'s1',by:'coach',level:'mid',date:'1 novembre',blocks:[WARM,blockOf('m1',5),blockOf('m3',4),blockOf('m2',4)]}],
+  schede:[{id:'s1',by:'coach',level:'mid',date:'1 novembre',sess:{date:'2026-11-04',slot:'18:20'},blocks:[WARM,blockOf('m1',7),blockOf('m3',6),blockOf('m2',5)]}],
   chat:[{from:'co',text:'Ciao Sofia, ti ho preparato la scheda per la prossima sessione. Se qualcosa non va, scrivimi.',card:'s1'},{from:'me',text:'Grazie coach!'}]};
- const bk=others.concat([{id:'b0',date:'2026-11-04',slots:['18:20'],purpose:'allenamento',who:'solo',level:'mid',player:'Sofia C.'}]);
+ const bk=others.concat([{id:'b0',date:'2026-11-04',slots:['18:20'],purpose:'allenamento',who:'coach',level:'mid',player:'Sofia C.'},{id:'b0b',date:'2026-11-06',slots:['17:00'],purpose:'allenamento',who:'coach',level:'mid',player:'Sofia C.'}]);
  base.me=sofia;base.bookings=bk;
  if(sc==='arrivo'){base.tg='push';base.pnotif={id:'s1',sess:'mercoled\u00ec 4 novembre, 18:20'};base.tgmsg={kind:'scheda',text:'Il tuo coach ti ha preparato la scheda per la sessione di mercoled\u00ec 4 novembre, 18:20.',btn:'Apri scheda'};}
  if(sc==='prenota'){base.role='coach';base.area='coach';base.tg='push';base.tgmsg={kind:'day',text:'Davide F. ha prenotato con il coach: sabato 7 novembre, 10:30.',btn:'Apri giorno',date:'2026-11-07',slot:'10:30'};}
@@ -271,8 +271,7 @@ function render(){
 function toolbar(){
  if(LIVE)return '';
  const b=(sc,l)=>'<button class="tb'+(S.sc===sc?' on':'')+'" data-act="scen" data-a="'+sc+'">'+l+'</button>';
- return '<div class="bar"><div class="lbl">Prototipo · tocca per provare</div>'+b('new','Nuovo giocatore')+b('player','Giocatore con sessione')+b('coach','Coach')+b('arrivo','Scheda in arrivo')+b('prenota','Notifica al coach')+b('msg','Messaggio al coach')+
-  (S.sc!=='new'&&S.area==='player'?'<button class="tb'+(S.late?' on':'')+'" data-act="late">Mancano meno di 2 ore</button>':'')+'</div>';
+ return '<div class="bar"><div class="lbl">Prototipo · tocca per provare</div>'+b('player','Giocatore')+b('coach','Coach')+'</div>';
 }
 function introView(){
  const skip='<button class="tb" style="position:absolute;top:14px;right:14px;z-index:2;background:rgba(0,0,0,.45);color:#fff;border-color:rgba(255,255,255,.4)" data-act="skip">Salta</button>';
@@ -291,20 +290,20 @@ function tgView(){
 function secTitle(){
  if(S.area==='coach')return S.ctab==='slot'?'Slot':S.ctab==='msg'?(S.thread?S.thread.name:'Messaggi'):(S.comp?'Nuova scheda':'Schede');
  if(S.tab==='prenota')return 'Prenota';
- if(S.tab==='scheda')return S.sView==='create'?'Crea scheda':'Scheda';
+ if(S.tab==='scheda')return S.sView==='create'?'Crea scheda':S.sView==='open'?'Scheda':'Sessioni';
  return 'Coach';
 }
 function appView(){
  const coach=S.area==='coach';
  const canBack=S.hist.length>0||!!S.comp||!!(S.area==='coach'&&S.ctab==='msg'&&S.thread);
  const head='<div class="appbar"><div class="row" style="min-width:0">'+(canBack?'<button class="tb" data-act="goback" aria-label="Indietro" style="font-size:18px;padding:5px 12px">\u2190</button>':'')+'<div class="brand" style="min-width:0;text-transform:uppercase">'+secTitle()+'<small>Il Muro \u00b7 '+(coach?'Area coach':'Padel Village')+'</small></div></div>'+
-  '<div class="row" style="flex:none;gap:6px">'+(coach?'<button class="tb" style="white-space:nowrap" data-act="sheet" data-a="invita">Consiglia</button>':'')+(S.role==='coach'?'<button class="tb" style="white-space:nowrap" data-act="area" data-a="'+(coach?'player':'coach')+'">'+(coach?'Giocatore':'← Coach')+'</button>':'')+'</div>'+'</div>';
+  '<div class="row" style="flex:none;gap:6px">'+((coach||S.me.played)?'<button class="tb" data-act="sheet" data-a="invita" aria-label="Consiglia Il Muro a un amico" style="width:40px;padding:0;display:flex;align-items:center;justify-content:center">'+ic('share')+'</button>':'')+'</div>'+'</div>';
  let body,nav;
  if(coach){body=S.ctab==='slot'?'<div class="seg"><button class="sg'+(S.cview==='week'?'':' on')+'" data-act="cview" data-a="day">Giorno</button><button class="sg'+(S.cview==='week'?' on':'')+'" data-act="cview" data-a="week">Settimana</button></div>'+coachSlots():S.ctab==='msg'?coachMsgs():coachSchede();
   const n=S.requests.length+S.levelTests.length,pm=S.inbox.filter(x=>x.pending).length;
   nav='<nav class="nav n3"><button class="'+(S.ctab==='slot'?'on':'')+'" data-act="ctab" data-a="slot">'+ic('cal')+'Slot</button><button class="'+(S.ctab==='sch'?'on':'')+'" data-act="ctab" data-a="sch">'+ic('list')+'Schede'+(n?'<span class="bdg">'+n+'</span>':'')+'</button><button class="'+(S.ctab==='msg'?'on':'')+'" data-act="ctab" data-a="msg">'+ic('chat')+'Messaggi'+(pm?'<span class="bdg">'+pm+'</span>':'')+'</button></nav>';}
- else{body=S.tab==='prenota'?(S.pv==='home'?pHome():pBook()):S.tab==='scheda'?pScheda():pChat();
-  nav='<nav class="nav n3"><button class="'+(S.tab==='prenota'?'on':'')+'" data-act="ptab" data-a="prenota">'+ic('cal')+'Prenota</button><button class="'+(S.tab==='scheda'?'on':'')+'" data-act="ptab" data-a="scheda">'+ic('list')+'Scheda</button><button class="'+(S.tab==='coach'?'on':'')+'" data-act="ptab" data-a="coach">'+ic('chat')+'Coach</button></nav>';}
+ else{body=S.tab==='prenota'?pBook():S.tab==='scheda'?pScheda():pChat();
+  nav='<nav class="nav n3"><button class="'+(S.tab==='prenota'?'on':'')+'" data-act="ptab" data-a="prenota">'+ic('cal')+'Prenota</button><button class="'+(S.tab==='scheda'?'on':'')+'" data-act="ptab" data-a="scheda">'+ic('list')+'Sessioni</button><button class="'+(S.tab==='coach'?'on':'')+'" data-act="ptab" data-a="coach">'+ic('chat')+'Coach</button></nav>';}
  return head+'<div class="main">'+body+'</div>'+nav;
 }
 
@@ -316,11 +315,11 @@ function pHome(){
  if(S.pnotif&&!S.tg)h+='<div class="card" style="border-color:var(--brand);background:var(--soft)"><p class="fh" style="margin:0 0 4px">Notifica Telegram \u00b7 IL MURO</p><p><b style="font-weight:600">Il tuo coach ti ha preparato la scheda'+(S.pnotif.sess?' per la sessione di '+esc(S.pnotif.sess):'')+'.</b></p><button class="btn sm2" style="margin-top:10px" data-act="pnot" data-a="'+S.pnotif.id+'">Apri scheda</button></div>';
  if(!mine.length){h+='<div class="card"><h2>Ciao '+esc(S.me.name.split(' ')[0])+'</h2><p class="mut" style="margin-top:6px">Non hai ancora nessuna sessione in programma. Una sessione dura 20 minuti: 5 € da solo, 10 € con il coach. Si paga al circolo.</p></div>';}
  else{h+='<p class="fh">La tua prossima sessione</p>';
-  mine.forEach((b,i)=>{const late=i===0&&(LIVE?isLate(b):S.late);
+  mine.forEach((b,i)=>{const late=i===0&&S.late;const sch=S.me.schede.find(c=>c.sess&&c.sess.date===b.date&&c.sess.slot===b.slots[0]);const canMk=!sch&&b.who==='solo'&&b.purpose!=='livello';const hasBtn=false;
    h+='<div class="card"><p class="mut sm">'+longDay(b.date)+'</p><p style="font:700 28px/1.1 var(--disp);letter-spacing:.03em;margin:2px 0 8px">'+rangeOf(b)+'</p><div class="row wrap">'+'<span class="pill none">'+PURP[b.purpose]+'</span>'+whoPill(b)+(b.level?lvPill(b.level):'')+'</div>'+
    '<p class="sm" style="margin:10px 0 4px">'+esc(bring(b))+'</p><p class="sm mut">Prezzo '+price(b.who)*b.slots.length+' €, da pagare al circolo. Poi '+remind(b)+'.</p>'+
    (b.focus?'<p class="sm" style="margin-top:6px"><span class="mut">Vuoi allenare:</span> '+esc(b.focus)+'. Il coach ti prepara la scheda.</p>':'')+(b.away?'<p class="sm err" style="margin-top:8px">Il coach non c’è in quell’orario: ti ha scritto su Telegram per decidere.</p>':'')+
-   (S.me.schede.length?'<button class="btn" style="margin-top:12px" data-act="opencard" data-a="'+S.me.schede[0].id+'">Apri scheda</button>':'')+(late?'<p class="sm" style="margin:10px 0 8px">Mancano meno di 2 ore: da qui non puoi più disdire.</p><button class="btn sec" data-act="ptab" data-a="coach">Scrivi al tuo coach</button>':'<button class="btn sec" style="margin-top:'+(S.me.schede.length?'8':'12')+'px" data-act="cancel" data-a="'+b.id+'">Disdici</button>')+'</div>';});}
+   (late?'<p class="sm" style="margin:10px 0 8px">Mancano meno di 2 ore: da qui non puoi più disdire.</p><button class="btn sec" data-act="ptab" data-a="coach">Scrivi al tuo coach</button>':'<button class="btn sec" style="margin-top:'+(hasBtn?'8':'12')+'px" data-act="cancel" data-a="'+b.id+'">Disdici</button>')+'</div>';});}
  h+='<button class="btn" data-act="newbook">Prenota una nuova sessione</button><button class="lnk" data-act="video">Come funziona Il Muro</button>'+(S.me.played?'<button class="lnk" data-act="sheet" data-a="invita">Consiglia Il Muro a un amico</button>':'')+'<button class="lnk sm" style="color:var(--ink2);font-weight:500" data-act="sheet" data-a="privacy">Privacy</button>';
  return h;
 }
@@ -343,7 +342,7 @@ function pBook(){
  h+='<div><p class="fh">Con chi</p><div class="seg">'+chip(D.who==='solo','who','solo','Da solo \u00b7 5 \u20ac')+chip(D.who==='coach','who','coach','Con coach \u00b7 10 \u20ac')+'</div></div>';
  h+='<div><p class="fh">Giorno</p><div class="days">'+DAYS.map(k=>{const p=shortDay(k).split(' ');return '<button class="day'+(D.day===k?' on':'')+'" data-act="day" data-a="'+k+'"><span>'+p[0]+'</span><b>'+p[1]+'</b></button>';}).join('')+'</div></div>';
  h+='<div><p class="fh">Orario \u00b7 slot da 20 minuti</p><div class="seg" style="margin-bottom:8px">'+fs.map((x,i)=>'<button class="sg'+(i===fi?' on':'')+'" data-act="fas2" data-a="'+i+'">'+x.a+'\u2013'+x.b+'<br><span style="font-weight:500;font-size:12px">'+free(x)+' liberi</span></button>').join('')+'</div>'+
-  '<div class="grid4">'+f.slots.map(t=>{const st=slotState(D.day,t);return '<button class="sl '+st+'" data-act="slot" data-a="'+t+'" aria-pressed="'+(st==='on')+'">'+t+'</button>';}).join('')+'</div>'+
+  '<div class="grid4">'+f.slots.map(t=>{const st=slotState(D.day,t);return '<button class="sl '+(st==='mine'?'busy':st)+'" data-act="slot" data-a="'+t+'" aria-pressed="'+(st==='on')+'">'+t+'</button>';}).join('')+'</div>'+
   '<p class="mut" style="margin-top:6px;font-size:12px">Barrato: occupato. Tratteggiato: coach assente. Max 2 slot di fila.</p></div>';
  const n=D.sel.length;
  h+='<div class="foot">'+(S.err?'<p class="err" style="margin-bottom:6px">'+esc(S.err)+'</p>':'')+'<div class="row sp sm" style="margin-bottom:8px"><span><b style="font-weight:600">'+(n?n+(n===1?' slot':' slot')+' \u00b7 '+n*price(D.who)+' \u20ac':'Nessuno slot scelto')+'</b></span><span class="mut">Si paga al circolo</span></div><button class="btn" data-act="confirm">Prenota</button></div>';
@@ -354,14 +353,12 @@ function pBook(){
 function valsHtml(b){const d=t=>t?'<span class="mut" style="display:block;font-size:12px;line-height:1.2;margin-top:2px">'+t+'</span>':'';return '<div class="vals"><div><small>Spin</small><b>'+b.spin+'</b>'+d(b.spinD)+'</div><div><small>Distanza</small><b>'+b.dist+'</b>'+d(b.distD)+'</div><div><small>Frequenza</small><b>'+b.freq+'</b>'+d(b.freqD)+'</div></div><p class="sm"><span class="mut">Posizione:</span> '+b.pos+'</p>';}
 const MARG=5,WORK=20-2-MARG;
 const split18=n=>Array.from({length:n},(_,i)=>Math.floor(WORK/n)+(i<WORK%n?1:0));
-const margHtml='<div class="blk" style="border-style:dashed"><div class="row sp"><b style="font-weight:600">Margine</b><span class="pill none">'+MARG+' min</span></div><p class="sm mut">Per arrivare, sistemarti e le pause tra un blocco e l\u2019altro.</p></div>';
 const sameSet=(a,b)=>a.spin===b.spin&&a.dist===b.dist&&a.freq===b.freq&&a.pos===b.pos;
 function schedaCard(s){
- const tot=s.blocks.reduce((a,b)=>a+b.mins,0)+MARG,co=s.by==='coach';
+ const tot=s.blocks.reduce((a,b)=>a+b.mins,0)  ,co=s.by==='coach';
  let h='<div class="row sp wrap"><h2>La tua scheda</h2>'+lvPill(s.level)+'</div><p class="mut sm">'+(co?'Preparata dal tuo coach':'Creata da te')+' \u00b7 '+s.date+' \u00b7 '+tot+' minuti</p>';
  if(co)h+='<div class="card" style="background:var(--soft);border-color:var(--brand)"><p class="sm"><b style="font-weight:600">Alla macchina ci pensa il coach.</b> Tu pensa solo a giocare: ecco cosa farai.</p></div>';
  h+=s.blocks.map((b,i)=>'<div class="blk"><div class="row sp"><b style="font-weight:600">'+(i+1)+'. '+esc(b.name)+'</b><span class="pill none">'+b.mins+' min</span></div><p class="sm mut">'+esc(b.focus)+(b.colpo?' \u00b7 '+esc(b.colpo):'')+'</p>'+(co?'':(i>0&&sameSet(b,s.blocks[i-1])?'<p class="sm" style="margin-top:8px"><span class="pill coach">Stesso settaggio di prima</span> Non cambiare nulla sulla macchina.</p>':valsHtml(b)))+'</div>').join('');
- h+=margHtml;
  if(co)h+='<details class="card"><summary class="sm" style="cursor:pointer;min-height:32px">Valori della macchina</summary><p class="sm mut" style="margin:6px 0 10px">Ti servono solo se ti alleni da solo con questa scheda.</p>'+s.blocks.map(b=>'<p class="sm" style="margin-top:8px"><b style="font-weight:600">'+esc(b.name)+'</b></p>'+valsHtml(b)).join('')+'</details>';
  else h+='<div class="card"><p class="fh">Suggerimenti</p><p class="sm"><b style="font-weight:600">Riscaldamento.</b> I primi 2 minuti tieni la frequenza a 3,4 sec per abituare vista e braccio.</p><p class="sm" style="margin-top:6px"><b style="font-weight:600">Cambio angolazione.</b> La macchina spara in una sola direzione: per variare l\u2019angolo sposta i piedi di 1 metro.</p><p class="sm" style="margin-top:6px"><b style="font-weight:600">Ciclo continuo.</b> Indirizza la palla verso la rete di raccolta: bastano 3\u20134 palline.</p></div>';
  return h;
@@ -369,26 +366,53 @@ function schedaCard(s){
 function pScheda(){
  const me=S.me;
  if(S.sView==='create')return pCreate();
+ if(S.sView==='open'&&me.schede[S.sIdx])return schedaCard(me.schede[S.sIdx])+'<button class="btn" data-act="sheet" data-a="guida">Come regolare la macchina</button>';
  let h='';
- if(!me.schede.length){
-  h+='<h2>La tua scheda</h2><div class="card"><p>Non hai ancora una scheda di allenamento. Costruiscila da solo scegliendo gli allenamenti del tuo livello, oppure chiedila al coach.</p></div><button class="btn" data-act="mkcreate">Creane una da solo</button><button class="btn sec" data-act="gocoach">Prenota una sessione con il coach</button>';
+ if(S.pnotif&&!S.tg)h+='<div class="card" style="border-color:var(--brand);background:var(--soft)"><p class="fh" style="margin:0 0 4px">Notifica Telegram \u00b7 IL MURO</p><p><b style="font-weight:600">Il tuo coach ti ha preparato la scheda'+(S.pnotif.sess?' per la sessione di '+esc(S.pnotif.sess):'')+'.</b></p><button class="btn sm2" style="margin-top:10px" data-act="pnot" data-a="'+S.pnotif.id+'">Apri scheda</button></div>';
+ const mine=mineB();
+ const orphan=me.schede.map((c,i)=>({c:c,i:i})).filter(x=>!x.c.sess||!mine.some(b=>b.date===x.c.sess.date&&b.slots[0]===x.c.sess.slot));
+ if(!mine.length&&!orphan.length){
+  h+='<div class="card"><h2>Ciao '+esc(me.name.split(' ')[0])+'</h2><p class="mut" style="margin-top:6px">Non hai ancora nessuna sessione in programma. Una sessione dura 20 minuti: 5 \u20ac da solo, 10 \u20ac con il coach. Si paga al circolo.</p></div><button class="btn" data-act="ptab" data-a="prenota">Prenota una sessione</button>';
  }else{
-  const s=me.schede[Math.min(S.sIdx,me.schede.length-1)];
-  h+=schedaCard(s)+'<button class="btn" data-act="sheet" data-a="guida">Come regolare la macchina</button><button class="btn sec" data-act="mkcreate">Creane una nuova da solo</button>';
-  if(me.schede.length>1){h+='<p class="fh">Schede precedenti</p>'+me.schede.map((x,i)=>i===S.sIdx?'':'<button class="srow" data-act="sidx" data-a="'+i+'"><span class="m"><b style="font-weight:600">'+(x.by==='coach'?'Dal coach':'Creata da te')+' · '+x.date+'</b></span>'+lvPill(x.level)+'</button>').join('');}
+  h+='<h2>Le tue sessioni</h2><p class="sm mut" style="margin-top:-6px">Qui trovi le sessioni prenotate e la scheda di ognuna.</p>';
+  mine.forEach((b,i)=>{
+   const late=i===0&&(LIVE?isLate(b):S.late);
+   const sch=me.schede.find(c=>c.sess&&c.sess.date===b.date&&c.sess.slot===b.slots[0]);
+   const si=sch?me.schede.indexOf(sch):-1;
+   const rq=S.requests.some(r=>r.player===me.name&&r.date===b.date&&r.slot===b.slots[0]);
+   const canMk=!sch&&b.who==='solo'&&b.purpose!=='livello';
+   let st='';
+   if(sch)st='<span class="pill coach">Scheda pronta</span>';else if(canMk)st='<span class="pill" style="background:var(--accent);color:#fff">Scheda da creare</span>';else if(rq)st='<span class="pill none">Scheda in preparazione</span>';
+   const op=!!(S.sx&&S.sx[b.id]);
+   h+='<div class="card" style="padding:0"><button data-act="stog" data-a="'+b.id+'" aria-expanded="'+op+'" style="width:100%;text-align:left;padding:12px 14px;background:none;border:0;color:inherit;font:inherit;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px"><div style="min-width:0"><p class="mut sm">'+longDay(b.date)+'</p><p style="font:700 24px/1.1 var(--disp);letter-spacing:.03em;margin:2px 0 8px">'+rangeOf(b)+'</p><div class="row wrap"><span class="pill none">'+PURP[b.purpose]+'</span>'+whoPill(b)+st+'</div></div><span aria-hidden="true" style="color:var(--ink2);flex:none">'+(op?'\u25BE':'\u25B8')+'</span></button>'+
+   (op?'<div style="padding:0 14px 14px;border-top:1px solid var(--line)"><p class="sm" style="margin:10px 0 4px">'+esc(bring(b))+'</p><p class="sm mut">Prezzo '+price(b.who)*b.slots.length+' \u20ac, da pagare al circolo. Poi '+remind(b)+'.</p>'+
+   (b.focus?'<p class="sm" style="margin-top:6px"><span class="mut">Vuoi allenare:</span> '+esc(b.focus)+'.</p>':'')+(b.away?'<p class="sm err" style="margin-top:8px">Il coach non c\u2019\u00e8 in quell\u2019orario: ti ha scritto su Telegram per decidere.</p>':'')+
+   (sch?'<button class="btn" style="margin-top:12px" data-act="scopen" data-a="'+si+'">Apri scheda</button>':canMk?'<button class="btn" style="margin-top:12px" data-act="mkcreate" data-a="'+b.id+'">Crea la scheda</button>':'')+
+   (late?'<p class="sm" style="margin:10px 0 8px">Mancano meno di 2 ore: da qui non puoi pi\u00f9 disdire.</p><button class="btn sec" data-act="ptab" data-a="coach">Scrivi al tuo coach</button>':'<button class="btn sec" style="margin-top:'+(sch||canMk?'8':'12')+'px" data-act="cancel" data-a="'+b.id+'">Disdici</button>')+'</div>':'')+'</div>';});
+  orphan.forEach(x=>{h+='<button class="card" data-act="scopen" data-a="'+x.i+'" style="width:100%;text-align:left;display:flex;justify-content:space-between;align-items:center;gap:8px"><div style="min-width:0"><b style="font-weight:700">'+(x.c.sess?'Scheda del '+longDay(x.c.sess.date).toLowerCase():x.c.by==='coach'?'Scheda del coach':'Scheda creata da te')+'</b><p class="sm mut" style="margin-top:3px">'+x.c.date+'</p></div><span class="row" style="gap:8px;flex:none">'+lvPill(x.c.level)+'<span aria-hidden="true" style="color:var(--ink2)">\u25B8</span></span></button>';});
  }
- return h+(me.schede.length?'':'<button class="lnk" data-act="sheet" data-a="guida">Come regolare la macchina</button>');
+ return h+'<button class="lnk" data-act="video">Come funziona Il Muro</button><button class="lnk" data-act="sheet" data-a="guida">Come regolare la macchina</button>'+'<button class="lnk sm" style="color:var(--ink2);font-weight:500" data-act="sheet" data-a="privacy">Privacy</button>';
 }
-const totBar=sum=>{const ok=sum===WORK,c=ok?'var(--brand)':'var(--accent)',pc=Math.min(100,Math.round(sum/WORK*100));return '<div class="totbar" style="position:sticky;top:-16px;z-index:6;margin:-16px -16px 0;padding:10px 16px;background:var(--card);border-bottom:3px solid '+c+'"><div style="display:flex;justify-content:space-between;align-items:center"><span>Minuti scelti</span><b style="font-weight:700;font-size:20px;color:'+c+'">'+sum+' min</b></div><div style="height:8px;background:var(--line);border-radius:4px;margin-top:8px;overflow:hidden"><i style="display:block;height:100%;width:'+pc+'%;background:'+c+'"></i></div><div class="sm mut" style="margin-top:4px">'+(ok?'Perfetto: con riscaldamento e margine fa 20':(sum>WORK?'Sei oltre di '+(sum-WORK)+' min: togline qualcuno':'Ne mancano '+(WORK-sum)+' (poi 2 di riscaldamento e '+MARG+' di margine = 20)'))+'</div></div>';};
-const addMins=C=>{const rem=WORK-C.mins.reduce((x,y)=>x+y,0);return rem>=3?3:(rem>0?rem:1);};
+const cTot=C=>(C.warm?2:0)+C.mins.reduce((x,y)=>x+y,0);
+const totBar=C=>{const T=20,tot=cTot(C),c=tot>T?'var(--accent)':'var(--brand)',pc=Math.min(100,Math.round(tot/T*100));return '<div class="totbar" style="position:sticky;top:-16px;z-index:6;margin:-16px -16px 0;padding:10px 16px;background:var(--card);border-bottom:3px solid '+c+'"><div style="display:flex;justify-content:space-between;align-items:center"><span>Minuti</span><b style="font-weight:700;font-size:20px;color:'+c+'">'+tot+' / '+T+'</b></div><div style="height:8px;background:var(--line);border-radius:4px;margin-top:8px;overflow:hidden"><i style="display:block;height:100%;width:'+pc+'%;background:'+c+'"></i></div>'+(tot>T?'<div class="sm" style="margin-top:4px;color:var(--accent)">Sei oltre di '+(tot-T)+' min: toglierne qualcuno</div>':'')+'</div>';};
+const addMins=C=>{const rem=20-cTot(C);return rem>=3?3:(rem>0?rem:1);};
 const lvPick=(C,sc,act)=>{const o=l=>'<span class="dot"></span><span><b>'+LV[l].name+'</b><span class="sm mut">'+LV[l].desc+'</span></span>';
  if(C.level&&!C.lvOpen)return '<div class="card row sp" style="gap:12px;align-items:center"><div><p class="fh" style="margin:0 0 2px">Livello scelto</p><b style="font:700 22px var(--disp);letter-spacing:.03em;text-transform:uppercase;color:var(--brand)">'+LV[C.level].name+'</b><span class="sm mut" style="display:block">'+LV[C.level].desc+'</span></div><button class="btn sec sm2" style="min-height:40px;width:auto;padding:0 14px" data-act="lvopen" data-a="'+sc+'">Cambia</button></div>';
  return '<div><p class="fh">Livello</p><div style="display:flex;flex-direction:column;gap:8px">'+['base','mid','adv'].map(l=>'<button class="opt'+(C.level===l?' on':'')+'" data-act="'+act+'" data-a="'+l+'">'+o(l)+'</button>').join('')+'</div></div>';};
-const drPick=(C,act)=>'<div><p class="fh">Scegli gli allenamenti (fino a 6 blocchi) · '+C.sel.length+' scelti</p><div style="display:flex;flex-direction:column;gap:8px">'+drillsOf(C.level).map(d=>'<button class="opt'+(C.sel.indexOf(d.id)>=0?' on':'')+'" data-act="'+act+'" data-a="'+d.id+'"><span class="dot"></span><span><b>'+esc(d.name)+'</b><span class="sm mut">'+esc(d.focus)+(d.colpo?' · '+esc(d.colpo):'')+'</span></span></button>').join('')+'</div></div>';
-const minsList=(C,act)=>C.sel.length?'<div><p class="fh">Minuti per blocco</p>'+C.sel.map((id,i)=>'<div class="blk"><b style="font-weight:600">'+(i+1)+'. '+esc(drill(id).name)+'</b><div class="stp" style="margin-top:8px"><button data-act="'+act+'" data-a="'+i+'" data-b="-1" aria-label="Meno un minuto">−</button><b>'+C.mins[i]+' min</b><button data-act="'+act+'" data-a="'+i+'" data-b="1" aria-label="Più un minuto">+</button></div></div>').join('')+'</div>':'';
+const drPick=(C,act)=>{const sc=act==='cdr'?'create':'comp',all=drillsOf(C.level);
+ const row=(d,sub)=>'<button class="opt'+(C.sel.indexOf(d.id)>=0?' on':'')+'" data-act="'+act+'" data-a="'+d.id+'" style="'+(sub?'padding:7px 10px;min-height:0':'border:0;background:none;padding:8px 6px;min-height:0')+'"><span class="dot"></span><span><b style="font-weight:'+(sub?500:700)+';'+(sub?'font-size:14px':'font-size:15px')+'">'+esc(d.name)+'</b></span></button>';
+ const grp=all.filter(d=>!d.colpo).map(par=>{const vs=all.filter(d=>d.colpo===par.name);
+  return '<div class="card" style="padding:6px 8px;display:flex;flex-direction:column;gap:2px">'+row(par,0)+(vs.length?'<div style="margin-left:22px;padding-left:8px;border-left:2px solid var(--line);display:flex;flex-direction:column;gap:2px">'+vs.map(v=>row(v,1)).join('')+'</div>':'')+'</div>';}).join('');
+ return '<div><button class="opt'+(C.warm?' on':'')+'" data-act="ctog" data-a="warm" data-b="'+sc+'" style="margin-bottom:12px"><span class="dot"></span><span><b>Riscaldamento</b><span class="sm mut">2 min \u00b7 uguale per tutti i livelli</span></span></button><p class="fh">Scegli gli allenamenti (fino a 6) \u00b7 '+C.sel.length+' scelti</p><div style="display:flex;flex-direction:column;gap:10px">'+grp+'</div></div>';};
+const toggleDr=(C,id)=>{const d=drill(id),all=drillsOf(C.level),par=d.colpo?all.find(x=>x.name===d.colpo):d,vs=all.filter(x=>x.colpo===par.name),has=x=>C.sel.indexOf(x.id)>=0;
+ const add=x=>{if(!has(x)){C.mins.push(addMins(C));C.sel.push(x.id);}},del=x=>{const i=C.sel.indexOf(x.id);if(i>=0){C.sel.splice(i,1);C.mins.splice(i,1);}};
+ if(d.colpo){if(has(d)){del(d);return true;}if(C.sel.length+(has(par)?1:2)>6)return false;add(par);add(d);return true;}
+ const grp=[par].concat(vs);if(has(par)&&vs.every(has)){grp.forEach(del);return true;}
+ if(C.sel.length+grp.filter(x=>!has(x)).length>6)return false;grp.forEach(add);return true;};
+const minsList=(C,act)=>C.sel.length?'<div><p class="fh">Minuti per blocco</p><div class="card" style="padding:4px 12px">'+C.sel.map((id,i)=>'<div class="row sp" style="gap:8px;padding:6px 0;'+(i?'border-top:1px solid var(--line)':'')+'"><span style="min-width:0;flex:1;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(i+1)+'. '+esc(drill(id).name)+'</span><span class="stp" style="grid-template-columns:36px 44px 36px;flex:none"><button style="min-height:36px;font-size:18px" data-act="'+act+'" data-a="'+i+'" data-b="-1" aria-label="Meno un minuto">\u2212</button><b style="font-size:16px">'+C.mins[i]+' min</b><button style="min-height:36px;font-size:18px" data-act="'+act+'" data-a="'+i+'" data-b="1" aria-label="Pi\u00f9 un minuto">+</button></span></div>').join('')+'</div></div>':'';
 function pCreate(){
- const C=S.create;let h=totBar(C.mins.reduce((x,y)=>x+y,0))+'<h2>Crea la tua scheda</h2>'+lvPick(C,'create','clevel');
- if(C.level){h+=drPick(C,'cdr')+minsList(C,'cmin')+'<p class="sm mut">La macchina tira ogni blocco con un solo settaggio: la palla arriva sempre uguale e sei tu a muoverti, a destra, a sinistra, avanti o indietro.</p><p class="sm mut">La scheda parte con 2 minuti di riscaldamento, poi hai '+WORK+' minuti da distribuire come vuoi tra i blocchi. Gli ultimi '+MARG+' minuti sono un margine per arrivare, sistemarti e fare pause: 20 minuti in tutto.</p>';}
+ const C=S.create;let h=totBar(C)+'<h2>Crea la tua scheda</h2>'+(C.bid&&S.bookings.find(q=>q.id===C.bid)?'<p class="sm mut" style="margin-top:-6px">Per la sessione di '+longDay(S.bookings.find(q=>q.id===C.bid).date).toLowerCase()+', '+S.bookings.find(q=>q.id===C.bid).slots[0]+'</p>':'')+lvPick(C,'create','clevel');
+ if(C.level){h+=drPick(C,'cdr')+minsList(C,'cmin')+'<p class="sm mut">La macchina tira ogni blocco con un solo settaggio: la palla arriva sempre uguale e sei tu a muoverti, a destra, a sinistra, avanti o indietro.</p>';}
  return h+(S.err?'<p class="err">'+esc(S.err)+'</p>':'')+'<button class="btn" data-act="csave">Crea la mia scheda</button>';
 }
 
@@ -432,23 +456,26 @@ function coachSlots(){
 }
 function coachSchede(){
  if(S.comp)return composer();
- const it=S.requests.map(r=>Object.assign({typ:'s'},r)).concat(S.levelTests.map(t=>Object.assign({typ:'t',slot:''},t)));
- if(!it.length)return '<h2>Da fare</h2><div class="card"><p class="mut">Non c\u2019\u00e8 niente da preparare.</p></div>';
+ const sub=S.csub||'prep';
+ const reqs=S.requests.slice(),tests=S.levelTests.slice();
+ let h='<div class="seg" style="margin-bottom:12px"><button class="sg'+(sub==='prep'?' on':'')+'" data-act="csub" data-a="prep">Da preparare \u00b7 '+reqs.length+'</button><button class="sg'+(sub==='lvl'?' on':'')+'" data-act="csub" data-a="lvl">Test livello \u00b7 '+tests.length+'</button></div>';
+ if(sub==='lvl'){
+  if(!tests.length)return h+'<div class="card"><p class="mut">Nessun test di livello da chiudere.</p></div>';
+  h+='<p class="sm mut" style="margin-top:-4px">Giocatori che hanno fatto il test: assegna il loro livello.</p>';
+  tests.forEach(t=>{h+='<div class="card row sp" style="gap:10px;padding:10px 14px"><div style="min-width:0;flex:1"><b style="font-weight:600">'+esc(t.player)+'</b><div class="sm mut">Test fatto '+esc(t.when)+'</div></div><button class="btn sec sm2" style="min-height:34px;padding:5px 12px;flex:none" data-act="lvl" data-a="'+t.id+'">Livello</button></div>';});
+  return h;}
+ if(!reqs.length)return h+'<div class="card"><p class="mut">Non c\u2019\u00e8 nessuna scheda da preparare.</p></div>';
  const key=r=>r.date?r.date+(r.slot||''):'9999';
- const rs=it.sort((a,b)=>key(a)<key(b)?-1:key(a)>key(b)?1:0);
- const grp={};rs.forEach(r=>{(grp[r.date||'none']=grp[r.date||'none']||[]).push(r);});
- let h='<h2>Da fare</h2><p class="sm mut" style="margin-top:-6px">Schede da preparare e test di livello da chiudere.</p>';
- const so=S.sopen||(S.sopen={});
+ reqs.sort((a,b)=>key(a)<key(b)?-1:key(a)>key(b)?1:0);
+ const past=reqs.filter(r=>r.date&&r.date<DAYS[0]),fut=reqs.filter(r=>!(r.date&&r.date<DAYS[0]));
+ const row=r=>{const lv=r.level&&LV[r.level]?LV[r.level].name:'';
+  return '<div class="card row sp" style="gap:10px;padding:10px 14px"><div style="min-width:0;flex:1"><div class="row" style="gap:8px;flex-wrap:wrap">'+(r.slot?'<b style="font-weight:700;font-variant-numeric:tabular-nums">'+r.slot+'</b>':'')+'<b style="font-weight:600">'+esc(r.player)+'</b>'+(lv?'<span class="pill none">'+lv+'</span>':'')+(r.purp==='racchette'?'<span class="pill none">Test racchette</span>':'')+'</div><div class="sm mut" style="margin-top:2px">'+(r.focus&&r.focus.length?'Vuole '+esc(Array.isArray(r.focus)?r.focus.join(', '):r.focus):'')+'</div></div><button class="btn sm2" style="min-height:34px;padding:5px 12px;flex:none" data-act="prep" data-a="'+r.id+'">Prepara</button></div>';};
+ const head=(t,n,c)=>'<div class="row sp" style="margin:12px 0 6px"><b style="font-weight:700;'+(c?'color:'+c:'')+'">'+t+'</b><span class="sm mut">'+n+'</span></div>';
+ if(past.length){h+=head('Da recuperare \u00b7 sessioni gi\u00e0 passate',past.length,'#c0392b');past.forEach(r=>{h+='<p class="sm mut" style="margin:0 0 3px">'+shortDay(r.date)+'</p>'+row(r);});}
+ const grp={};fut.forEach(r=>{(grp[r.date||'none']=grp[r.date||'none']||[]).push(r);});
  Object.keys(grp).sort().forEach(d=>{
-  const lab=d==='none'?'Senza sessione prenotata':(d===DAYS[0]?'Oggi \u00b7 ':d===DAYS[1]?'Domani \u00b7 ':'')+shortDay(d).replace(/ [a-z]{3}$/,' '+MON[dOf(d).getMonth()]);
-  const op=d in so?so[d]:(d==='none'||d<=DAYS[1]);
-  h+='<div style="margin-top:-4px"><button class="card" data-act="dtog" data-a="'+d+'" aria-expanded="'+op+'" style="width:100%;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:11px 14px;text-align:left;'+(op?'border-bottom-left-radius:0;border-bottom-right-radius:0;border-bottom-color:transparent;':'')+'"><b style="font-weight:600;'+(d===DAYS[0]?'color:var(--accent)':'')+'">'+lab+'</b><span class="row" style="gap:8px"><span class="pill none">'+grp[d].length+'</span><span aria-hidden="true" style="color:var(--ink2)">'+(op?'\u25BE':'\u25B8')+'</span></span></button>';
-  if(op){h+='<div class="card" style="padding:0 14px;border-top-left-radius:0;border-top-right-radius:0;border-top:0">';
-  grp[d].forEach(r=>{const t=r.typ==='t';
-   h+='<div class="row sp" style="gap:10px;padding:8px 0;border-top:1px solid var(--line)"><div style="min-width:0;flex:1"><div class="row" style="gap:8px;flex-wrap:nowrap">'+(r.slot?'<b style="font-weight:700;font-variant-numeric:tabular-nums">'+r.slot+'</b>':'')+'<b style="font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(r.player)+'</b></div><div class="row" style="gap:6px;margin-top:3px;flex-wrap:wrap"><span class="pill none">'+(t?'Test livello':r.purp==='racchette'?'Test racchette':'Allenamento')+'</span>'+(t?'<span class="sm mut">livello da assegnare</span>':'<span class="sm mut">'+(r.level?LV[r.level].name:'Livello da definire')+'</span>')+'</div>'+(t?'':'<p class="sm" style="margin-top:3px;line-height:1.3"><span class="mut">Vuole:</span> '+esc(r.focus||'da decidere')+'</p>')+'</div>'+
-   (t?'<button class="btn sec sm2" style="min-height:34px;padding:5px 12px;flex:none" data-act="lvl" data-a="'+r.id+'">Livello</button>':'<button class="btn sm2" style="min-height:34px;padding:5px 12px;flex:none" data-act="prep" data-a="'+r.id+'">Prepara</button>')+'</div>';});
-  h+='</div>';}
-  h+='</div>';});
+  const lab=d==='none'?'Senza sessione prenotata':(d===DAYS[0]?'Oggi \u00b7 ':d===DAYS[1]?'Domani \u00b7 ':'')+shortDay(d).replace(' nov',' novembre');
+  h+=head(lab,grp[d].length,d===DAYS[0]?'var(--accent)':'');grp[d].forEach(r=>{h+=row(r);});});
  return h;
 }
 const inits=n=>String(n).replace(/\(\d+\)/,'').trim().split(/\s+/).map(p=>p.charAt(0)).join('').slice(0,2).toUpperCase();
@@ -461,10 +488,8 @@ function coachMsgs(){
 }
 function composer(){
  const C=S.comp;
- let h=totBar(C.mins.reduce((a,b)=>a+b,0))+'<h2>Scheda per '+esc(C.player)+'</h2>'+(C.purp==='racchette'?'<p class="sm mut" style="margin-top:-8px">Test racchette: prepara un allenamento per provare le racchette.</p>':'')+lvPick(C,'comp','clv');
- h+='<div class="blk"><div class="row sp"><b style="font-weight:600">Riscaldamento · dritto e rovescio</b><span class="pill none">2 min</span></div><p class="sm mut">Uguale per tutti i livelli.</p></div>';
+ let h=totBar(C)+'<h2>Scheda per '+esc(C.player)+'</h2>'+(C.purp==='racchette'?'<p class="sm mut" style="margin-top:-8px">Test racchette: prepara un allenamento per provare le racchette.</p>':'')+lvPick(C,'comp','clv');
  if(C.level)h+=drPick(C,'cdrc')+minsList(C,'cm');
- h+=margHtml;
  h+='<div><p class="fh">Messaggio al giocatore</p><textarea class="inp" id="cmsg" rows="2" placeholder="Es. Parti piano, poi alza la frequenza">'+esc(C.msg)+'</textarea></div>'+(S.err?'<p class="err">'+esc(S.err)+'</p>':'')+'<button class="btn" data-act="csend">Invia scheda</button>';
  return h;
 }
@@ -482,6 +507,7 @@ function sheetView(){
  else if(x.t==='lvl'){const t=S.levelTests.find(q=>q.id===x.id);c=t?'<h2>Che livello ha '+esc(t.player)+'?</h2><p class="sm mut">Test fatto '+esc(t.when)+'.</p><div class="seg3">'+['base','mid','adv'].map(l=>'<button class="sg" data-act="setlv" data-a="'+t.id+'" data-b="'+l+'">'+LV[l].name+'</button>').join('')+'</div>'+close:'';}
  else if(x.t==='invita'){c='<h2>Consiglia Il Muro</h2><p class="sm mut">Manda il link a chi vuoi: chi lo riceve apre Il Muro e si iscrive da solo.</p><div class="card" style="background:var(--soft)"><p class="sm" style="white-space:pre-line">'+esc(invMsg())+'</p></div><button class="btn" data-act="invwa">Consiglia su WhatsApp</button><button class="btn" data-act="invtg">Consiglia su Telegram</button><button class="btn" data-act="invcp">Copia il messaggio</button>'+close;}
  else if(x.t==='privacy'){c='<h2>Informativa sulla privacy</h2><p class="sm mut">Padel Village ASD · Il Muro, Area Allenamento. Aggiornata il 3 novembre 2026.</p><p class="sm"><b>In breve:</b> usiamo il tuo nome, il tuo contatto Telegram e le tue prenotazioni solo per gestire le sessioni al Muro e scriverti. Non li vendiamo e non li usiamo per pubblicità.</p><h3 style="margin:16px 0 4px;font-size:15px">Chi è il titolare dei dati</h3><p class="sm">Padel Village ASD, Via Foresto Est 1/D, 31025 Santa Lucia di Piave (TV). Legale rappresentante: Maurizio Aprea.</p><p class="sm">Per qualsiasi richiesta scrivi a <a href="mailto:padelvillage.club@gmail.com" style="color:var(--ink)">padelvillage.club@gmail.com</a>, oppure al coach dalla chat dell’app o dal bot su Telegram.</p><h3 style="margin:16px 0 4px;font-size:15px">Quali dati raccogliamo</h3><p class="sm"><ul class="sm" style="margin:0 0 8px;padding-left:18px"><li><b>Contatto:</b> nome e cognome, identificativo e nome utente Telegram, come risultano dal tuo profilo.</li><li><b>Prenotazioni:</b> giorno e ora, da solo o con il coach, tipo di sessione, disdette, cosa vuoi allenare.</li><li><b>Allenamento:</b> livello assegnato dal coach, schede create per te o da te.</li><li><b>Messaggi:</b> quelli che scrivi al coach e le sue risposte.</li><li><b>Promemoria:</b> registriamo quali ti abbiamo già inviato, per non mandarli due volte.</li></ul></p><p class="sm">Non chiediamo dati sensibili e non raccogliamo pagamenti: la sessione si paga al circolo. Gli altri giocatori vedono solo che uno slot è occupato, non chi lo ha prenotato. Il tuo livello lo vede solo il coach.</p><h3 style="margin:16px 0 4px;font-size:15px">Perché li usiamo</h3><p class="sm"><ul class="sm" style="margin:0 0 8px;padding-left:18px"><li>Gestire le prenotazioni, evitare doppioni e avvisarti se il coach non è disponibile.</li><li>Mandarti i promemoria.</li><li>Preparare le schede di allenamento.</li><li>Rispondere ai tuoi messaggi.</li></ul></p><p class="sm">Base giuridica: la tua partecipazione alle attività del circolo, che richiede questi dati (art. 6, par. 1, lett. b del GDPR).</p><h3 style="margin:16px 0 4px;font-size:15px">Con chi li condividiamo</h3><p class="sm">Fornitori dei servizi tecnici: Telegram (messaggi e apertura della mini app, con la propria informativa), Supabase (database e funzioni dell’app) e GitHub (pubblica la pagina dell’app, senza i tuoi dati di prenotazione). Non comunichiamo i tuoi dati ad altri per scopi commerciali.</p><h3 style="margin:16px 0 4px;font-size:15px">Per quanto tempo li conserviamo</h3><p class="sm">Finché usi Il Muro. Se smetti, li conserviamo per il tempo strettamente necessario a gestire eventuali richieste e comunque non oltre 24 mesi dall’ultima sessione, poi li cancelliamo. Puoi chiedere la cancellazione anche prima, in qualsiasi momento.</p><h3 style="margin:16px 0 4px;font-size:15px">I tuoi diritti</h3><p class="sm">Puoi chiederci di vedere i tuoi dati, correggerli, cancellarli, limitarne l’uso o riceverli in un formato leggibile, e puoi opporti al trattamento. Scrivi a <a href="mailto:padelvillage.club@gmail.com" style="color:var(--ink)">padelvillage.club@gmail.com</a> o al coach. Se pensi che i tuoi dati non siano trattati correttamente puoi rivolgerti al Garante per la protezione dei dati personali (garanteprivacy.it).</p>'+close;}
+ else if(x.t==='mkask'){const bb=S.bookings.find(q=>q.id===x.ids[0]);c='<h2>Vuoi creare la scheda?</h2><p class="sm mut">Per la sessione di '+(bb?longDay(bb.date).toLowerCase()+', '+bb.slots[0]:'')+(bb&&bb.slots.length>1?': la scheda vale per tutte e due le sessioni di fila':'')+'. Scegli tu cosa allenare. Se non la crei adesso, la trovi in Scheda e la fai quando vuoi.'+(x.ids.length>1?' Le altre sessioni che hai prenotato le trovi in Scheda, ognuna con la sua.':'')+'</p><button class="btn" data-act="mkcreate" data-a="'+x.ids[0]+'">Crea la scheda ora</button><button class="btn sec" data-act="close">Più tardi</button>';}
  else if(x.t==='cancel'){const b=S.bookings.find(q=>q.id===x.a);c='<h2>Vuoi disdire?</h2><p>'+(b?longDay(b.date)+', '+rangeOf(b):'')+'</p><p class="sm mut">Lo slot torna libero per gli altri.</p><button class="btn warn" data-act="cancelok" data-a="'+x.a+'">Sì, disdici</button>'+close;}
  else if(x.t==='slot'){const b=bookingAt(x.d,x.a);if(!b){c='';}else{c='<h2>'+esc(b.player)+'</h2><p class="mut">'+longDay(b.date)+', '+rangeOf(b)+'</p><div class="row wrap"><span class="pill none">'+PURP[b.purpose]+'</span>'+whoPill(b)+(b.level?lvPill(b.level):'')+'</div><p class="sm">'+esc(bring(b))+'</p>'+(b.focus?'<p class="sm"><span class="mut">Vuole allenare:</span> '+esc(b.focus)+'</p>':'')+
    (b.away?'<p class="sm err">Hai già avvisato il giocatore: sceglie lui se tenere lo slot da solo, spostarsi o disdire.</p>':'<button class="btn sec" data-act="'+(b.who==='coach'?'absask':'abssolo')+'" data-a="'+x.d+'" data-b="'+x.a+'">Segnati assente in questo slot</button>')+close;}}
@@ -515,7 +541,7 @@ const ACT={
   const st=slotState(d,a);
   if(st==='busy')return say('Questo slot è già prenotato.');
   if(st==='away')return say('Con il coach non è disponibile in questo orario. Da solo sì.');
-  if(st==='mine')return say('Hai già prenotato questo slot.');
+  if(st==='mine')return say('Hai già prenotato questo slot: lo trovi in Sessioni.');
   const times=myTimes(d).concat(S.draft.sel.filter(x=>x.indexOf(d+'|')===0).map(x=>x.split('|')[1]),[a]);
   if(maxRun(times)>2)return say('Al massimo 2 slot di fila. Scegli uno slot staccato.');
   S.draft.sel.push(k);render();},
@@ -527,20 +553,21 @@ const ACT={
     if(D.who==='coach')S.feed.unshift({id:'f'+b.id,text:S.me.name+' ha prenotato con il coach: '+longDay(d).toLowerCase()+', '+rangeOf(b)});
     if(D.purpose==='livello')S.levelTests.push({id:'t'+b.id,player:S.me.name,when:longDay(d).toLowerCase()});run=[];};
    ts.forEach(t=>{if(run.length&&mm(t)-mm(run[run.length-1])!==20)flush();run.push(t);});flush();});
-  S.draft={purpose:'allenamento',who:'solo',day:DAYS[0],fi:0,sel:[]};S.pv='home';S.hist=[];
+  S.draft={purpose:'allenamento',who:'solo',day:DAYS[0],fi:0,sel:[]};S.pv='home';S.hist=[];S.tab='scheda';S.sView='main';
   say('Prenotato. Si paga al circolo e '+remind(first)+'.');top0();
-  if(D0.who==='coach'&&D0.purpose!=='livello'){S.fsel=[];S.toast=null;S.sheet={t:'focus',ids:made.map(b=>b.id)};render();}},
+  if(D0.who==='coach'&&D0.purpose!=='livello'){S.fsel=[];S.toast=null;S.sheet={t:'focus',ids:made.map(b=>b.id)};render();}
+  else if(D0.who==='solo'){S.toast=null;S.sheet={t:'mkask',ids:made.map(b=>b.id)};render();}},
  fch(a){const i=S.fsel.indexOf(a);if(a==='coach'){S.fsel=i>=0?[]:['coach'];}else{S.fsel=S.fsel.filter(x=>x!=='coach');if(i>=0)S.fsel.splice(i,1);else S.fsel.push(a);}render();},
  fok(){const ids=S.sheet.ids,b=S.bookings.find(q=>q.id===ids[0]);const lab=S.fsel.length?(S.fsel[0]==='coach'?'sceglie il coach':S.fsel.map(x=>FOC[x]).join(', ').toLowerCase()):'';
-  if(!S.fsel.length){S.sheet={t:'sent',what:'Il coach sceglie lui cosa farti allenare.'};return render();}
+  if(!S.fsel.length)return ACT.fskip();
   S.bookings.forEach(q=>{if(ids.indexOf(q.id)>=0)q.focus=lab;});
   S.requests.push({id:'r'+Date.now(),player:S.me.name,level:S.me.level,sess:longDay(b.date).toLowerCase()+', '+tt(mm(b.slots[0])),date:b.date,slot:b.slots[0],focus:lab,purp:b.purpose});
   S.feed.unshift({id:'f'+Date.now(),text:S.me.name+' vuole allenare: '+lab+' ('+longDay(b.date).toLowerCase()+', '+rangeOf(b)+')'});
   S.sheet={t:'sent',what:'Hai scelto: '+lab+'.'};render();},
- fskip(){S.sheet={t:'sent',what:'Il coach sceglie lui cosa farti allenare.'};render();},
+ fskip(){const ids=S.sheet.ids||[];ids.forEach(id=>{const b=S.bookings.find(q=>q.id===id);if(!b)return;b.focus='sceglie il coach';S.requests.push({id:'r'+Date.now()+id,player:S.me.name,level:S.me.level,date:b.date,slot:b.slots[0],focus:'sceglie il coach',purp:b.purpose});});S.sheet={t:'sent',what:'Il coach sceglie lui cosa farti allenare.'};render();},
  tgchat(){S.tg='chat';render();},
  tgopen(){if(S.tgmsg&&S.tgmsg.kind==='msg'){S.tg=null;S.area='coach';S.ctab='msg';S.hist=[];ACT.mopen(S.tgmsg.pid);return;}if(S.tgmsg&&S.tgmsg.kind==='day'){const m=S.tgmsg;S.tg=null;S.area='coach';S.ctab='slot';S.cview='day';S.cday=m.date;S.cfi=Math.max(0,fasce(m.date).findIndex(f=>f.slots.indexOf(m.slot)>=0));S.hl={date:m.date,slot:m.slot};S.hist=[];render();top0();return;}
-  S.hist=[{tab:'prenota',pv:'home',sView:'main',sIdx:0,ctab:'slot'}];S.tg=null;S.pnotif=null;S.tab='scheda';S.sView='main';S.sIdx=0;render();top0();},
+  S.hist=[{tab:'prenota',pv:'home',sView:'main',sIdx:0,ctab:'slot'}];S.tg=null;S.pnotif=null;S.tab='scheda';S.sView='open';S.sIdx=0;render();top0();},
  pnot(a){S.pnotif=null;ACT.opencard(a);},
  cancel(a){S.sheet={t:'cancel',a:a};render();},
  cancelok(a){const b=S.bookings.find(q=>q.id===a);S.bookings=S.bookings.filter(q=>q.id!==a);
@@ -552,24 +579,28 @@ const ACT={
  invcp(){const t=invMsg();const ok=()=>say('Messaggio copiato. Incollalo dove vuoi.');try{navigator.clipboard.writeText(t).then(ok,()=>say('Non riesco a copiare: usa Consiglia su WhatsApp.'));}catch(e){say('Non riesco a copiare: usa Consiglia su WhatsApp.');}},
 
  close(){S.sheet=null;render();},
+ stog(a){S.sx=S.sx||{};S.sx[a]=!S.sx[a];render();},
+ gobook(){S.hist.push(snap());S.tab='prenota';S.pv='book';S.draft.who='solo';S.draft.sel=[];render();top0();},
  gocoach(){S.hist.push(snap());S.tab='prenota';S.pv='book';S.draft.who='coach';S.draft.sel=[];render();top0();},
- mkcreate(){S.hist.push(snap());S.sView='create';S.create={level:S.me.level,sel:[],mins:[]};S.err='';render();top0();},
+ mkcreate(a){S.sheet=null;S.hist.push(snap());S.tab='scheda';S.sView='create';S.create={level:S.me.level,sel:[],mins:[],bid:a||null};S.err='';render();top0();},
  sback(){S.sView='main';render();},
  clevel(a){S.create.lvOpen=false;S.create.level=a;S.create.sel=[];S.create.mins=[];S.err='';render();},
- cdr(a){const C=S.create,i=C.sel.indexOf(a);S.err='';if(i>=0){C.sel.splice(i,1);C.mins.splice(i,1);}else if(C.sel.length<6){C.mins.push(addMins(C));C.sel.push(a);}else return say('Al massimo 6 blocchi. Togline uno per sceglierne un altro.');render();},
- cdrc(a){keepMsg();const C=S.comp,i=C.sel.indexOf(a);S.err='';if(i>=0){C.sel.splice(i,1);C.mins.splice(i,1);}else if(C.sel.length<6){C.mins.push(addMins(C));C.sel.push(a);}else return say('Al massimo 6 blocchi. Togline uno per sceglierne un altro.');render();},
+ ctog(a,b){if(b==='comp')keepMsg();const C=b==='comp'?S.comp:S.create;C[a]=!C[a];S.err='';render();},
+ cdr(a){S.err='';if(!toggleDr(S.create,a))return say('Al massimo 6 blocchi. Togline uno per sceglierne un altro.');render();},
+ cdrc(a){keepMsg();S.err='';if(!toggleDr(S.comp,a))return say('Al massimo 6 blocchi. Togline uno per sceglierne un altro.');render();},
  lvopen(a){(a==='comp'?S.comp:S.create).lvOpen=true;render();},
  cmin(a,b){const C=S.create,i=+a,v=C.mins[i]+(+b);if(v>=1&&v<=16)C.mins[i]=v;S.err='';render();},
  cadd(){keepMsg();const l=drillsOf(S.comp.level);if(S.comp.sel.length>=6)return say('Al massimo 6 blocchi.');S.comp.sel.push(l[0].id);S.comp.mins.push(2);render();},
  cdel(a){keepMsg();S.comp.sel.splice(+a,1);S.comp.mins.splice(+a,1);render();},
  csave(){const C=S.create;if(C.sel.length<1){S.err='Scegli almeno un allenamento.';render();return;}
-  const tm=C.mins.reduce((x,y)=>x+y,0);if(tm!==WORK){S.err='Riscaldamento, blocchi e margine devono fare 20 minuti in totale (ora '+(2+MARG+tm)+').';render();return;}
-  S.me.level=C.level;S.me.schede.unshift({id:'s'+Date.now(),by:'me',level:C.level,date:'3 novembre',blocks:[WARM].concat(C.sel.map(id=>blockOf(id,C.mins[C.sel.indexOf(id)])))});
+  const tm=cTot(C);if(tm!==20){S.err='La scheda deve durare 20 minuti in totale (ora '+tm+').';render();return;}
+  S.me.level=C.level;const bk=C.bid?S.bookings.find(q=>q.id===C.bid):null;S.me.schede.unshift({id:'s'+Date.now(),by:'me',level:C.level,date:'3 novembre',sess:bk?{date:bk.date,slot:bk.slots[0]}:undefined,blocks:(C.warm?[WARM]:[]).concat(C.sel.map(id=>blockOf(id,C.mins[C.sel.indexOf(id)])))});
   S.sView='main';S.sIdx=0;S.hist=[];say('Scheda creata. La trovi qui quando arrivi alla macchina.');top0();},
- sidx(a){S.sIdx=+a;render();top0();},
- opencard(a){S.hist.push(snap());S.sIdx=Math.max(0,S.me.schede.findIndex(s=>s.id===a));S.tab='scheda';S.sView='main';render();top0();},
+ scopen(a){S.hist.push(snap());S.sIdx=+a;S.sView='open';render();top0();},
+ opencard(a){S.hist.push(snap());S.sIdx=Math.max(0,S.me.schede.findIndex(s=>s.id===a));S.tab='scheda';S.sView='open';render();top0();},
  askscheda(){if(S.requests.some(r=>r.player===S.me.name))return say('Hai già chiesto una scheda: il coach la sta preparando.');
   S.me.chat.push({from:'me',text:'Ciao coach, mi prepari una scheda?'});S.requests.push({id:'r'+Date.now(),player:S.me.name,level:S.me.level,note:'Chiede una scheda'});say('Richiesta inviata al coach.');},
+ csub(a){S.csub=a;render();top0();},
  dtog(a){const so=S.sopen||(S.sopen={});const cur=a in so?so[a]:(a==='none'||a<=DAYS[1]);so[a]=!cur;render();},
  lvl(a){S.sheet={t:'lvl',id:a};render();},
  stab(a){S.stab=a;render();top0();},
@@ -591,9 +622,9 @@ const ACT={
  cback(){S.comp=null;S.err='';render();},
  clv(a){keepMsg();S.comp.lvOpen=false;S.comp.level=a;S.comp.sel=[];S.comp.mins=[];render();},
  cm(a,b){keepMsg();const i=+a,v=S.comp.mins[i]+(+b);if(v>=1&&v<=15)S.comp.mins[i]=v;render();},
- csend(){keepMsg();const C=S.comp,tot=2+MARG+C.mins.reduce((x,y)=>x+y,0);
-  if(tot!==20){S.err='Riscaldamento, blocchi e margine devono fare 20 minuti in totale (ora '+tot+').';render();return;}
-  const sc={id:'s'+Date.now(),by:'coach',level:C.level,date:'3 novembre',blocks:[WARM].concat(C.sel.map((id,i)=>blockOf(id,C.mins[i])))};
+ csend(){keepMsg();const C=S.comp,tot=cTot(C);
+  if(tot!==20){S.err='La scheda deve durare 20 minuti in totale (ora '+tot+').';render();return;}
+  const sc={id:'s'+Date.now(),by:'coach',level:C.level,date:'3 novembre',blocks:(C.warm?[WARM]:[]).concat(C.sel.map((id,i)=>blockOf(id,C.mins[i])))};
   if(C.player===S.me.name){const rq=S.requests.find(r=>r.id===C.reqId),nb=mineB()[0],sess=(rq&&rq.sess)||(nb?longDay(nb.date).toLowerCase()+', '+tt(mm(nb.slots[0])):'');S.pnotif={id:sc.id,sess:sess};S.me.schede.unshift(sc);S.me.chat.push({from:'co',text:C.msg||'Ecco la tua scheda. Buon allenamento!',card:sc.id});}
   S.requests=S.requests.filter(r=>r.id!==C.reqId);S.comp=null;S.err='';say('Scheda inviata. Notifica Telegram a '+C.player);top0();},
  setlv(a,b){S.sheet=null;const t=S.levelTests.find(q=>q.id===a);if(t.player===S.me.name)S.me.level=b;S.levelTests=S.levelTests.filter(q=>q.id!==a);say(t.player+' ora è '+LV[b].name+'.');}
@@ -606,13 +637,12 @@ document.addEventListener('submit',e=>{const f=e.target;if(f.dataset&&f.dataset.
  if(typeof LIVE!=='undefined'&&LIVE){api('rispondi',{giocatore:S.thread.id,testo:v}).then(r=>{if(r.errore)return say(ERRMSG.x);return loadThread(S.thread.id).then(()=>reload(true));}).then(()=>{const i=document.getElementById('cchat-in');if(i)i.focus();}).catch(FAIL);return;}
  S.thread.msgs.push({from:'co',text:v});S.threads[S.thread.id]=S.thread.msgs.slice();const it=S.inbox.find(q=>q.id===S.thread.id);if(it){it.last=v;it.pending=false;}render();const i=document.getElementById('cchat-in');if(i)i.focus();return;}
 if(f.dataset&&f.dataset.form==='chat'){e.preventDefault();const v=document.getElementById('chat-in').value.trim();if(!v)return;
- if(LIVE){api('scrivi',{testo:v}).then(()=>reload(true)).then(()=>{const i=document.getElementById('chat-in');if(i)i.focus();}).catch(FAIL);return;}
  S.me.chat.push({from:'me',text:v});S.feed.unshift({id:'f'+Date.now(),text:S.me.name+' ti scrive: '+v});render();const i=document.getElementById('chat-in');if(i)i.focus();}});
 document.addEventListener('ended',e=>{if(e.target.id==='vid'&&S&&S.intro)ACT.skip();},true);
-
 /* ---------- modalità reale: dentro Telegram, collegata al database ---------- */
 const API='https://bckgdriuuueadplwcaog.supabase.co/functions/v1/muro-api';
-const ERRMSG={occupato:'Questo slot è appena stato prenotato da un altro giocatore.',coach_assente:'Con il coach non è disponibile in questo orario. Da solo sì.',max_due_di_fila:'Al massimo 2 slot di fila.',slot_passato:'Questo slot è già passato.',giorno_non_valido:'Questo giorno non è prenotabile.',x:'Non è stato possibile completare l’operazione. Riprova.'};
+const ERRMSG={occupato:'Questo slot è appena stato prenotato da un altro giocatore.',coach_assente:'Con il coach non è disponibile in questo orario. Da solo sì.',max_due_di_fila:'Al massimo 2 slot di fila.',slot_passato:'Questo slot è già passato.',giorno_non_valido:'Questo giorno non è prenotabile.',scheda_gia_presente:'Per questa sessione c’è già una scheda.',x:'Non è stato possibile completare l’operazione. Riprova.'};
+const blocchiDa=C=>(C.warm?[{id:'warm',mins:2}]:[]).concat(C.sel.map((id,i)=>({id:id,mins:C.mins[i]})));
 async function api(az,extra){
  const r=await fetch(API,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(Object.assign({azione:az,initData:INIT},extra||{}))});
  let j={};try{j=await r.json();}catch(e){}
@@ -625,7 +655,7 @@ let lastJson='';
 function applyState(r){
  DAYS.length=0;r.giorni.forEach(x=>DAYS.push(x));
  S.today=r.oggi;S.nowMin=r.adesso;
- S.me=Object.assign({},r.me,{schede:r.me.schede.map(s=>Object.assign({},s,{blocks:[WARM].concat((s.blocks||[]).filter(b=>drill(b.id)).map(b=>blockOf(b.id,b.mins)))}))});
+ S.me=Object.assign({},r.me,{schede:r.me.schede.map(s=>Object.assign({},s,{blocks:(s.blocks||[]).map(b=>b.id==='warm'?WARM:(drill(b.id)?blockOf(b.id,b.mins):null)).filter(Boolean)}))});
  S.bookings=r.bookings;S.absent=r.absent;S.requests=r.requests;S.levelTests=r.levelTests;S.inbox=r.inbox||[];
  S.role=r.ruolo==='c'?'coach':'player';
  if(DAYS.indexOf(S.draft.day)<0)S.draft.day=DAYS[0];
@@ -677,9 +707,10 @@ if(LIVE){
    const ps={purpose:D.purpose,who:D.who};
    await reload(true).catch(()=>{});
    if(erro){S.draft.sel=[];render();return say(ERRMSG[erro]||ERRMSG.x);}
-   S.draft={purpose:'allenamento',who:'solo',day:DAYS[0],fi:0,sel:[]};S.pv='home';S.hist=[];
+   S.draft={purpose:'allenamento',who:'solo',day:DAYS[0],fi:0,sel:[]};S.pv='home';S.hist=[];S.tab='scheda';S.sView='main';
    say('Prenotato. Si paga al circolo e '+remind(first)+'.');top0();
-   if(ps.who==='coach'&&ps.purpose!=='livello'){S.fsel=[];S.toast=null;S.sheet={t:'focus',ids:made};render();}},
+   if(ps.who==='coach'&&ps.purpose!=='livello'){S.fsel=[];S.toast=null;S.sheet={t:'focus',ids:made};render();}
+   else if(ps.who==='solo'){S.toast=null;S.sheet={t:'mkask',ids:made};render();}},
   async fok(){const ids=S.sheet.ids;const lab=S.fsel.length?(S.fsel[0]==='coach'?'sceglie il coach':S.fsel.map(x=>FOC[x]).join(', ').toLowerCase()):'';
    try{for(const id of ids)await api('obiettivo',{gruppo:id,obiettivo:lab});await reload(true);}catch(e){return FAIL(e);}
    S.sheet={t:'sent',what:lab?'Hai scelto: '+lab+'.':'Il coach sceglie lui cosa farti allenare.'};render();},
@@ -688,8 +719,8 @@ if(LIVE){
   async cancelok(a){try{const r=await api('annulla',{gruppo:a});S.sheet=null;await reload(true);
    say(r.errore==='troppo_tardi'?'Mancano meno di 2 ore: da qui non puoi più disdire. Scrivi al coach.':r.errore?ERRMSG.x:'Sessione disdetta. Lo slot è di nuovo libero.');}catch(e){FAIL(e);}},
   async csave(){const C=S.create;if(C.sel.length<1){S.err='Scegli almeno un allenamento.';render();return;}
-   const tm=C.mins.reduce((x,y)=>x+y,0);if(tm!==WORK){S.err='Riscaldamento, blocchi e margine devono fare 20 minuti in totale (ora '+(2+MARG+tm)+').';render();return;}
-   try{const r=await api('crea_scheda',{livello:C.level,blocchi:C.sel.map((id,i)=>({id:id,mins:C.mins[i]}))});if(r.errore){S.err=ERRMSG.x;render();return;}
+   const tm=cTot(C);if(tm!==20){S.err='La scheda deve durare 20 minuti in totale (ora '+tm+').';render();return;}
+   try{const r=await api('crea_scheda',{livello:C.level,blocchi:blocchiDa(C),gruppo:C.bid||undefined});if(r.errore){S.err=ERRMSG[r.errore]||ERRMSG.x;render();return;}
     await reload(true);}catch(e){return FAIL(e);}
    S.sView='main';S.sIdx=0;S.hist=[];say('Scheda creata. La trovi qui quando arrivi alla macchina.');top0();},
   async askscheda(){if(S.requests.some(r=>r.player===S.me.name))return say('Hai già chiesto una scheda: il coach la sta preparando.');
@@ -703,15 +734,15 @@ if(LIVE){
   async fas(a){const f=fasce(S.cday)[+a],all=f.slots.every(t=>isAbs(S.cday,t));
    try{const r=await api('assenza_fascia',{data:S.cday,fascia:+a,on:!all});S.sheet=null;await reload(true);say(all?'Assenza tolta.':'Fascia segnata assente.'+(r.avvisati?' Avvisati '+r.avvisati+' giocatori.':''));}catch(e){FAIL(e);}},
   async mopen(a){try{await loadThread(a);top0();}catch(e){FAIL(e);}},
-  async csend(){keepMsg();const C=S.comp,tot=2+MARG+C.mins.reduce((x,y)=>x+y,0);
-   if(tot!==20){S.err='Riscaldamento, blocchi e margine devono fare 20 minuti in totale (ora '+tot+').';render();return;}
-   try{const r=await api('prepara',{richiesta:C.reqId,livello:C.level,blocchi:C.sel.map((id,i)=>({id:id,mins:C.mins[i]})),messaggio:C.msg});
+  async csend(){keepMsg();const C=S.comp,tot=cTot(C);
+   if(tot!==20){S.err='La scheda deve durare 20 minuti in totale (ora '+tot+').';render();return;}
+   try{const r=await api('prepara',{richiesta:C.reqId,livello:C.level,blocchi:blocchiDa(C),messaggio:C.msg});
     if(r.errore){S.err=ERRMSG.x;render();return;}
     S.comp=null;S.err='';await reload(true);say('Scheda inviata. Notifica Telegram a '+C.player);top0();}catch(e){FAIL(e);}},
   async setlv(a,b){const t=S.levelTests.find(q=>q.id===a);try{await api('livello',{gruppo:a,livello:b});S.sheet=null;await reload(true);say((t?t.player:'Il giocatore')+' ora è '+LV[b].name+'.');}catch(e){FAIL(e);}}
  });
  boot();
-}else if(Q.get('demo')){S=seed('new');render();}
+}else if(Q.get('demo')){S=seed('player');render();}
 else{document.getElementById('root').innerHTML='<div style="padding:40px 24px;text-align:center;font-family:system-ui,sans-serif"><p style="font:700 28px/1.1 system-ui;letter-spacing:.04em">IL MURO</p><p style="margin-top:12px">Apri Il Muro da Telegram per prenotare.</p></div>';}
 </script>
 </body>
