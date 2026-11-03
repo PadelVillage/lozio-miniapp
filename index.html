@@ -294,8 +294,8 @@ function appView(){
 }
 
 /* ---------- area giocatore: prenota ---------- */
-const INV_LINK='https://t.me/loziocoach_bot',INV_TXT='Ti consiglio Il Muro, l\u2019Area Allenamento di Padel Village: per allenarti a padel prenoti una sessione da 20 minuti con la macchina lanciapalle.';
-const invMsg=()=>INV_TXT+'\nProvalo qui: '+INV_LINK;
+const INV_LINK='https://t.me/loziocoach_bot',INV_TXT='Ciao! Ti consiglio Il Muro, l\u2019app di Padel Village per allenarti a padel: prenoti una sessione da 20 minuti con la macchina lanciapalle, da solo o con il coach, e trovi la scheda di allenamento pronta.';
+const invMsg=()=>INV_TXT+'\nProvala qui: '+INV_LINK;
 function pHome(){
  const mine=mineB();let h='';
  if(S.pnotif&&!S.tg)h+='<div class="card" style="border-color:var(--brand);background:var(--soft)"><p class="fh" style="margin:0 0 4px">Notifica Telegram \u00b7 IL MURO</p><p><b style="font-weight:600">Il tuo coach ti ha preparato la scheda'+(S.pnotif.sess?' per la sessione di '+esc(S.pnotif.sess):'')+'.</b></p><button class="btn sm2" style="margin-top:10px" data-act="pnot" data-a="'+S.pnotif.id+'">Apri scheda</button></div>';
