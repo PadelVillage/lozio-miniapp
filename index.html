@@ -230,7 +230,7 @@ function seed(sc){
  base.me=sofia;base.bookings=bk;
  if(sc==='arrivo'){base.tg='push';base.pnotif={id:'s1',sess:'mercoled\u00ec 4 novembre, 18:20'};base.tgmsg={kind:'scheda',text:'Il tuo coach ti ha preparato la scheda per la sessione di mercoled\u00ec 4 novembre, 18:20.',btn:'Apri scheda'};}
  if(sc==='prenota'){base.role='coach';base.area='coach';base.tg='push';base.tgmsg={kind:'day',text:'Davide F. ha prenotato con il coach: sabato 7 novembre, 10:30.',btn:'Apri giorno',date:'2026-11-07',slot:'10:30'};}
- if(sc==='msg'){base.role='coach';base.area='coach';base.tg='push';base.tgmsg={kind:'msg',text:'Messaggio da Lidia B.: Ciao coach, posso spostare la sessione di domani?',btn:'Rispondi a Lidia B.',pid:'p1'};}
+ if(sc==='msg'){base.role='coach';base.area='coach';base.tg='push';base.tgmsg={kind:'msg',text:'Nuovo messaggio da Lidia B.',btn:'Rispondi a Lidia B.',pid:'p1'};}
  if(sc==='coach'){base.role='coach';base.area='coach';base.feed=[{id:'f1',text:'Davide F. ha prenotato con il coach: sabato 7 novembre, 10:30'}];}
  return base;
 }
@@ -389,7 +389,7 @@ function pChat(){
  return '<h2>Il tuo coach</h2><div class="msgs">'+(m||'<p class="mut sm">Scrivi al coach: ti risponde qui.</p>')+'</div>'+
   (hasCoachSess()?'<button class="btn sec" data-act="askscheda">'+(pend?'Scheda già richiesta':'Chiedi una scheda')+'</button>':'')+
   '<form data-form="chat" class="row"><input class="inp" id="chat-in" type="text" placeholder="Scrivi al coach" autocomplete="off"><button class="btn sm2" style="min-height:46px" type="submit">Invia</button></form>'+
-  '<p class="sm mut">Il coach ti risponde da Telegram e ti arriva una notifica.</p>';
+  '<p class="sm mut">Quando il coach ti risponde ti arriva un avviso su Telegram.</p>';
 }
 
 /* ---------- area coach ---------- */
