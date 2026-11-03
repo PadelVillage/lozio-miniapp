@@ -342,8 +342,8 @@ function pBook(){
  h+='<div><p class="fh">Con chi</p><div class="seg">'+chip(D.who==='solo','who','solo','Da solo \u00b7 5 \u20ac')+chip(D.who==='coach','who','coach','Con coach \u00b7 10 \u20ac')+'</div></div>';
  h+='<div><p class="fh">Giorno</p><div class="days">'+DAYS.map(k=>{const p=shortDay(k).split(' ');return '<button class="day'+(D.day===k?' on':'')+'" data-act="day" data-a="'+k+'"><span>'+p[0]+'</span><b>'+p[1]+'</b></button>';}).join('')+'</div></div>';
  h+='<div><p class="fh">Orario \u00b7 slot da 20 minuti</p><div class="seg" style="margin-bottom:8px">'+fs.map((x,i)=>'<button class="sg'+(i===fi?' on':'')+'" data-act="fas2" data-a="'+i+'">'+x.a+'\u2013'+x.b+'<br><span style="font-weight:500;font-size:12px">'+free(x)+' liberi</span></button>').join('')+'</div>'+
-  '<div class="grid4">'+f.slots.map(t=>{const st=slotState(D.day,t);return '<button class="sl '+(st==='mine'?'busy':st)+'" data-act="slot" data-a="'+t+'" aria-pressed="'+(st==='on')+'">'+t+'</button>';}).join('')+'</div>'+
-  '<p class="mut" style="margin-top:6px;font-size:12px">Barrato: occupato. Tratteggiato: coach assente. Max 2 slot di fila.</p></div>';
+  '<div class="grid4">'+f.slots.filter(t=>slotState(D.day,t)!=='away').map(t=>{const st=slotState(D.day,t);return '<button class="sl '+(st==='mine'?'busy':st)+'" data-act="slot" data-a="'+t+'" aria-pressed="'+(st==='on')+'">'+t+'</button>';}).join('')+'</div>'+
+  '<p class="mut" style="margin-top:6px;font-size:12px">Barrato: occupato. Max 2 slot di fila.</p></div>';
  const n=D.sel.length;
  h+='<div class="foot">'+(S.err?'<p class="err" style="margin-bottom:6px">'+esc(S.err)+'</p>':'')+'<div class="row sp sm" style="margin-bottom:8px"><span><b style="font-weight:600">'+(n?n+(n===1?' slot':' slot')+' \u00b7 '+n*price(D.who)+' \u20ac':'Nessuno slot scelto')+'</b></span><span class="mut">Si paga al circolo</span></div><button class="btn" data-act="confirm">Prenota</button></div>';
  return h;
