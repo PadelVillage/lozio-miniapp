@@ -2,816 +2,568 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>LoZio</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light}html,body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Il Muro</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&display=swap">
 <style>
-/* Layout: un telefono centrato; interruttore Giocatore/Maestro in alto, schermata al centro, barra in basso. */
-:root{
-  --bg:#F3F5EF; --surface:#FFFFFF; --ink:#14201A; --muted:#55645B; --line:#E1E6DB;
-  --accent:#135C36; --lime:#C6F135; --lime-ink:#14201A;
-  --inv-bg:#14201A; --inv-fg:#FFFFFF; --inv-muted:#AEBBB3; --inv-panel:#1F3027; --inv-line:#3C5446;
-  --ok-bg:#DDF3E4; --ok-fg:#135C36; --warn-bg:#FFF4E0; --warn-fg:#5A4A2A; --warn-line:#E7D5B0;
-  --sez-c:#1F7A4D; --sez-b:#F2B84B; --sez-b-fg:#2B1D00; --soft:#E9EDE4; --danger:#8E1B1B; --danger-line:#E2B8B8; --amber:#8A5A00; --track:#DDE3D7; --bar:#1F7A4D;
-  --font:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
-}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0E1511; --surface:#18241D; --ink:#EEF3EF; --muted:#9FB0A5; --line:#263A2E;
-  --accent:#6FD39A; --lime:#C6F135; --lime-ink:#14201A;
-  --inv-bg:#223A2D; --inv-fg:#FFFFFF; --inv-muted:#B6C6BC; --inv-panel:#2B4838; --inv-line:#4A6857;
-  --ok-bg:#1D3D2B; --ok-fg:#8FE3B1; --warn-bg:#3A301B; --warn-fg:#EAD9AE; --warn-line:#5A4A2A;
-  --sez-c:#2E8B5C; --sez-b:#B5832A; --sez-b-fg:#FFF8E8; --soft:#1E2D24; --danger:#F0A3A3; --danger-line:#5A2E2E; --amber:#E8B85A; --track:#2A3C31; --bar:#4FBF86;
-  color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#0E1511; --surface:#18241D; --ink:#EEF3EF; --muted:#9FB0A5; --line:#263A2E;
-  --accent:#6FD39A; --lime:#C6F135; --lime-ink:#14201A;
-  --inv-bg:#223A2D; --inv-fg:#FFFFFF; --inv-muted:#B6C6BC; --inv-panel:#2B4838; --inv-line:#4A6857;
-  --ok-bg:#1D3D2B; --ok-fg:#8FE3B1; --warn-bg:#3A301B; --warn-fg:#EAD9AE; --warn-line:#5A4A2A;
-  --sez-c:#2E8B5C; --sez-b:#B5832A; --sez-b-fg:#FFF8E8; --soft:#1E2D24; --danger:#F0A3A3; --danger-line:#5A2E2E; --amber:#E8B85A; --track:#2A3C31; --bar:#4FBF86;
-  color-scheme:dark}
+/* Layout: una colonna da telefono (Telegram mini app), barra prototipo sopra, area giocatore e area coach nella stessa app */
+:root{--abs:#5A3A1F;--solo:#E8B923;--page:#E4E9E3;--bg:#F5F7F4;--card:#FFFFFF;--ink:#14201A;--ink2:#55635B;--line:#DAE1DB;--brand:#1B6B45;--onbrand:#FFFFFF;--soft:#E3EEE7;--accent:#BF2F39;--accent-soft:#FBE8E9;--lvb:#1F7044;--lvbbg:#DDEFE4;--lvm:#855A05;--lvmbg:#FAEFD3;--lva:#A22530;--lvabg:#FBE3E5;--court:#1F4E79;--disp:'Barlow Condensed','Arial Narrow',sans-serif;--body:'Barlow',system-ui,-apple-system,'Segoe UI',sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--abs:#A47448;--solo:#F0C84A;--page:#0B100D;--bg:#111915;--card:#18231D;--ink:#EAF0EB;--ink2:#9BA9A0;--line:#2B382F;--brand:#52B382;--onbrand:#0B120E;--soft:#1E3027;--accent:#F0717A;--accent-soft:#3A1E21;--lvb:#6CCB93;--lvbbg:#1D3527;--lvm:#E5B64F;--lvmbg:#3A2E10;--lva:#F28A92;--lvabg:#3C1F23;--court:#2C6AA3;color-scheme:dark}}
+:root[data-theme="dark"]{--abs:#A47448;--solo:#F0C84A;--page:#0B100D;--bg:#111915;--card:#18231D;--ink:#EAF0EB;--ink2:#9BA9A0;--line:#2B382F;--brand:#52B382;--onbrand:#0B120E;--soft:#1E3027;--accent:#F0717A;--accent-soft:#3A1E21;--lvb:#6CCB93;--lvbbg:#1D3527;--lvm:#E5B64F;--lvmbg:#3A2E10;--lva:#F28A92;--lvabg:#3C1F23;--court:#2C6AA3;color-scheme:dark}
 *{box-sizing:border-box}
-[hidden]{display:none!important}
-html,body{height:100%}
-body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.35;
-  padding-left:max(0px,env(safe-area-inset-left,0px));padding-right:max(0px,env(safe-area-inset-right,0px))}
-button{font-family:inherit;cursor:pointer;color:inherit}
-button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
-body{display:flex;flex-direction:column;align-items:center}
-#tel{width:100%;max-width:360px;flex:1 1 0;min-height:0;max-height:780px;position:relative;overflow:hidden;background:var(--bg)}
-#tg,#app{position:absolute;inset:0;display:flex;flex-direction:column}
-#app{background:var(--bg);z-index:5;animation:up .2s ease-out}
-@keyframes up{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
-.tghead{display:flex;align-items:center;gap:10px;padding:8px 14px;background:var(--surface);border-bottom:1px solid var(--line)}
-.av{width:38px;height:38px;border-radius:50%;background:var(--lime);color:var(--lime-ink);font-weight:700;display:flex;align-items:center;justify-content:center}
-.tghead b{display:block;font-size:16px}.tghead span{font-size:13px;color:var(--muted)}
-#chat{flex:1 1 0;min-height:0;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:4px;background:var(--soft)}
-.dia{align-self:center;font-size:12px;font-weight:500;color:var(--muted);background:var(--surface);border-radius:99px;padding:2px 10px;margin-bottom:6px}
-.msg{max-width:88%;background:var(--surface);border-radius:14px 14px 14px 4px;padding:8px 12px 6px;font-size:15px;line-height:1.35;align-self:flex-start;margin-top:6px}
-.msg small{display:block;text-align:right;color:var(--muted);font-size:11px;margin-top:2px}
-.kb{align-self:flex-start;width:88%;display:flex;flex-direction:column;gap:4px}
-.kb button{border:0;border-radius:10px;height:38px;background:color-mix(in srgb,var(--ink) 55%,transparent);color:var(--bg);font-size:14px;font-weight:500}
-.inbar{display:flex;gap:8px;align-items:center;padding:8px 10px;background:var(--surface);border-top:1px solid var(--line)}
-.menub{background:#3390EC;color:#fff;border:0;border-radius:18px;height:36px;padding:0 16px;font-weight:700;font-size:14px}
-.fake{flex:1 1 0;height:36px;border-radius:18px;background:var(--bg);color:var(--muted);display:flex;align-items:center;padding:0 14px;font-size:15px}
-.ahead{display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:var(--surface);border-bottom:1px solid var(--line)}
-.ahead button{border:0;background:none;font-size:15px;color:#3390EC;padding:8px;min-width:44px}
-.banner{position:absolute;left:10px;right:10px;top:58px;z-index:20;background:var(--lime);color:var(--lime-ink);border-radius:14px;padding:10px 10px 10px 14px;display:flex;align-items:center;gap:10px;font-size:14px;line-height:1.3;box-shadow:0 8px 24px rgba(0,0,0,.3);animation:down .25s ease-out}
-.banner span{flex:1 1 0;min-width:0}
-.banner button{border:0;border-radius:10px;height:36px;padding:0 14px;background:#14201A;color:#FFFFFF;font-weight:700;font-size:14px}
-.banner button.x{background:none;color:#14201A;padding:0 6px;font-size:20px}
-@keyframes down{from{transform:translateY(-16px);opacity:0}to{transform:none;opacity:1}}
-.atit{text-align:center;line-height:1.15}.atit b{display:block;font-size:15px}.atit span{font-size:12px;color:var(--muted)}
-.sw{width:100%;max-width:360px;display:flex;gap:6px;padding:10px max(16px,env(safe-area-inset-left,0px)) 10px max(16px,env(safe-area-inset-right,0px));background:var(--inv-bg)}
-.sw button{flex:1 1 0;height:36px;border-radius:10px;border:0;font-size:14px;font-weight:500;background:var(--inv-panel);color:var(--inv-muted)}
-.sw button.on{background:var(--lime);color:var(--lime-ink);font-weight:700}
-#sch{flex:1 1 0;min-height:0;overflow-y:auto;display:flex;flex-direction:column}
-.pad{padding:12px 16px;display:flex;flex-direction:column;gap:14px}
-.top{padding:16px 16px 4px 70px;position:relative;min-height:44px}
-.top::before{content:"";position:absolute;left:16px;top:50%;transform:translateY(-50%);width:42px;height:36px;border-radius:9px;background:#fff url(data:image/png;base64,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) center/35px auto no-repeat;box-shadow:0 0 0 1px rgba(0,0,0,.08)}
-.top small{display:block;font-size:14px;color:var(--muted)}
-h1{margin:2px 0 0;font-size:28px;font-weight:700;letter-spacing:-.5px;text-wrap:balance}
-.lab{font-size:12px;font-weight:700;letter-spacing:1px;color:var(--muted);text-transform:uppercase}
-.card{background:var(--surface);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:10px;border:1px solid var(--line)}
-.card h2{margin:0;font-size:20px;font-weight:700}
-.row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px}
-.pill{background:var(--ok-bg);color:var(--ok-fg);font-size:12px;font-weight:700;padding:4px 10px;border-radius:99px;white-space:nowrap}
-.dim{color:var(--muted);font-size:14px}
-.btn{height:46px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);font-size:15px;font-weight:500;padding:0 16px}
-.btn.dark{background:var(--inv-bg);color:var(--inv-fg);border:0;font-weight:700}
-.btn.lime{background:var(--lime);color:var(--lime-ink);border:0;font-weight:700}
-.btn.danger{color:var(--danger);border-color:var(--danger-line)}
-.inv{background:var(--inv-bg);color:var(--inv-fg);border:0}
-.inv .dim{color:var(--inv-muted)}
-.chips{display:flex;gap:8px;flex-wrap:wrap}
-.chip{padding:8px 14px;border-radius:99px;border:1.5px solid var(--line);background:var(--surface);font-size:14px}
-.chip.on{background:var(--inv-bg);color:var(--inv-fg);border-color:transparent;font-weight:700}
-.inv .chip{background:transparent;border-color:var(--inv-line);color:var(--inv-fg)}
-.inv .chip.on{background:var(--lime);color:var(--lime-ink);border-color:transparent}
-.full{background:var(--inv-bg);color:var(--inv-fg);flex:1 1 auto;display:flex;flex-direction:column}
-.full .back{align-self:flex-start;margin:20px 20px 0;padding:0;border:0;background:none;font-size:14px;font-weight:700;color:var(--lime)}
-.full h1{font-size:36px;line-height:1.05;letter-spacing:-1px}
-.panel{margin:28px 20px 0;background:var(--inv-panel);border-radius:18px;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
-.panel .row span:first-child{color:var(--inv-muted)}
-.big{height:58px;border-radius:16px;border:0;background:var(--lime);color:var(--lime-ink);font-size:18px;font-weight:700;width:100%}
-.ghost{flex:1 1 0;height:52px;border-radius:16px;border:1.5px solid var(--inv-line);background:transparent;color:var(--inv-fg);font-size:16px;font-weight:500}
-.tabs{display:flex;justify-content:space-around;padding:4px 8px calc(2px + env(safe-area-inset-bottom,0px));background:var(--surface);border-top:1px solid var(--line)}
-.tabs button{white-space:nowrap;border:0;background:none;font-size:14px;color:var(--muted);padding:8px 10px;border-radius:10px}
-.tabs button.on{color:var(--accent);font-weight:700;background:var(--soft)}
-.tabs button.on::before{content:"";display:inline-block;width:7px;height:7px;margin-right:6px;border-radius:50%;background:var(--accent);vertical-align:1px}
-.lvl{background:var(--surface);border:1px solid var(--line);border-radius:20px;overflow:hidden}
-.lvl-h{display:flex;align-items:center;gap:10px;width:100%;border:0;text-align:left;font-family:inherit;color:var(--ink);padding:12px 16px;background:var(--soft)}
-.lvl-h b{flex:1 1 auto}
-.lvl-h .fr{width:9px;height:9px;border-right:2.5px solid var(--muted);border-bottom:2.5px solid var(--muted);transform:rotate(45deg);margin:-4px 4px 0 2px;transition:transform .15s}
-.lvl-h .fr.c{transform:rotate(-45deg);margin:0 4px 0 2px}
-.lvl-h b{font-size:17px}
-.lvl-h .n{min-width:26px;text-align:center;font-size:13px;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--inv-bg);color:var(--inv-fg)}
-.lvl .gioc{border:0;border-radius:0;border-top:1px solid var(--line);background:transparent}
-.btn.verde{background:var(--sez-c);color:#FFFFFF;border-color:transparent}
-.tagnc{align-self:flex-start;font-size:12px;font-weight:700;padding:3px 10px;border-radius:99px;background:var(--sez-b);color:var(--sez-b-fg)}
-.tabs .bd{display:inline-block;min-width:18px;height:18px;line-height:18px;margin-left:5px;border-radius:9px;background:var(--sez-b);color:var(--sez-b-fg);font-size:12px;font-weight:700;text-align:center;vertical-align:1px}
-.salvab{flex-direction:column;gap:8px;border-top:2px solid var(--sez-c);box-shadow:0 -6px 18px rgba(0,0,0,.08)}
-.salvab .avv{font-size:13px;font-weight:700;color:var(--amber);text-align:center}
-.cbox{flex:1 1 0;min-height:0;overflow-y:auto;padding:8px 16px;display:flex;flex-direction:column;gap:8px}
-.cb{max-width:84%;padding:10px 14px;border-radius:18px;font-size:15px;line-height:1.4}
-.cb.l{align-self:flex-start;background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:6px}
-.cb.g{align-self:flex-end;background:var(--inv-bg);color:var(--inv-fg);border-bottom-right-radius:6px}
-.csug{display:flex;gap:8px;overflow-x:auto;padding:6px 16px 8px;flex:none}
-.csug .chip{white-space:nowrap;flex:none}
-.cin{align-items:center;gap:8px}
-.cin input{flex:1 1 0;min-width:0;height:46px;border-radius:14px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);padding:0 14px;font-size:16px;font-family:inherit}
-.sez{border-radius:24px;overflow:hidden;border:0;background:var(--surface)}
-.sez-h{padding:18px 18px 4px;display:flex;flex-direction:column;gap:1px}
-.sez-h b{font-size:20px;font-weight:700;letter-spacing:-.2px}
-.sez-h span{font-size:13px}
-.sez-b{padding:12px 18px 18px;display:flex;flex-direction:column;gap:10px}
-.sez.a{background:var(--inv-bg);color:var(--inv-fg)}
-.sez.a .sez-h b{color:var(--lime)}.sez.a .sez-h span{color:var(--inv-muted)}
-.sez.a .card.inv{background:transparent;border:0;padding:0}
-.sez.b{background:var(--sez-b);color:var(--sez-b-fg)}
-.sez.b .sez-h span{opacity:.8}
-.sez.b .warn{background:transparent;padding:0;color:var(--sez-b-fg)}
-.sez.b .warn b{color:var(--sez-b-fg)}
-.sez.b .warn .btn{background:#FFFFFF;color:#2B1D00;border-color:transparent}
-.sez.b .warn .btn.dark{background:#2B1D00;color:#FFFFFF}
-.sez.c{background:var(--sez-c);color:#FFFFFF}
-.sez.c .sez-h span{opacity:.85}
-.sez.c .btn{background:#FFFFFF;color:#0F3F26;border-color:transparent}
-.warn{background:var(--warn-bg);color:var(--warn-fg);border-radius:20px;padding:16px 18px;display:flex;flex-direction:column;gap:8px;border:0}
-.warn b{color:var(--ink)}
-.warn .btn{flex:1 1 0;height:42px;font-size:14px;font-weight:700;padding:0;border-color:var(--warn-line);background:var(--surface)}
-.warn .btn.dark{background:var(--inv-bg)}
-.note{background:var(--soft);border-radius:20px;padding:16px 18px;font-size:15px}
-.ok{background:var(--ok-bg);border-radius:20px;padding:16px 18px;color:var(--ok-fg)}
-.partita{text-align:left;width:100%;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
-.barre{display:flex;gap:6px}
-.barre i{flex:1 1 0;height:8px;border-radius:4px;background:var(--track)}
-.barre i.p{background:var(--bar)}
-.posti{display:flex;gap:8px}
-.posto{flex:1 1 0;border-radius:12px;padding:10px 6px;text-align:center;font-size:14px;font-weight:700;background:var(--ok-bg);color:var(--ok-fg)}
-.posto.v{background:none;border:1.5px dashed var(--muted);color:var(--muted);font-weight:400;padding:9px 6px}
-.ond{display:flex;align-items:center;gap:10px}
-.ond i{width:10px;height:10px;border-radius:50%;background:var(--bar);flex:none}
-.ond i.f{background:none;border:2px solid var(--muted)}
-.ond span{flex:1 1 auto;min-width:0}
-.ond em{font-style:normal;color:var(--muted);font-size:14px}
-.stato-s{color:var(--ok-fg);font-weight:700}.stato-t{color:var(--amber)}.stato-n{color:var(--muted)}.stato-x{color:var(--danger)}
-.foot{display:flex;gap:10px;padding:10px 16px 10px;background:var(--surface);border-top:1px solid var(--line)}
-#toast{position:absolute;left:20px;right:20px;bottom:84px;background:var(--inv-bg);color:var(--inv-fg);border-radius:14px;padding:12px 16px;font-size:14px;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.25)}
-.gioc{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
-.gioc b{display:block;font-size:16px}.gioc span{font-size:13px;color:var(--muted)}.gioc .stt{flex:none;margin-left:10px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;background:var(--ok-bg,#DDF3E4);color:var(--ok-fg,#135C36)}.gioc .stt.off{background:var(--sez-b);color:var(--sez-b-fg)}
-.susp{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;text-align:left;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:16px;padding:14px 16px;font-family:inherit}
-.susp b{display:block;font-size:15px}.susp small{display:block;font-size:13px;color:var(--muted);margin-top:2px}
-.susp i{flex:none;width:46px;height:28px;border-radius:14px;background:var(--line);position:relative;transition:background .15s}.susp i::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:left .15s}
-.susp.on i{background:var(--sez-b)}.susp.on i::after{left:21px}
-.gioc em{font-style:normal;font-size:13px;font-weight:700;color:var(--accent)}
-/* Su schermo largo il prototipo si mostra dentro un iPhone mini: area utile 360 x 780 px. */
-@media (min-width:500px){
-  body:not(.tgm){background:var(--soft);overflow-y:auto;padding-bottom:28px}
-  body:not(.tgm) #tel{flex:none;width:360px;height:780px;max-width:360px;max-height:none;margin-top:16px;border-radius:44px;transform:scale(var(--k,1));transform-origin:top center;margin-bottom:calc(780px * (var(--k,1) - 1));box-shadow:0 0 0 12px #0B0F0D,0 0 0 14px #2A322D,0 18px 50px rgba(0,0,0,.35)}
-  body:not(.tgm) #tg,body:not(.tgm) #app{top:44px}
-  body:not(.tgm) #tel::before{content:"";position:absolute;top:10px;left:50%;transform:translateX(-50%);width:96px;height:26px;border-radius:14px;background:#0B0F0D;z-index:50}
-  body:not(.tgm) #tel::after{content:"9:41";position:absolute;top:0;left:0;right:0;height:44px;padding:14px 30px 0;font-size:15px;font-weight:700;color:var(--ink);background:var(--surface);z-index:40;pointer-events:none}
-  body:not(.tgm) .tabs{padding-bottom:20px}
-  body:not(.tgm) .foot{padding-bottom:10px}
-}
-.tgm .sw,.tgm .ahead,.tgm #tg{display:none}
-.tgm #tel{max-width:none;max-height:none;border-radius:0;box-shadow:none}
-.tgm .banner{top:10px}
-@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+body{margin:0;background:var(--page);color:var(--ink);font:400 15px/1.45 var(--body);padding-block:14px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+.col{max-width:420px;margin:0 auto}
+.bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 12px}
+.bar .lbl{width:100%;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
+.tb{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 13px;font-size:13px;min-height:36px}
+.tb.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.phone{position:relative;width:380px;max-width:100%;margin:0 auto;background:#0A0A0C;border-radius:46px;padding:10px;box-shadow:0 12px 40px rgba(0,0,0,.28),inset 0 0 0 2px #2A2A2E;transform:translateZ(0)}
+.screen{position:relative;width:100%;height:min(780px,calc(100vh - 150px));min-height:560px;background:var(--bg);border-radius:36px;overflow:hidden;display:flex;flex-direction:column}
+.notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:128px;height:26px;background:#0A0A0C;border-radius:0 0 16px 16px;z-index:5}
+.stat{flex:none;display:flex;justify-content:space-between;align-items:flex-end;padding:8px 26px 4px;height:36px;font:600 13px/1 var(--body);background:var(--card);color:var(--ink)}
+.stat.dk{background:#0E1A14;color:#fff}
+.push{position:absolute;top:42px;left:10px;right:10px;z-index:15;width:calc(100% - 20px);text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px 12px;box-shadow:0 6px 20px rgba(0,0,0,.22);font-size:14px;line-height:1.35}
+.home{position:absolute;bottom:5px;left:50%;transform:translateX(-50%);width:110px;height:4px;border-radius:2px;background:var(--ink);opacity:.55;z-index:5;pointer-events:none}
+@media (max-width:440px){body{padding-block:10px;padding-left:max(10px,env(safe-area-inset-left,0px));padding-right:max(10px,env(safe-area-inset-right,0px))}.phone{width:100%;padding:0;background:transparent;box-shadow:none;border-radius:0}.screen{border-radius:18px;height:calc(100dvh - 190px);min-height:420px;border:1px solid var(--line)}.notch,.home,.stat{display:none}.push{top:10px}}
+.frame{background:var(--bg);flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column}
+.appbar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 16px;background:var(--card);border-bottom:1px solid var(--line)}
+.brand{font:700 24px/1 var(--disp);letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand small{display:block;font:500 11px/1.2 var(--body);letter-spacing:.14em;color:var(--ink2);text-transform:uppercase;margin-top:3px}
+.main{flex:1;min-height:0;overflow-y:auto;padding:16px 16px 22px;display:flex;flex-direction:column;gap:14px;min-width:0}
+h2{font:700 24px/1.1 var(--disp);letter-spacing:.02em;margin:0}
+h3{font:700 19px/1.1 var(--disp);letter-spacing:.03em;margin:0;text-transform:uppercase}
+p{margin:0}
+.mut{color:var(--ink2)}
+.sm{font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+.btn{display:block;width:100%;min-height:48px;border:0;border-radius:12px;background:var(--brand);color:var(--onbrand);font-weight:600;font-size:16px;padding:10px 16px}
+.btn.sec{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.btn.warn{background:var(--accent);color:#fff}
+.btn.sm2{min-height:40px;font-size:14px;width:auto;display:inline-block;padding:8px 14px}
+.lnk{background:none;border:0;color:var(--brand);font-weight:600;padding:8px 0;min-height:40px;text-align:left}
+.row{display:flex;gap:8px;align-items:center}
+.sp{justify-content:space-between}
+.wrap{flex-wrap:wrap}
+.pill{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.04em;padding:3px 9px;border-radius:7px;white-space:nowrap}
+.pill.base{background:var(--lvbbg);color:var(--lvb)}.pill.mid{background:var(--lvmbg);color:var(--lvm)}.pill.adv{background:var(--lvabg);color:var(--lva)}.pill.none{background:var(--soft);color:var(--ink2)}.pill.coach{background:var(--soft);color:var(--brand)}.pill.warn{background:var(--accent-soft);color:var(--accent)}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;min-height:56px}
+.opt.on{border-color:var(--brand);background:var(--soft)}
+.opt b{display:block;font-weight:600}
+.dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);flex:none;margin-top:1px;display:grid;place-items:center}
+.opt.on .dot{border-color:var(--brand);background:var(--brand)}
+.opt.on .dot::after{content:"";width:7px;height:7px;border-radius:50%;background:var(--onbrand)}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.seg3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.sg{line-height:1.15;border:1.5px solid var(--line);background:var(--card);border-radius:12px;min-height:48px;padding:6px 8px;font-weight:600;font-size:14px}
+.sg.on{border-color:var(--brand);background:var(--soft);color:var(--brand)}
+.days{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.day{flex:none;width:54px;border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:6px 0;text-align:center;line-height:1.15}
+.day span{display:block;font-size:12px;color:var(--ink2);text-transform:uppercase;letter-spacing:.06em}
+.day b{font:700 22px/1.1 var(--disp)}
+.day.on{border-color:var(--ink);background:var(--ink);color:var(--bg)}.day.on span{color:var(--bg)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.cc{min-height:54px;border:1.5px solid var(--line);background:var(--card);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px 2px;line-height:1.05;min-width:0}
+.cc b{font:700 17px/1 var(--disp);letter-spacing:.03em}
+.cc i{font-style:normal;font-size:11px;color:var(--ink2);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cc.coach{border-color:var(--brand);background:var(--brand);color:#fff}
+.cc.coach b,.cc.coach i{color:#fff}
+.cc.solo{background:var(--solo);border-color:var(--solo);color:#1A1405}
+.cc.solo b,.cc.solo i{color:#1A1405}
+.cc.hl{outline:3px solid #E8B923;outline-offset:2px}
+.cc.abs{background:var(--abs);border-color:var(--abs);color:#fff}.cc.abs b,.cc.abs i{color:#fff}.pill.abs{background:var(--abs);color:#fff}
+.cc.warn{border-color:var(--accent);background:var(--accent);color:#fff}
+.cc.warn b,.cc.warn i{color:#fff}
+.grid4 .sl{min-height:40px;font-size:16px}
+.foot{position:sticky;bottom:-22px;margin:auto -16px -22px;padding:10px 16px 22px;background:var(--bg);border-top:1px solid var(--line)}
+.main:has(.foot){gap:10px}
+.sl{min-height:46px;border:1.5px solid var(--line);background:var(--card);border-radius:11px;font:600 17px/1 var(--disp);letter-spacing:.03em}
+.sl.on{background:var(--brand);border-color:var(--brand);color:var(--onbrand)}
+.sl.busy{background:var(--bg);color:var(--ink2);border-style:solid;opacity:.55;text-decoration:line-through}
+.sl.away{background:transparent;border-style:dashed;color:var(--ink2)}
+.sl.mine{border-color:var(--brand);color:var(--brand);background:var(--soft)}
+.fh{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2);margin:2px 0 8px}
+.err{color:var(--accent);font-size:14px;font-weight:500}
+.nav{flex:none;padding-bottom:12px;display:grid;background:var(--card);border-top:1px solid var(--line)}
+.nav.n3{grid-template-columns:repeat(3,1fr)}.nav.n2{grid-template-columns:repeat(2,1fr)}
+.nav button{position:relative;border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 0 8px;font-size:12px;color:var(--ink2);min-height:56px}
+.nav{gap:6px;padding:8px 10px 12px}
+.nav button{border-radius:12px;font-size:13px}
+.nav button.on{background:var(--brand);color:var(--onbrand);font-weight:700}
+.nav button.on .ic{stroke-width:2.2}
+.nav button.on .bdg{background:var(--onbrand);color:var(--brand)}
+.ic{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.bdg{position:absolute;top:5px;left:calc(50% + 8px);min-width:18px;height:18px;border-radius:9px;background:var(--accent);color:#fff;font-size:11px;font-weight:600;display:grid;place-items:center;padding:0 5px}
+.blk{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.vals{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0 8px}
+.vals div{background:var(--bg);border-radius:10px;padding:7px 8px}
+.vals small{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)}
+.vals b{font:700 22px/1.1 var(--disp);letter-spacing:.02em}
+.srow{display:flex;gap:12px;align-items:center;width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;text-align:left;min-height:54px}
+.srow .t{font:700 20px/1 var(--disp);letter-spacing:.03em;min-width:50px}
+.srow .m{flex:1;min-width:0}
+.srow.abs{background:transparent;border-style:dashed;color:var(--ink2)}
+.srow.bk{border-color:var(--brand)}
+.msgs{display:flex;flex-direction:column;gap:8px}
+.bub{max-width:86%;padding:9px 12px;border-radius:14px;overflow-wrap:anywhere}
+.bub.me{align-self:flex-end;background:var(--brand);color:var(--onbrand);border-bottom-right-radius:4px}
+.bub.co{align-self:flex-start;background:var(--card);border:1px solid var(--line);border-bottom-left-radius:4px}
+.inp{width:100%;min-height:46px;border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:10px 12px}
+.shw{position:absolute;inset:10px;z-index:20;display:flex;align-items:flex-end;border-radius:36px;overflow:hidden}
+.bd{position:absolute;inset:0;background:rgba(10,16,12,.5)}
+.sheet{position:relative;width:100%;margin-top:auto;padding-bottom:30px;max-width:none;margin:0;background:var(--card);border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));max-height:86vh;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+.tw{position:absolute;left:10px;right:10px;bottom:90px;z-index:30;display:flex;justify-content:center;pointer-events:none;padding:0 12px}
+.toast{background:var(--ink);color:var(--bg);padding:11px 16px;border-radius:12px;max-width:420px;font-size:14px;box-shadow:0 4px 18px rgba(0,0,0,.25)}
+.intro{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;background:#0E1A14;color:#fff}
+.poster{position:relative;width:100%;height:520px;flex:none;background:var(--court);display:grid;place-items:center;overflow:hidden}
+.poster svg.court{position:absolute;inset:0;width:100%;height:100%}
+.poster .tt{position:relative;text-align:center}
+.poster .tt b{display:block;font:700 70px/.95 var(--disp);letter-spacing:.06em}
+.play{width:68px;height:68px;border-radius:50%;border:0;background:#fff;color:#0E1A14;display:grid;place-items:center;margin:18px auto 0}
+.prog{height:5px;background:rgba(255,255,255,.25);border-radius:3px;overflow:hidden;margin:16px 16px 0}
+.prog i{display:block;height:100%;width:0;background:#fff}
+.prog.go i{animation:pg 50s linear forwards}
+@keyframes pg{to{width:100%}}
+@media (prefers-reduced-motion:reduce){.prog.go i{animation-duration:50s}}
+.stp{display:grid;grid-template-columns:44px 1fr 44px;gap:6px;align-items:center}
+.stp button{min-height:44px;border:1.5px solid var(--line);background:var(--card);border-radius:10px;font:700 20px/1 var(--body)}
+.stp b{text-align:center;font:700 22px/1 var(--disp)}
 </style>
-
-<div class="sw" role="group" aria-label="Chi sta guardando">
-  <button id="bg" data-a="ruolo" data-v="g">Giocatore</button>
-  <button id="bm" data-a="ruolo" data-v="m">Maestro</button>
-</div>
-<div id="tel">
-  <div id="tg"></div>
-  <div id="app" hidden>
-    <div class="ahead"><button id="hb" data-a="close">× Chiudi</button><div class="atit"><b>lozio bot</b><span>mini app</span></div><button data-a="dots" aria-label="Altro">⋯</button></div>
-    <div id="sch"></div>
-    <div class="tabs" id="tabs"></div>
-    <div id="toast" hidden role="status"></div>
-    <div id="banner" class="banner" hidden role="status"></div>
-  </div>
-</div>
-
+</head>
+<body>
+<div class="col" id="root"></div>
 <script>
-var S = {
-  open: false, ruolo: 'g', gs: 'home', invito: 'aperto', nonRiesco: false,
-  orari: { fm: false, fp: false, fs: true, wm: true, wp: true }, due: false,
-  ms: 'home', gia: {}, edit: false, pick: false, marOff: false, chiusi: {}, liv: 'principiante', tipo: 'mista', prop: 'aperta', avv: 'aperto',
-  ninv: '', invPronto: null, sabOff: false, lunOff: false, sel: 'sab', chat: [], dirty: false, salvato: '', confAnn: false, cand: null, selId: null, eLiv: null, eTipo: null
-};
-var NL = { principiante: 'Principianti', base: 'Base', intermedio: 'Intermedi' };
-var NT = { maschile: 'Maschile', femminile: 'Femminile', mista: 'Mista' };
-var ESITO = { annullata: 'partita annullata, giocatori avvisati.', aspetta: 'aspetto ancora, ti riscrivo domani alle 9.', altri: 'invitati altri 3 giocatori.' };
-var tt;
-function flash(m){ var t=document.getElementById('toast'); t.textContent=m; t.hidden=false; clearTimeout(tt); tt=setTimeout(function(){t.hidden=true},2400); }
-function snap(){ return JSON.stringify([S.orari, S.due]); }
-function aggiornaDirty(){ S.dirty = snap() !== S.salvato; }
-function chips(list, cur, act){ return '<div class="chips">'+list.map(function(k){ return '<button class="chip'+(cur[k[0]]?' on':'')+'" data-a="'+act+'" data-v="'+k[0]+'">'+k[1]+'</button>'; }).join('')+'</div>'; }
+const ICON={cal:'<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',list:'<rect x="5" y="3.5" width="14" height="17" rx="2.5"/><path d="M9 9h6M9 13h6M9 17h3"/>',chat:'<path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v7a2.5 2.5 0 0 1-2.5 2.5H10l-4 4v-4h-0A2.5 2.5 0 0 1 4 13.5z"/>',play:'<path d="M8 5.5v13l11-6.5z" fill="currentColor"/>'};
+const ic=n=>'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">'+ICON[n]+'</svg>';
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
+const LV={base:{name:'Base',desc:'Prime palle: controllo e ritmo lento'},mid:{name:'Intermedio',desc:'Continuità, volée e primi colpi d’attacco'},adv:{name:'Avanzato',desc:'Ritmo alto, spin forte, colpi d’attacco'}};
+const DR=[
+['b1','base','Dritto & Rovescio Base','Controllo impatto e ritmo','1–3','Palla piatta','2–4','Medio-corta','3,4 sec','Lento','Metà campo (4-5 m dalla macchina)'],
+['b2','base','Volée Base','Punto d\u2019impatto avanzato','1–2','Palla pulita','3–4','Altezza vita/petto','3,0 sec','Moderato','Sotto rete (3-4 m dalla macchina)'],
+['m1','mid','Palleggio di Fondo','Continuità e sensazione','4–6','Topspin leggero','5–7','Profondità media','2,5 sec','Ritmo di gioco','Fondo campo (6-7 m dalla macchina)'],
+['m2','mid','Volée d\u2019Attacco','Reattività e chiusura','3–5','Tiro teso','4–5','Spinta al petto','2,2 sec','Veloce','Sotto rete (3 m dalla macchina)'],
+['m3','mid','Bandeja / Vibora','Spostamento e impatto alto','4–6','Effetto leggero','6–8','Lob medio','2,8 sec','Tempo arretramento','Centro / Fondo (5-6 m dalla macchina)'],
+['a1','adv','Palleggio Alta Intensità','Memoria muscolare & cardio','7–10','Spin carico','8–10','Fondo spinto','1,8 sec','Massima frequenza','Fondo campo (7 m dalla macchina)'],
+['a2','adv','Volée & Blocco Reattivo','Tempo di reazione minimo','6–8','Tiro rapido','5–6','Potenza sostenuta','1,8 sec','Massima frequenza','Sotto rete (2,5-3 m)'],
+['a3','adv','Bandeja / Vibora Spinta','Attacco su lob teso','7–9','Effetto profondo','8–10','Lob alto e lungo','2,0 sec','Ritmo incalzante','Centro / Fondo (6 m dalla macchina)'],
+['a4','adv','Smash d\u2019Attacco / Por 3','Caricamento e potenza','5–8','Traiettoria alta','7–9','Lob a spiovere','2,5–3,0 sec','Tempo di preparazione','Centro campo (4-5 m dalla macchina)']
+].map(r=>({id:r[0],lv:r[1],name:r[2],focus:r[3],spin:r[4],spinD:r[5],dist:r[6],distD:r[7],freq:r[8],freqD:r[9],pos:r[10]}));
+const EX=[
+['b1a','b1','Rovescio in sicurezza','Solo rovescio, per prendere fiducia'],
+['b1b','b1','Dritto e rovescio alternati','Un colpo per lato, spostando i piedi di 1 metro'],
+['b1c','b1','Sfida delle 10','10 palle di fila sul bersaglio appeso alla rete, senza errori'],
+['b2a','b2','Volée: 10 di fila','10 volée di fila senza errori'],
+['m1a','m1','Sfida delle 20','20 palle di fila senza errore'],
+['a1a','a1','Dritto e rovescio ad alta intensità','Dritto e rovescio a ritmo alto, senza pause'],
+['a2a','a2','Volée in sequenza','Più volée di fila con tempo ridotto'],
+['m1d','m1','Palleggio a bersaglio','Colpisci il bersaglio appeso alla rete: 10 di fila'],
+['m1e','m1','Palleggio a tempo','Quante palle di fila in 2 minuti, senza errori'],
+['m1f','m1','Avanti e indietro','Ogni 5 palle fai un passo verso la rete, poi torni indietro'],
+['m2b','m2','Volée dritto e rovescio alternate','Una volée per lato, in sequenza'],
+['m3a','m3','Bandeja e ritorno a rete','Dopo ogni bandeja torni in posizione sotto rete'],
+['a1c','a1','Palleggio lungo senza pause','6 minuti di fila a ritmo alto, per la resistenza'],
+['a2b','a2','Blocco con passo avanti','Un passo avanti a ogni blocco, poi torni in posizione'],
+['a3a','a3','Bandeja e vibora alternate','Un colpo di bandeja, uno di vibora'],
+['a4b','a4','Smash: 10 di fila','10 smash consecutivi con carico e potenza']
+];
+EX.forEach(e=>{const par=DR.find(d=>d.id===e[1]);DR.push(Object.assign({},par,{id:e[0],name:e[2],focus:e[3],colpo:par.name}));});
+{const std=DR.filter(d=>!d.colpo),out=[];std.forEach(s=>{out.push(s);DR.filter(d=>d.colpo===s.name).forEach(v=>out.push(v));});DR.length=0;out.forEach(x=>DR.push(x));}
+const drill=id=>DR.find(d=>d.id===id);
+const drillsOf=lv=>DR.filter(d=>d.lv===lv);
+const WARM={name:'Riscaldamento · dritto e rovescio',focus:'Per abituare vista e braccio',mins:2,spin:'1–3',spinD:'Palla piatta',dist:'2–4',distD:'Medio-corta',freq:'3,4 sec',freqD:'Lento',pos:'Metà campo (4-5 m dalla macchina)'};
+const blockOf=(id,mins)=>{const d=drill(id);return Object.assign({},d,{mins:mins});};
 
-/* ---- Collegamento ai dati veri (solo dentro Telegram) ---- */
-var APP_VER = '20261102b';
-// Versione nuova online? Se sì, ricarico la pagina (non mentre scrivi). Una sola volta per versione, per non ricaricare all'infinito.
-function controllaVersione(){
-  if(!LIVE) return;
-  var a = document.activeElement;
-  if((a && /^(INPUT|TEXTAREA)$/.test(a.tagName)) || S.dirty) return;
-  fetch(location.pathname + '?chk=' + Date.now(), { cache:'no-store' }).then(function(r){ return r.text(); }).then(function(t){
-    var m = t.match(/APP_VER = '(\d{8}[a-z])'/);
-    if(!m || m[1]===APP_VER) return;
-    try{ if(sessionStorage.getItem('rl')===m[1]) return; sessionStorage.setItem('rl', m[1]); }catch(e){}
-    var u = new URL(location.href); u.searchParams.set('r', m[1]); location.replace(u.toString());
-  }).catch(function(){});
-}
-var LIVE = false, D = null, INIT = '', ERR = '', API = 'https://bckgdriuuueadplwcaog.supabase.co/functions/v1/miniapp-api';
-function api(az, extra){
-  return fetch(API, { method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify(Object.assign({azione:az, initData:INIT}, extra||{})) })
-    .then(function(r){ return r.json(); }).catch(function(){ return { errore:'rete' }; });
-}
-var capz = function(t){ return t.charAt(0).toUpperCase()+t.slice(1); };
-function fGiorno(iso){ return capz(new Intl.DateTimeFormat('it-IT',{timeZone:'Europe/Rome',weekday:'long',day:'numeric',month:'long'}).format(new Date(iso))); }
-function fOra(iso){ return new Intl.DateTimeFormat('it-IT',{timeZone:'Europe/Rome',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(iso)); }
-function fFascia(p){ return fOra(p.inizio)+'–'+fOra(p.fine); }
-var visti = null, START = null;
-function carica(silenzioso){
-  return api('me').then(function(d){
-    if(d.errore){ if(!silenzioso || !D){ ERR = d.errore; } render(); return; }
-    ERR = '';
-    var nuovi = (d.inviti||[]).filter(function(i){ return visti && visti.indexOf(i.id) < 0; });
-    visti = (d.inviti||[]).map(function(i){ return i.id; });
-    var primo = !D;
-    D = d; S.ruolo = d.ruolo;
-    if(primo && d.ruolo==='g'){ S.orari = d.fasce; S.due = d.due; S.salvato = snap(); S.dirty = false; }
-    if(S.ruolo==='g' && S.gs==='invito' && !(d.inviti||[]).some(function(i){return i.id===S.invId;})) S.gs = 'home';
-    if(primo && START){
-      if(d.ruolo==='m'){ if(START.p && pAp(START.p)){ S.selId=START.p; S.ms='partita'; } else if(START.s==='tattiche'){ S.ms='tattiche'; } }
-      else if(START.s==='orari'){ S.gs='orari'; }
-      else if(START.i && (d.inviti||[]).length){ S.invId=d.inviti[0].id; S.gs='invito'; }
-      START = null;
-    }
-    render();
-    if(nuovi.length && S.ruolo==='g') mostraBannerL(nuovi[0]);
-    if(d.ruolo==='m'){
-      var conf = {}; (d.aperte||[]).forEach(function(p){ conf[p.id] = p.confermati; });
-      var nc = (d.nonChiuse||[]).map(function(p){return p.id;});
-      if(S.prevConf){
-        var cambiata = (d.aperte||[]).filter(function(p){ return S.prevConf[p.id]!==undefined && p.confermati>S.prevConf[p.id]; })[0];
-        var nuovaNC = (d.nonChiuse||[]).filter(function(p){ return (S.prevNC||[]).indexOf(p.id)<0; })[0];
-        if(cambiata) mostraBannerM('Nuova conferma', fGiorno(cambiata.inizio).split(' ').slice(0,2).join(' ')+': ora '+cambiata.confermati+' su '+cambiata.posti, cambiata.id);
-        else if(nuovaNC) mostraBannerM('Partita non chiusa', fGiorno(nuovaNC.inizio).split(' ').slice(0,2).join(' ')+': serve una tua decisione', nuovaNC.id);
-      }
-      S.prevConf = conf; S.prevNC = nc;
-    }
-  });
-}
-function mostraBannerL(i){
-  var b = document.getElementById('banner'); S.bnrInv = i.id;
-  b.innerHTML = '<span><b>Nuovo invito</b><br>'+fGiorno(i.inizio)+', '+fOra(i.inizio)+'</span><button data-a="bnr" data-v="invito">Rispondi</button><button class="x" data-a="bx" aria-label="Chiudi avviso">×</button>';
-  b.hidden = false; clearTimeout(bh); bh = setTimeout(hideBanner, 9000);
-}
-function gHomeL(){
-  var h = '<div class="top"><h1>Le mie Partite Tattiche</h1></div><div class="pad">';
-  var pr = D.prossime||[], inv = D.inviti||[];
-  if(pr.length){
-    h += '<div class="lab">'+(pr.length>1?'Prossime':'Prossima')+'</div>';
-    pr.forEach(function(p){
-      h += '<div class="card"><div class="row"><h2>'+fGiorno(p.inizio)+'</h2><span class="pill">Confermata</span></div><div>'+fFascia(p)+' · Padel Village</div>'+
-        (p.compagni.length ? '<div class="dim">Con: '+p.compagni.join(', ')+'</div>' : '<div class="dim">Ti scrivo appena la Partita Tattica è completa.</div>')+
-        '<button class="btn" data-a="nonRiesco" data-v="'+p.id+'" style="margin-top:6px">Non riesco più</button></div>';
-    });
-  }
-  if(inv.length){
-    h += '<div class="lab" style="margin-top:8px">Inviti</div>';
-    inv.forEach(function(i){
-      h += '<div class="card inv"><div style="font-size:13px;font-weight:700;color:var(--lime)">LoZio ti ha invitato</div><h2 style="font-size:20px">'+fGiorno(i.inizio)+'</h2><div class="dim">'+fFascia(i)+' · Padel Village</div><div class="row" style="margin-top:6px"><span class="dim">'+i.costo+' euro a persona</span><button class="btn lime" style="height:40px;font-size:14px;border-radius:12px" data-a="invRisp" data-v="'+i.id+'">Rispondi</button></div></div>';
-    });
-  }
-  if(!pr.length && !inv.length){
-    h += '<div class="note"><b>Per ora nessuna Partita Tattica</b><div class="dim" style="margin-top:4px">Ti scrivo io quando ce n\'è una per te. Intanto controlla le tue disponibilità.</div></div>';
-  }
-  return h+'</div>';
-}
-function gInvitoL(){
-  var i = (D.inviti||[]).filter(function(x){return x.id===S.invId;})[0];
-  if(!i) return gHomeL();
-  var nome = String(D.nome||'').split(' ')[0];
-  var gd = fGiorno(i.inizio).split(' ');
-  return '<div class="full"><button class="back" data-a="gs" data-v="home">‹ Le mie Partite Tattiche</button>'+
-  '<div style="padding:32px 20px 0;display:flex;flex-direction:column;gap:10px"><div style="font-size:14px;font-weight:700;color:var(--lime)">Ciao '+nome+', LoZio ha aperto una Partita Tattica</div><h1>'+gd[0]+'<br>'+gd.slice(1).join(' ')+'</h1><div style="font-size:18px;color:var(--inv-muted)">'+fFascia(i)+' · Padel Village</div></div>'+
-  '<div class="panel"><div class="row"><span>Costo</span><b>'+i.costo+' euro a persona</b></div><div class="row"><span>Si gioca in</span><b>4, con LoZio</b></div></div>'+
-  '<div style="flex:1 1 auto"></div><div style="padding:24px 20px calc(24px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px"><button class="big" data-a="ciSono">Ci sono</button><div style="display:flex;gap:10px"><button class="ghost" data-a="nonPosso">Non posso</button><button class="ghost" data-a="piuTardi">Più tardi</button></div><div style="text-align:center;font-size:13px;color:var(--inv-muted)">I posti sono pochi: rispondi appena puoi.</div></div></div>';
-}
-var MSG = { confermata:'Segnato, ti aspetta LoZio in campo.', completa_confermata:'Segnato: la partita è completa!', gia:'Eri già segnato.', completa:'Peccato, la partita è già completa.', annullata:'Questa partita è stata annullata.', rifiutata:'Va bene, sarà per la prossima.', dopo:'Va bene, aspetto la tua risposta.', non_valido:'Questo invito non è più valido.' };
-function apri(url, eTelegram){
-  var W = window.Telegram && Telegram.WebApp;
-  try{ if(eTelegram && W && W.openTelegramLink) W.openTelegramLink(url); else if(W && W.openLink) W.openLink(url); else window.open(url,'_blank'); }
-  catch(e){ window.open(url,'_blank'); }
-}
-function actL(a, v){
-  if(a==='invRisp'){ S.invId=v; S.gs='invito'; return true; }
-  if(a==='bnr' && v==='invito'){ S.invId=S.bnrInv; S.gs='invito'; hideBanner(); return true; }
-  var sc = { ciSono:'s', nonPosso:'n', piuTardi:'d' }[a];
-  if(sc){
-    var id = S.invId; S.gs='home'; render();
-    api('rispondi',{iscrizione:id, scelta:sc}).then(function(r){ flash(r.errore ? 'Non riesco a salvare, riprova.' : (MSG[r.esito]||'Fatto.')); carica(true); });
-    return true;
-  }
-  if(a==='susp'){
-    var nuovo = !D.sospeso; D.sospeso = nuovo; render();
-    api('sospendi',{sospeso:nuovo}).then(function(r){ if(r.errore){ D.sospeso = !nuovo; render(); flash('Non riesco, riprova.'); } else { flash(nuovo?'Partite Tattiche sospese.':'Bentornato! Ti riattivo.'); } carica(true); });
-    return true;
-  }
-  if(a==='nonRiesco'){
-    api('nonRiesco',{iscrizione:v}).then(function(r){ flash(r.errore ? 'Non riesco, riprova.' : 'Grazie dell\'avviso: LoZio cerca un sostituto.'); carica(true); });
-    return true;
-  }
-  if(a==='salva'){
-    api('disponibilita',{fasce:S.orari, due:S.due}).then(function(r){ if(!r.errore){ S.salvato=snap(); S.dirty=false; render(); } flash(r.errore==='nessuna_fascia' ? 'Scegli almeno una fascia.' : r.errore ? 'Non riesco a salvare, riprova.' : 'Disponibilità salvate.'); });
-    return true;
-  }
-  if(a==='gs' && v==='amico' && !S.amico){ api('amico').then(function(r){ if(!r.errore) S.amico=r; }); return false; }
-  if(a==='amico'){
-    var go = function(l){ apri(v==='wa' ? l.whatsapp : l.telegram, v==='tg'); };
-    if(S.amico) go(S.amico);
-    else api('amico').then(function(r){ if(r.errore){ flash('Non riesco, riprova tra poco.'); } else { S.amico=r; go(r); } });
-    return true;
-  }
-  return false;
+const DOWL=['domenica','lunedì','martedì','mercoledì','giovedì','venerdì','sabato'],DOWS=['dom','lun','mar','mer','gio','ven','sab'];
+const MON=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+const dOf=k=>{const p=k.split('-').map(Number);return new Date(p[0],p[1]-1,p[2]);};
+const keyOf=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const DAYS=[0,1,2,3,4,5,6].map(i=>keyOf(new Date(2026,10,3+i)));
+const longDay=k=>{const d=dOf(k),w=DOWL[d.getDay()];return w[0].toUpperCase()+w.slice(1)+' '+d.getDate()+' '+MON[d.getMonth()];};
+const shortDay=k=>{const d=dOf(k);return DOWS[d.getDay()]+' '+d.getDate()+' nov';};
+const mm=t=>{const p=t.split(':').map(Number);return p[0]*60+p[1];};
+const tt=m=>String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
+function fasce(k){const w=dOf(k).getDay();const f=(w===0||w===6)?[['09:30','12:30'],['15:00','18:00']]:[['12:00','15:00'],['17:00','23:00']];
+ return f.map(x=>{const s=[];for(let m=mm(x[0]);m+20<=mm(x[1]);m+=20)s.push(tt(m));return {a:x[0],b:x[1],slots:s};});}
+const sk=(d,t)=>d+'|'+t;
+const FOC={dr:'Dritto e rovescio',volee:'Volée',pall:'Palleggio di fondo',bandeja:'Bandeja e vibora',smash:'Smash e por 3',coach:'Decide il coach'};
+const PURP={allenamento:'Allenamento',racchette:'Test racchette',livello:'Test livello di gioco'};
+const price=w=>w==='coach'?10:5;
+function maxRun(times){const a=times.map(mm).sort((x,y)=>x-y);let best=0,run=0,prev=-99;a.forEach(m=>{run=(m-prev===20)?run+1:1;prev=m;if(run>best)best=run;});return best;}
+const rangeOf=b=>b.slots[0]+'–'+tt(mm(b.slots[b.slots.length-1])+20);
+const cmpB=(a,b)=>(a.date+a.slots[0]).localeCompare(b.date+b.slots[0]);
+let S,TO;
+function top0(){const m=document.querySelector('.main');if(m)m.scrollTop=0;}
+
+function seed(sc){
+ const others=[
+  {id:'b1',date:'2026-11-03',slots:['12:00'],purpose:'allenamento',who:'coach',level:'mid',player:'Marco R.'},
+  {id:'b2',date:'2026-11-03',slots:['12:40'],purpose:'racchette',who:'solo',level:null,player:'Giulia B.'},
+  {id:'b3',date:'2026-11-03',slots:['17:20','17:40'],purpose:'livello',who:'coach',level:null,player:'Luca T.'},
+  {id:'b4',date:'2026-11-04',slots:['19:00'],purpose:'allenamento',who:'solo',level:'mid',player:'Marco R.'},
+  {id:'b5',date:'2026-11-07',slots:['10:30'],purpose:'allenamento',who:'coach',level:'adv',player:'Davide F.'}];
+ const base={hist:[],sc:sc,role:'player',area:'player',tab:'prenota',pv:'home',sView:'main',sIdx:0,ctab:'slot',intro:false,introPlay:false,late:false,sheet:null,toast:null,cday:DAYS[0],comp:null,err:'',
+  draft:{purpose:'allenamento',who:'solo',day:DAYS[0],fi:0,sel:[]},create:{level:null,sel:[]},
+  absent:{'2026-11-03|13:00':true},feed:[],
+  requests:[{id:'r1',player:'Marco R.',level:'mid',date:'2026-11-03',slot:'12:00',focus:'dritto e rovescio'},{id:'r2',player:'Anna M.',level:'adv',date:'2026-11-03',slot:'21:00',focus:'bandeja e vibora'},{id:'r3',player:'Paolo G.',level:'base',date:'2026-11-04',slot:'12:20',focus:'dritto e rovescio'},{id:'r4',player:'Elisa C.',level:'mid',date:'2026-11-04',slot:'18:20',focus:'palleggio di fondo'},{id:'r5',player:'Giulia B.',level:'mid',date:'2026-11-05',slot:'17:20',focus:'volée'},{id:'r6',player:'Chiara L.',level:'mid',date:'2026-11-05',slot:'13:00',focus:'dritto e rovescio',purp:'racchette'},{id:'r7',player:'Nicola S.',level:'adv',date:'2026-11-06',slot:'17:00',focus:'dritto e rovescio, volée'},{id:'r8',player:'Marta V.',level:'base',date:'2026-11-06',slot:'22:00',focus:'palleggio di fondo'},{id:'r9',player:'Fabio D.',level:'mid',date:'2026-11-07',slot:'09:30',focus:'sceglie il coach'},{id:'r10',player:'Davide F.',level:'adv',date:'2026-11-07',slot:'10:30',focus:'volée'},{id:'r11',player:'Irene B.',level:'adv',date:'2026-11-08',slot:'15:20',focus:'bandeja e vibora'},{id:'r12',player:'Stefano R.',level:'mid',date:'2026-11-08',slot:'16:40',focus:'smash e por 3'},{id:'r13',player:'Laura P.',level:'base',date:'2026-11-09',slot:'12:40',focus:'dritto e rovescio'},{id:'r14',player:'Elena P.',level:null,note:'Chiede una scheda'}],
+  levelTests:[{id:'t1',player:'Davide F.',when:'lunedì 2 novembre',date:'2026-11-02'}]};
+ if(sc==='new'){
+  return Object.assign(base,{intro:true,me:{name:'Paolo V.',level:null,schede:[],chat:[],hadCoach:false},bookings:others});}
+ const sofia={name:'Sofia C.',level:'mid',hadCoach:true,
+  schede:[{id:'s1',by:'coach',level:'mid',date:'1 novembre',blocks:[WARM,blockOf('m1',5),blockOf('m3',4),blockOf('m2',4)]}],
+  chat:[{from:'co',text:'Ciao Sofia, ti ho preparato la scheda per la prossima sessione. Se qualcosa non va, scrivimi.',card:'s1'},{from:'me',text:'Grazie coach!'}]};
+ const bk=others.concat([{id:'b0',date:'2026-11-04',slots:['18:20'],purpose:'allenamento',who:'solo',level:'mid',player:'Sofia C.'}]);
+ base.me=sofia;base.bookings=bk;
+ if(sc==='arrivo'){base.tg='push';base.pnotif={id:'s1',sess:'mercoled\u00ec 4 novembre, 18:20'};base.tgmsg={kind:'scheda',text:'Il tuo coach ti ha preparato la scheda per la sessione di mercoled\u00ec 4 novembre, 18:20.',btn:'Apri scheda'};}
+ if(sc==='prenota'){base.role='coach';base.area='coach';base.tg='push';base.tgmsg={kind:'day',text:'Davide F. ha prenotato con il coach: sabato 7 novembre, 10:30.',btn:'Apri giorno',date:'2026-11-07',slot:'10:30'};}
+ if(sc==='coach'){base.role='coach';base.area='coach';base.feed=[{id:'f1',text:'Davide F. ha prenotato con il coach: sabato 7 novembre, 10:30'}];}
+ return base;
 }
 
-/* ---- Maestro: dati veri ---- */
-function fRel(iso){
-  var f = function(d){ return new Intl.DateTimeFormat('it-IT',{timeZone:'Europe/Rome',year:'numeric',month:'2-digit',day:'2-digit'}).format(d); };
-  var d = new Date(iso), oggi = new Date(), ieri = new Date(Date.now()-864e5);
-  var o = fOra(iso);
-  if(f(d)===f(oggi)) return 'oggi '+o;
-  if(f(d)===f(ieri)) return 'ieri '+o;
-  return new Intl.DateTimeFormat('it-IT',{timeZone:'Europe/Rome',weekday:'short'}).format(d)+' '+o;
-}
-function pAp(id){ return ((D&&D.aperte)||[]).filter(function(p){return p.id===id;})[0]; }
-function tipoTxt(t){ return t ? NT[t].toLowerCase() : ''; }
-function mHomeL(){
-  var h = '<div class="top"><small>'+capz(new Intl.DateTimeFormat('it-IT',{timeZone:'Europe/Rome',weekday:'long',day:'numeric',month:'long'}).format(new Date()))+'</small><h1>Home</h1></div><div class="pad" style="gap:22px">';
-  var pr = D.proposta, a = '';
-  if(pr && pr.stato==='in_attesa'){
-    a = '<div class="card inv"><h2 style="font-size:21px">'+fGiorno(pr.inizio)+', '+fFascia(pr)+'</h2>'+
-      chips([['principiante','Principianti'],['base','Base'],['intermedio','Intermedi']],{principiante:S.liv==='principiante',base:S.liv==='base',intermedio:S.liv==='intermedio'},'liv')+
-      chips([['maschile','Maschile'],['femminile','Femminile'],['mista','Mista']],{maschile:S.tipo==='maschile',femminile:S.tipo==='femminile',mista:S.tipo==='mista'},'tipo')+
-      '<div style="display:flex;gap:10px;margin-top:4px"><button class="btn lime" style="flex:1 1 0;height:50px;font-size:16px" data-a="apri">Apri e invita 5</button><button class="btn" style="width:90px;height:50px;background:transparent;border-color:var(--inv-line);color:var(--inv-fg)" data-a="no">No</button></div></div>';
-  } else if(pr && pr.stato==='aperta'){
-    var ap = ((D.aperte||[]).filter(function(x){return x.inizio===pr.inizio;}))[0];
-    var n = ap ? ap.invitati.length : 0;
-    a = '<div class="ok"><b>Partita aperta: '+fGiorno(pr.inizio).toLowerCase()+', '+(NL[pr.livello]||'')+', '+tipoTxt(pr.tipo)+'</b><div style="margin-top:4px;font-size:14px">'+(n? 'Ho invitato '+n+(n===1?' giocatore':' giocatori')+'.' : 'Non ho trovato giocatori adatti da invitare.')+(ap && ap.ondateInviate<2 ? ' Alle 12:30 altri 3, se servono.' : '')+'</div></div>';
-  } else if(pr && pr.stato==='no'){
-    a = '<div class="note">'+fGiorno(pr.inizio)+': nessuna Partita Tattica.<button class="btn" data-a="rip" data-v="prop" style="margin-top:8px;height:40px">Cambia idea</button></div>';
-  } else {
-    a = '<div class="note">Oggi non c\'è nessuna proposta da decidere.</div>';
-  }
-  h += sez('a','Proposta delle 8:00','Una nuova Partita Tattica da aprire', a);
-  return h+'</div>';
-}
-function eNC(id){ return ((D&&D.nonChiuse)||[]).some(function(x){return x.id===id;}); }
-function rigaL(p){
-  var tag = eNC(p.id) ? '<div class="tagnc">Non si è chiusa · da decidere</div>' : '';
-  var bar = ''; for(var i=0;i<p.posti;i++) bar += '<i'+(i<p.confermati?' class="p"':'')+'></i>';
-  var senza = p.invitati.filter(function(x){return x.stato==='in_attesa';}).length;
-  var testo = p.convocazione==='completa' ? 'Completa · '+p.confermati+' su '+p.posti : p.confermati+' su '+p.posti+' · '+p.invitati.length+' invitati'+(senza? ', '+senza+' non '+(senza===1?'ha':'hanno')+' risposto':'');
-  return '<button class="partita" data-a="det" data-v="'+p.id+'">'+tag+'<div class="row" style="width:100%"><b style="font-size:17px">'+fGiorno(p.inizio).split(' ').slice(0,2).join(' ')+', '+fOra(p.inizio)+'</b><span class="dim">'+(NL[p.livello]||'')+' · '+tipoTxt(p.tipo)+'</span></div><div class="barre" style="width:100%">'+bar+'</div><div class="dim" style="color:var(--ink)">'+testo+'</div></button>';
-}
-function mTattL(){
-  var l = D.aperte||[];
-  var h = '<div class="top"><small>'+(l.length===1?'1 aperta':l.length+' aperte')+'</small><h1>Partite Tattiche</h1></div><div class="pad">';
-  h += l.length ? l.map(rigaL).join('') : '<div class="dim">Nessuna Partita Tattica aperta. Le proposte nuove le trovi in Home.</div>';
-  return h+'</div>';
-}
-function mDettL(){
-  var p = pAp(S.selId);
-  if(!p){ return '<div class="top"><h1>Partita chiusa</h1></div><div class="pad"><div class="dim">Questa Partita Tattica non è più aperta.</div><button class="btn" data-a="ms" data-v="tattiche">Torna all\'elenco</button></div>'; }
-  var nomi = p.invitati.filter(function(x){return x.stato==='confermata';}).map(function(x){return x.nome;});
-  var posti = []; for(var i=0;i<p.posti;i++) posti.push(nomi[i]||'');
-  var ond = p.ondate.map(function(o){ return [o.n+'ª ondata · '+o.invitati+' invitat'+(o.invitati===1?'o':'i'), o.quando?fRel(o.quando):'',1]; });
-  for(var n=p.ondate.length+1;n<=3 && p.ondateInviate<n;n++){ ond.push([n+'ª ondata · 3 invitati', n===2?'12:30':'20:30', 0]); }
-  var inv = p.invitati.map(function(x){ return x.stato==='confermata'?[x.nome,'Ci sono','s']: x.stato==='rifiutata'?[x.nome,'Non può','x']:[x.nome,'Non ha risposto','n']; });
-  var h = '<button class="back" data-a="ms" data-v="tattiche" style="align-self:flex-start;margin:20px 20px 0;padding:0;border:0;background:none;font-size:14px;font-weight:700;color:var(--accent)">‹ Partite Tattiche</button>'+
-    '<div class="top" style="padding-top:12px"><h1 style="font-size:28px">'+fGiorno(p.inizio)+'</h1><small style="margin-top:2px">'+fFascia(p)+' · '+(NL[p.livello]||'')+' · '+tipoTxt(p.tipo)+'</small></div><div class="pad">'+
-    '<div class="card"><div class="lab">Posti</div><div class="posti">'+posti.map(function(x){return '<div class="posto'+(x?'':' v')+'">'+(x||'libero')+'</div>'}).join('')+'</div></div>'+
-    '<div class="card"><div class="lab">Ondate</div>'+ond.map(function(o){return '<div class="ond"><i class="'+(o[2]?'':'f')+'"></i><span style="'+(o[2]?'':'color:var(--muted)')+'">'+o[0]+'</span><em>'+o[1]+'</em></div>'}).join('')+'</div>'+
-    '<div class="card"><div class="lab">Invitati</div>'+(inv.length? inv.map(function(i){return '<div class="row"><span>'+i[0]+'</span><span class="stato-'+i[2]+'">'+i[1]+'</span></div>'}).join('') : '<div class="dim">Nessun invitato.</div>')+'</div>';
-  if(eNC(p.id)){
-    h = h.replace('<div class="pad">', '<div class="pad">'+'<div class="warn"><b style="font-size:16px">Non si è chiusa: cosa facciamo?</b><div style="font-size:14px">'+p.confermati+' su '+p.posti+' coperti, '+p.invitati.length+' giocatori contattati.</div><div style="display:flex;gap:8px;margin-top:4px"><button class="btn" data-a="ncA" data-v="'+p.id+'">Annulla</button><button class="btn" data-a="ncW" data-v="'+p.id+'">Aspetta</button><button class="btn dark" data-a="nc3" data-v="'+p.id+'">Altri 3</button></div></div>',1);
-  }
-  if(S.edit){
-    h += '<div class="card"><div class="lab">Modifica</div>'+
-      chips([['principiante','Principianti'],['base','Base'],['intermedio','Intermedi']],{principiante:S.eLiv==='principiante',base:S.eLiv==='base',intermedio:S.eLiv==='intermedio'},'eliv')+
-      chips([['maschile','Maschile'],['femminile','Femminile'],['mista','Mista']],{maschile:S.eTipo==='maschile',femminile:S.eTipo==='femminile',mista:S.eTipo==='mista'},'etipo')+
-      '<div class="dim">Gli invitati non vedono mai il livello. Chi ha già risposto Ci sono resta dentro.</div></div>';
-  }
-  if(S.pick){
-    h += '<div class="card"><div class="lab">Chi invito?</div><button class="btn dark" data-a="altri" style="height:46px">Altri 3 scelti da LoZio</button>'+
-      (S.cand===null ? '<div class="dim">Cerco chi è libero…</div>' : S.cand.length ? S.cand.slice(0,4).map(function(g){return '<button class="btn" data-a="inv1" data-v="'+g.id+'" style="height:44px;font-weight:500">Invita '+g.nome+'</button>'}).join('') : '<div class="dim">Non ci sono altri giocatori adatti da invitare.</div>')+'</div>';
-  }
-  if(S.confAnn){
-    var n2 = p.invitati.filter(function(x){return x.stato==='confermata'||x.stato==='in_attesa';}).length;
-    h += '<div class="warn"><b style="font-size:16px">Annullo questa Partita Tattica?</b><div style="font-size:14px">Avviso '+n2+' '+(n2===1?'giocatore':'giocatori')+' che l\'hanno ricevuta o confermata.</div></div>';
-  }
-  return h+'</div>';
-}
-function mGiocL(){
-  var l = D.giocatori||[];
-  var h = '<div class="top"><small>'+l.length+(l.length===1?' giocatore':' giocatori')+'</small><h1>Giocatori</h1></div><div class="pad" style="gap:18px">';
-  [['principiante'],['base'],['intermedio'],['']].forEach(function(kk){
-    var k = kk[0], g = l.filter(function(x){return (x.livello||'')===k;});
-    if(!g.length && !k) return;
-    var ch = !!S.chiusi[k||'nd'];
-    h += '<section class="lvl"><button class="lvl-h" data-a="lvl" data-v="'+(k||'nd')+'" aria-expanded="'+(!ch)+'"><b>'+(k?NL[k]:'Livello da assegnare')+'</b><span class="n">'+g.length+'</span><i class="fr'+(ch?' c':'')+'" aria-hidden="true"></i></button>'+
-      (ch ? '' : g.length ? g.map(function(x){return '<div class="gioc"><div><b>'+x.nome+'</b><span>'+[x.sesso, x.tipo].filter(Boolean).join(' · ')+'</span></div><span class="stt'+(x.inPausa?' off':'')+'">'+(x.inPausa?'Sospeso':'Attivo')+'</span></div>'}).join('') : '<div class="dim" style="padding:12px 16px">Nessun giocatore.</div>')+'</section>';
-  });
-  return h+'</div>';
-}
-function mostraBannerM(testo, sub, id){
-  var b = document.getElementById('banner'); S.bnrPart = id;
-  b.innerHTML = '<span><b>'+testo+'</b><br>'+sub+'</span><button data-a="bnr" data-v="det">Vedi</button><button class="x" data-a="bx" aria-label="Chiudi avviso">×</button>';
-  b.hidden = false; clearTimeout(bh); bh = setTimeout(hideBanner, 9000);
-}
-function dopo(r, okMsg){ if(S.ms==='partita' && !r.errore) S.ms='tattiche'; flash(r.errore ? 'Non è andata: riprova o ricarica.' : okMsg); carica(true); }
-function actM(a, v){
-  var pid = S.selId;
-  switch(a){
-    case 'bnr': if(S.bnrPart){ S.selId=S.bnrPart; S.ms='partita'; } hideBanner(); return true;
-    case 'apri': api('apri',{proposta:D.proposta.id, livello:S.liv, tipo:S.tipo}).then(function(r){ dopo(r, r.invitati ? 'Invitati '+r.invitati+(r.invitati===1?' giocatore.':' giocatori.') : 'Partita aperta, ma non ci sono giocatori adatti.'); }); return true;
-    case 'no': api('no',{proposta:D.proposta.id}).then(function(r){ dopo(r, 'Va bene, nessuna Partita Tattica.'); }); return true;
-    case 'rip': api('riproponi',{proposta:D.proposta.id}).then(function(r){ dopo(r, 'Rimessa in decisione.'); }); return true;
-    case 'ncA': api('annulla',{partita:v}).then(function(r){ dopo(r, 'Partita annullata, giocatori avvisati.'); }); return true;
-    case 'ncW': api('decidi',{partita:v, scelta:'w'}).then(function(r){ dopo(r, 'Aspetto ancora, ti riscrivo domani alle 9.'); }); return true;
-    case 'nc3': api('decidi',{partita:v, scelta:'3'}).then(function(r){ dopo(r, r.invitati ? 'Invitati altri '+r.invitati+' giocatori.' : 'Non ci sono altri giocatori da invitare.'); }); return true;
-    case 'det': S.selId=v; S.ms='partita'; S.edit=false; S.pick=false; S.confAnn=false; return true;
-    case 'pick': S.pick=true; S.cand=null; api('candidati',{partita:pid}).then(function(r){ S.cand = r.candidati||[]; render(); }); return true;
-    case 'altri': S.pick=false; api('invita',{partita:pid}).then(function(r){ dopo(r, r.invitati ? 'Invitati altri '+r.invitati+' giocatori.' : 'Non ci sono altri giocatori da invitare.'); }); return true;
-    case 'inv1': S.pick=false; api('invita',{partita:pid, giocatore:v}).then(function(r){ dopo(r, 'Invitato.'); }); return true;
-    case 'mod': { var p = pAp(pid); S.edit=true; S.eLiv=p&&p.livello; S.eTipo=p&&p.tipo; return true; }
-    case 'eliv': S.eLiv=v; return true;
-    case 'etipo': S.eTipo=v; return true;
-    case 'salvaMod': S.edit=false; api('modifica',{partita:pid, livello:S.eLiv, tipo:S.eTipo}).then(function(r){ dopo(r, 'Modifica salvata.'); }); return true;
-    case 'annulla': S.confAnn=true; return true;
-    case 'annullaSi': S.confAnn=false; S.ms='tattiche'; api('annulla',{partita:pid}).then(function(r){ dopo(r, 'Partita annullata, giocatori avvisati.'); }); return true;
-    case 'chiudiMod': S.edit=false; S.pick=false; S.confAnn=false; return true;
-    case 'back':
-      if(S.edit||S.pick||S.confAnn){ S.edit=false; S.pick=false; S.confAnn=false; } else S.ms = S.ms==='partita' ? 'tattiche' : 'home';
-      return true;
-  }
-  return false;
-}
+/* ---------- helpers di stato ---------- */
+const bookingAt=(d,t)=>S.bookings.find(b=>b.date===d&&b.slots.indexOf(t)>=0);
+const isAbs=(d,t)=>!!S.absent[sk(d,t)];
+const mineB=()=>S.bookings.filter(b=>b.player===S.me.name).sort(cmpB);
+const unlocked=()=>S.me.hadCoach||mineB().length>0;
+const hasCoachSess=()=>S.me.hadCoach||mineB().some(b=>b.who==='coach');
+const myTimes=d=>S.bookings.filter(b=>b.player===S.me.name&&b.date===d).reduce((a,b)=>a.concat(b.slots),[]);
+function bring(b){const it=[];if(b.purpose==='racchette')it.push('le racchette da provare');if(b.who==='solo')it.push('un tubo di palline');
+ let s=it.length?'Porta '+it.join(' e ')+'.':'';if(b.who==='coach')s+=(s?' ':'')+'Le palline le porta il coach'+(b.purpose==='racchette'?'.':', e la racchetta se ti serve.');return s;}
+const remind=b=>mm(b.slots[0])<720?'ti scrivo il promemoria la sera prima alle 20:00':'ti scrivo il promemoria 3 ore prima';
+const lvPill=l=>l?'<span class="pill '+l+'">'+LV[l].name+'</span>':'<span class="pill none">Livello da definire</span>';
+const whoPill=b=>b.who==='coach'?'<span class="pill coach">Con coach</span>':'<span class="pill none">Da solo</span>';
+function say(m){S.toast=m;render();clearTimeout(TO);TO=setTimeout(()=>{S.toast=null;const e=document.getElementById('toast');if(e)e.remove();},2800);}
 
-function gHome(){
-  if(LIVE) return gHomeL();
-  var h = '<div class="top"><h1>Le mie Partite Tattiche</h1></div><div class="pad"><div class="lab">Prossima</div>';
-  if(!S.nonRiesco){
-    h += '<div class="card"><div class="row"><h2>Martedì 3 novembre</h2><span class="pill">Confermata</span></div><div>18:00–19:30 · Padel Village</div><div class="dim">Con: Marco R., Giulia B.</div><button class="btn" data-a="nonRiesco" style="margin-top:6px">Non riesco più</button></div>';
-  } else {
-    h += '<div class="note"><b>Martedì 3 novembre: posto liberato</b><div class="dim" style="margin-top:4px">Grazie dell\'avviso. LoZio è stato avvisato e cerca un sostituto.</div></div>';
-  }
-  if(S.invito==='si'){
-    h += '<div class="card"><div class="row"><h2 style="font-size:20px">Sabato 7 novembre</h2><span class="pill">Confermata</span></div><div>09:30–11:00 · Padel Village</div><div class="dim">Ti scrivo appena la Partita Tattica è completa.</div><button class="btn" data-a="nonRiesco2" style="margin-top:6px">Non riesco più</button></div>';
-  }
-  if(S.invito==='aperto'||S.invito==='dopo'){
-    h += '<div class="lab" style="margin-top:8px">Inviti</div><div class="card inv"><div style="font-size:13px;font-weight:700;color:var(--lime)">LoZio ti ha invitato</div><h2 style="font-size:20px">Sabato 7 novembre</h2><div class="dim">09:30–11:00 · Padel Village</div><div class="row" style="margin-top:6px"><span class="dim">20 euro a persona</span><button class="btn lime" style="height:40px;font-size:14px;border-radius:12px" data-a="gs" data-v="invito">Rispondi</button></div></div>';
-  }
-  return h+'</div>';
-}
-function gInvito(){
-  if(LIVE) return gInvitoL();
-  return '<div class="full"><button class="back" data-a="gs" data-v="home">‹ Le mie Partite Tattiche</button>'+
-  '<div style="padding:32px 20px 0;display:flex;flex-direction:column;gap:10px"><div style="font-size:14px;font-weight:700;color:var(--lime)">Ciao Lidia, LoZio ha aperto una Partita Tattica</div><h1>Sabato<br>7 novembre</h1><div style="font-size:18px;color:var(--inv-muted)">09:30–11:00 · Padel Village</div></div>'+
-  '<div class="panel"><div class="row"><span>Costo</span><b>20 euro a persona</b></div><div class="row"><span>Si gioca in</span><b>4, con LoZio</b></div></div>'+
-  '<div style="flex:1 1 auto"></div><div style="padding:24px 20px calc(24px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px"><button class="big" data-a="ciSono">Ci sono</button><div style="display:flex;gap:10px"><button class="ghost" data-a="nonPosso">Non posso</button><button class="ghost" data-a="piuTardi">Più tardi</button></div><div style="text-align:center;font-size:13px;color:var(--inv-muted)">I posti sono pochi: rispondi appena puoi.</div></div></div>';
-}
-function gOrari(){
-  var h = '<div class="top"><h1>Le mie disponibilità</h1></div><div class="pad"><div style="line-height:1.45;color:var(--muted)">Qui scegli quando sei libero. LoZio ti propone una Partita Tattica solo in questi momenti.</div><div class="lab">Da lunedì a venerdì</div>'+chips([['fm','Mattina'],['fp','Pranzo'],['fs','Sera']],S.orari,'orario')+
-  '<div class="lab" style="margin-top:6px">Sabato e domenica</div>'+chips([['wm','Mattina'],['wp','Pomeriggio']],S.orari,'orario')+
-  '<div class="lab" style="margin-top:6px">Partite a settimana</div>'+chips([['1','Una basta'],['2','Anche una seconda']],{1:!S.due,2:S.due},'freq')+
-  '<div class="dim">Ti contatto per una partita a settimana. La seconda solo se la vuoi tu.</div>'+
-  (S.dirty ? '' : '<div class="dim" style="color:var(--ok-fg);font-weight:700">✓ Disponibilità salvate</div>')+
-  '<div class="lab" style="margin-top:10px">Sospensione</div>'+
-  (function(){ var on = LIVE && D ? !!D.sospeso : !!S.sosp; return '<button class="susp'+(on?' on':'')+'" data-a="susp"><span><b>Sospendi le Partite Tattiche</b><small>'+(on?'Sospese: non ricevi inviti. Ti riattivi tu quando vuoi. Ti ricordo che sei sospeso ogni 45 giorni.':'Per un periodo in cui non puoi giocare. Ti ricordo ogni 45 giorni che sei sospeso.')+'</small></span><i aria-hidden="true"></i></button>'; })()+'<a class="dim" href="https://padelvillage.github.io/lozio-miniapp/privacy.html" target="_blank" rel="noopener" data-a="privacy" style="margin-top:14px;text-decoration:underline;align-self:flex-start">Informativa privacy</a></div>';
-  if(S.dirty){
-    h += '<div style="flex:1 1 auto"></div><div class="foot salvab"><div class="avv">Hai modifiche non salvate</div><button class="btn verde" style="height:52px;font-size:16px;width:100%" data-a="salva">Salva le disponibilità</button></div>';
-  }
-  return h;
-}
-function gAmico(){
-  return '<div class="top"><h1>Invita un amico</h1></div><div class="pad"><div style="line-height:1.45;color:var(--muted)">Vuoi far giocare un amico con LoZio? Scegli come mandargli l\'invito: il messaggio è già pronto.</div><button class="btn verde" style="height:52px;font-size:16px" data-a="amico" data-v="wa">Invita da WhatsApp</button><button class="btn" style="height:52px;font-size:16px" data-a="amico" data-v="tg">Invita da Telegram</button></div>';
-}
-
-var RISP = {
-  come: 'LoZio organizza Partite Tattiche a Padel Village: si gioca in 4, lui in campo con tre di voi.\n\nLoZio gioca un terzo del tempo con ognuno di voi: lo hai al tuo fianco per i suggerimenti tattici e di fronte, per metterli in pratica contro di lui.\n\nTi scrivo io quando c\'è una partita per te: rispondi con un tocco.\n\nCosto: 20 euro a persona.',
-  orari: 'Vai in Disponibilità e scegli quando sei libero: ti propongo una Partita Tattica solo in quei momenti.',
-  pausa: 'Va bene, ti metto in pausa: non ti scrivo più finché non mi dici di riprendere.',
-  libero: 'Ricevuto, ti rispondo appena posso.'
-};
-var DOM = { come:'Come funziona', orari:'Voglio cambiare le mie disponibilità', pausa:'Per un po\' non posso giocare' };
-function chatVisto(){ try{ return Number(localStorage.getItem('chatVisto')||0); }catch(e){ return 0; } }
-function chatVista(){ try{ var m=0; ((D&&D.chat)||[]).forEach(function(x){ if(x.id>m) m=x.id; }); if(m>chatVisto()) localStorage.setItem('chatVisto', String(m)); }catch(e){} }
-function chatNuovi(){ var v=chatVisto(); return ((D&&D.chat)||[]).filter(function(x){ return x.da==='l' && x.id>v; }).length; }
-function gChat(){
-  var nome = LIVE && D ? String(D.nome||'').split(' ')[0] : 'Lidia';
-  var ben = { da:'l', t:'Ciao '+nome+', sono LoZio. Qui puoi scrivermi quando vuoi: ti rispondo appena posso.' };
-  if(!LIVE && !S.chat.length) S.chat = [ben];
-  var msgs = LIVE ? [ben].concat((D && D.chat)||[], S.chat) : S.chat;
-  if(LIVE) chatVista();
-  var h = '<div class="top"><small>Chat</small><h1>Scrivi a LoZio</h1></div><div class="cbox" id="cbox">'+
-    msgs.map(function(m){ return '<div class="cb '+m.da+'">'+m.t.replace(/\n/g,'<br>')+'</div>'; }).join('')+'</div>'+
-    '<div class="csug">'+Object.keys(DOM).map(function(k){ return '<button class="chip" data-a="sug" data-v="'+k+'">'+DOM[k]+'</button>'; }).join('')+'</div>'+
-    '<div class="foot cin"><input id="cin" type="text" placeholder="Scrivi a LoZio" autocomplete="off" enterkeyhint="send"><button class="btn dark" data-a="invia" style="width:84px;height:46px;font-size:15px">Invia</button></div>';
-  return h;
-}
-function inviaChat(testo, chiave){
-  testo = String(testo||'').trim(); if(!testo) return;
-  if(LIVE && chiave!=='come' && chiave!=='orari'){
-    if(!D.chat) D.chat = [];
-    D.chat.push({ id:0, da:'g', t:testo }); render();
-    api('scrivi',{testo:testo}).then(function(r){
-      if(r.errore){ flash('Non sono riuscito a inviarlo. Riprova tra poco.'); }
-      carica(true);
-    });
-    return;
-  }
-  S.chat.push({ da:'g', t:testo });
-  S.chat.push({ da:'l', t: RISP[chiave] || RISP.libero });
-}
-function gInfo(){
-  return '<div class="top"><h1>Come funziona</h1></div><div class="pad" style="line-height:1.45;color:var(--muted)"><div>LoZio organizza Partite Tattiche a Padel Village: si gioca in 4, lui in campo con tre di voi.</div><div>LoZio gioca un terzo del tempo con ognuno di voi: lo hai al tuo fianco per i suggerimenti tattici e di fronte, per metterli in pratica contro di lui.</div><div>Ti scrivo io quando c\'è una partita per te: rispondi con un tocco.</div><div style="font-weight:700;color:var(--ink)">Costo: 20 euro a persona.</div></div>';
-}
-
-var P = { mar:{liv:'principiante',tipo:'mista'}, sab:{liv:'base',tipo:'mista'}, lun:{liv:'principiante',tipo:'mista'} };
-var DATE = { mar:'Martedì 3 novembre', sab:'Sabato 7 novembre', lun:'Lunedì 9 novembre' };
-var ORA = { mar:'18:00–19:30', sab:'09:30–11:00', lun:'18:00–19:30' };
-function visibile(k){ return k==='mar' ? !S.marOff && S.avv!=='annullata' : k==='sab' ? !S.sabOff : (S.prop==='si' && !S.lunOff); }
-function sez(cls, titolo, sub, corpo){
-  return '<section class="sez '+cls+'"><div class="sez-h"><b>'+titolo+'</b><span>'+sub+'</span></div><div class="sez-b">'+corpo+'</div></section>';
-}
-function mHome(){
-  if(LIVE && D && D.ruolo==='m') return mHomeL();
-  var h = '<div class="top"><small>Lunedì 2 novembre</small><h1>Home</h1></div><div class="pad" style="gap:22px">', a = '', m = '';
-  if(S.prop==='aperta'){
-    a = '<div class="card inv"><h2 style="font-size:21px">Lunedì 9 novembre, 18:00–19:30</h2>'+
-      chips([['principiante','Principianti'],['base','Base'],['intermedio','Intermedi']],{principiante:S.liv==='principiante',base:S.liv==='base',intermedio:S.liv==='intermedio'},'liv')+
-      chips([['maschile','Maschile'],['femminile','Femminile'],['mista','Mista']],{maschile:S.tipo==='maschile',femminile:S.tipo==='femminile',mista:S.tipo==='mista'},'tipo')+
-      '<div style="display:flex;gap:10px;margin-top:4px"><button class="btn lime" style="flex:1 1 0;height:50px;font-size:16px" data-a="apri">Apri e invita 5</button><button class="btn" style="width:90px;height:50px;background:transparent;border-color:var(--inv-line);color:var(--inv-fg)" data-a="no">No</button></div></div>';
-  } else if(S.prop==='si' && !S.lunOff){
-    a = '<div class="ok"><b>Partita aperta: lunedì 9, '+NL[P.lun.liv]+', '+NT[P.lun.tipo].toLowerCase()+'</b><div style="margin-top:4px;font-size:14px">Ho invitato 5 giocatori. Alle 12:30 altri 3, se servono.</div></div>';
-  } else if(S.prop==='no'){
-    a = '<div class="note">Lunedì 9 novembre: nessuna Partita Tattica.<button class="btn" data-a="rip" data-v="prop" style="margin-top:8px;height:40px">Cambia idea</button></div>';
-  }
-  h += sez('a','Proposta delle 8:00','Una nuova Partita Tattica da aprire', a);
-  return h+'</div>';
-}
-function riga(k){
-  var d = { mar:['Martedì 3, 18:00','1 su 3 · 11 contattati, non si è chiusa',[1,0,0]], sab:['Sabato 7, 09:30','2 su 3 · 5 invitati, 2 non hanno risposto',[1,1,0]], lun:['Lunedì 9, 18:00','0 su 3 · 5 invitati, nessuna risposta',[0,0,0]] }[k];
-  var x = d[2];
-  var n = k==='mar' ? 0 : 0;
-  var tag = (k==='mar' && S.avv==='aperto') ? '<div class="tagnc">Non si è chiusa · da decidere</div>' : '';
-  return '<button class="partita" data-a="det" data-v="'+k+'">'+tag+'<div class="row" style="width:100%"><b style="font-size:17px">'+d[0]+'</b><span class="dim">'+NL[P[k].liv]+' · '+NT[P[k].tipo].toLowerCase()+'</span></div><div class="barre" style="width:100%">'+
-    (k==='sab'?'<i class="p"></i><i class="p"></i><i></i>':k==='mar'?'<i class="p"></i><i></i><i></i>':'<i></i><i></i><i></i>')+'</div><div class="dim" style="color:var(--ink)">'+d[1]+'</div></button>';
-}
-function mTatt(){
-  if(LIVE && D && D.ruolo==='m') return mTattL();
-  var l = ['mar','sab','lun'].filter(visibile);
-  var h = '<div class="top"><small>'+(l.length===1?'1 aperta':l.length+' aperte')+'</small><h1>Partite Tattiche</h1></div><div class="pad">';
-  h += l.length ? l.map(riga).join('') : '<div class="dim">Nessuna Partita Tattica aperta. Le proposte nuove le trovi in Home.</div>';
-  return h+'</div>';
-}
-function mDett(){
-  if(LIVE && D && D.ruolo==='m') return mDettL();
-  var k = S.sel;
-  var posti = k==='sab' ? ['Giulia Bianchi','Marco Rossi',''] : k==='mar' ? ['Lidia Ferri','',''] : ['','',''];
-  var ond = k==='sab' ? [['1ª ondata · 5 invitati','ieri 08:05',1],['2ª ondata · 3 invitati','ieri 12:30',1],['3ª ondata · 3 invitati','ieri 20:30',0]]
-    : k==='mar' ? [['1ª ondata · 5 invitati','sab 08:05',1],['2ª ondata · 3 invitati','sab 12:30',1],['3ª ondata · 3 invitati','sab 20:30',1]]
-    : [['1ª ondata · 5 invitati','adesso',1],['2ª ondata · 3 invitati','oggi 12:30',0],['3ª ondata · 3 invitati','oggi 20:30',0]];
-  var inv = k==='sab' ? [['Giulia Bianchi','Ci sono','s'],['Marco Rossi','Ci sono','s'],['Sara Conte','Più tardi','t'],['Luca Moretti','Non ha risposto','n'],['Paola Greco','Non può','x']]
-    : k==='mar' ? [['Lidia Ferri','Ci sono','s'],['Paola Greco','Più tardi','t'],['Sara Conte','Non può','x'],['Luca Moretti','Non ha risposto','n'],['Anna Villa','Non ha risposto','n']]
-    : ['Anna Villa','Paolo Neri','Elena Costa','Davide Fabbri','Chiara Serra'].map(function(n){return [n,'Non ha risposto','n']});
-  (S.gia[k]||[]).forEach(function(n){ inv.push([n,'Invitato adesso','n']); });
-  var h = '<button class="back" data-a="ms" data-v="tattiche" style="align-self:flex-start;margin:20px 20px 0;padding:0;border:0;background:none;font-size:14px;font-weight:700;color:var(--accent)">‹ Partite Tattiche</button>'+
-    '<div class="top" style="padding-top:12px"><h1 style="font-size:28px">'+DATE[k]+'</h1><small style="margin-top:2px">'+ORA[k]+' · '+NL[P[k].liv]+' · '+NT[P[k].tipo].toLowerCase()+'</small></div><div class="pad">'+
-    '<div class="card"><div class="lab">Posti</div><div class="posti">'+posti.map(function(p){return '<div class="posto'+(p?'':' v')+'">'+(p||'libero')+'</div>'}).join('')+'</div></div>'+
-    '<div class="card"><div class="lab">Ondate</div>'+ond.map(function(o){return '<div class="ond"><i class="'+(o[2]?'':'f')+'"></i><span style="'+(o[2]?'':'color:var(--muted)')+'">'+o[0]+'</span><em>'+o[1]+'</em></div>'}).join('')+'</div>'+
-    '<div class="card"><div class="lab">Invitati</div>'+inv.map(function(i){return '<div class="row"><span>'+i[0]+'</span><span class="stato-'+i[2]+'">'+i[1]+'</span></div>'}).join('')+'</div>';
-  if(k==='mar' && S.avv==='aperto'){
-    h = h.replace('<div class="pad">', '<div class="pad">'+'<div class="warn"><b style="font-size:16px">Non si è chiusa: cosa facciamo?</b><div style="font-size:14px">1 posto su 3 coperto, 11 giocatori contattati.</div><div style="display:flex;gap:8px;margin-top:4px"><button class="btn" data-a="avv" data-v="annullata">Annulla</button><button class="btn" data-a="avv" data-v="aspetta">Aspetta</button><button class="btn dark" data-a="avv" data-v="altri">Altri 3</button></div></div>',1);
-  }
-  if(S.edit){
-    h += '<div class="card"><div class="lab">Modifica</div>'+
-      chips([['principiante','Principianti'],['base','Base'],['intermedio','Intermedi']],{principiante:P[k].liv==='principiante',base:P[k].liv==='base',intermedio:P[k].liv==='intermedio'},'eliv')+
-      chips([['maschile','Maschile'],['femminile','Femminile'],['mista','Mista']],{maschile:P[k].tipo==='maschile',femminile:P[k].tipo==='femminile',mista:P[k].tipo==='mista'},'etipo')+
-      '<div class="dim">Chi ha già risposto Ci sono resta dentro: ti chiedo prima di toccarlo.</div></div>';
-  }
-  if(S.pick){
-    var gi = S.gia[k]||[];
-    var cand = ['Anna Villa','Paolo Neri','Elena Costa','Davide Fabbri','Chiara Serra','Marta Gallo','Nico Bassi'].filter(function(n){ return gi.indexOf(n)<0 && !(k==='lun'||k==='mar'&&n==='Anna Villa'); });
-    if(k==='lun') cand = ['Marta Gallo','Nico Bassi','Elisa Monti','Gabriele Riva'].filter(function(n){return gi.indexOf(n)<0});
-    h += '<div class="card"><div class="lab">Chi invito?</div><button class="btn dark" data-a="altri" style="height:46px">Altri 3 scelti da LoZio</button>'+
-      cand.slice(0,4).map(function(n){return '<button class="btn" data-a="inv1" data-v="'+n+'" style="height:44px;font-weight:500">Invita '+n+'</button>'}).join('')+'</div>';
-  }
-  return h+'</div>';
-}
-function mInvita(){
-  var pr = S.invPronto;
-  var h = '<div class="top"><h1>Invita un giocatore</h1></div><div class="pad">';
-  if(pr){
-    h += '<div class="ok"><b>Invito pronto per '+pr.nome+'</b><div style="margin-top:4px;font-size:14px">Il messaggio è già scritto: scegli come mandarlo.</div></div>'+
-      '<button class="btn verde" style="height:52px;font-size:16px" data-a="invGio" data-v="wa">Invita da WhatsApp</button>'+
-      '<button class="btn" style="height:52px;font-size:16px" data-a="invGio" data-v="tg">Invita da Telegram</button>'+
-      '<button class="btn" style="height:44px;font-weight:500" data-a="nuovoInv">Invita un altro giocatore</button>';
-  } else {
-    h += '<div style="line-height:1.45;color:var(--muted)">Scrivi nome e cognome del giocatore: preparo l\'invito già pronto da mandare.</div>'+
-      '<div class="cin" style="display:flex"><input id="ninv" type="text" placeholder="Nome e cognome" autocomplete="off" value="'+String(S.ninv||'').replace(/"/g,'&quot;')+'"></div>'+
-      '<button class="btn dark" style="height:52px;font-size:16px" data-a="prepInv">Prepara l\'invito</button>';
-  }
-  return h+'</div>';
-}
-function invitaG(a, v){
-  if(a==='nuovoInv'){ S.invPronto=null; S.ninv=''; render(); return; }
-  if(a==='invGio'){
-    var pr = S.invPronto;
-    if(LIVE && pr && pr.whatsapp) apri(v==='wa' ? pr.whatsapp : pr.telegram, v==='tg');
-    else flash(v==='wa' ? 'Si apre WhatsApp con il messaggio già scritto.' : 'Si apre Telegram con il messaggio già scritto.');
-    return;
-  }
-  var inp = document.getElementById('ninv'); if(inp) S.ninv = inp.value;
-  var nome = String(S.ninv||'').replace(/\s+/g,' ').trim();
-  if(nome.split(' ').length < 2){ flash('Scrivi nome e cognome.'); return; }
-  if(!LIVE){ S.invPronto = { nome: nome }; render(); flash('Invito pronto.'); return; }
-  api('invitaGiocatore',{nome:nome}).then(function(r){
-    if(r.errore==='gia_iscritto') flash(r.giocatore+' è già iscritto.');
-    else if(r.errore==='cognome') flash('Scrivi nome e cognome.');
-    else if(r.errore) flash('Non riesco, riprova tra poco.');
-    else { S.invPronto = { nome:r.giocatore, whatsapp:r.whatsapp, telegram:r.telegram }; render(); }
-  });
-}
-function mGioc(){
-  if(LIVE && D && D.ruolo==='m') return mGiocL();
-  var l=[['Giulia Bianchi','donna · omogenea e mista','base'],['Marco Rossi','uomo · mista','base'],['Sara Conte','donna · mista','principiante'],['Luca Moretti','uomo · omogenea e mista','intermedio'],['Paola Greco','donna · omogenea','base','s'],['Lidia Ferri','donna · omogenea e mista','principiante']];
-  var h = '<div class="top"><small>'+l.length+' giocatori</small><h1>Giocatori</h1></div><div class="pad" style="gap:18px">';
-  ['principiante','base','intermedio'].forEach(function(k){
-    var g = l.filter(function(x){return x[2]===k});
-    var ch = !!S.chiusi[k];
-    h += '<section class="lvl"><button class="lvl-h" data-a="lvl" data-v="'+k+'" aria-expanded="'+(!ch)+'"><b>'+NL[k]+'</b><span class="n">'+g.length+'</span><i class="fr'+(ch?' c':'')+'" aria-hidden="true"></i></button>'+
-      (ch ? '' : g.length ? g.map(function(x){return '<div class="gioc"><div><b>'+x[0]+'</b><span>'+x[1]+'</span></div><span class="stt'+(x[3]?' off':'')+'">'+(x[3]?'Sospeso':'Attivo')+'</span></div>'}).join('') : '<div class="dim" style="padding:12px 16px">Nessun giocatore.</div>')+'</section>';
-  });
-  return h+'</div>';
-}
-
-function msg(t, time, btn){ var v = btn.match(/data-v="([^"]+)"/)[1]; return '<div class="msg" role="button" tabindex="0" data-a="open" data-v="'+v+'" style="cursor:pointer">'+t+'<small>'+time+'</small></div><div class="kb">'+btn+'</div>'; }
-function kbBtn(label, v){ return '<button data-a="open" data-v="'+v+'">'+label+'</button>'; }
-function renderChat(){
-  var g = S.ruolo==='g';
-  var h = '<div class="tghead"><div class="av">L</div><div><b>lozio bot</b><span>bot</span></div></div><div id="chat"><div class="dia">Oggi</div>';
-  if(g){
-    h += msg('Ciao Lidia, LoZio ha aperto una Partita Tattica.<br>Sabato 7 novembre, 09:30-11:00, Padel Village.<br>20 euro a persona.<br>Ci sei?', '20:40', kbBtn('Rispondi','invito'));
-    h += msg('Promemoria: martedì 3 novembre alle 18:00 hai la Partita Tattica con LoZio a Padel Village.', '20:45', kbBtn('Vedi Partita Tattica','home'));
-  } else {
-    h += msg('Lunedì 9 novembre, 18:00-19:30: vuoi aprire una tattica?', '08:00', kbBtn('Decidi','home'));
-    h += msg('La tattica di martedì 3 novembre non si è chiusa: 1 posto su 3 coperto, 11 giocatori contattati. Che facciamo?', '09:00', kbBtn('Decidi','home'));
-  }
-  h += '</div><div class="inbar"><button class="menub" data-a="open" data-v="'+(g?'home':'home')+'">'+(g?'Apri app':'Gestione')+'</button><div class="fake">Messaggio</div></div>';
-  document.getElementById('tg').innerHTML = h;
-}
+/* ---------- render ---------- */
 function render(){
-  document.getElementById('bg').className = S.ruolo==='g'?'on':'';
-  document.getElementById('bm').className = S.ruolo==='m'?'on':'';
-  renderChat();
-  var ap = document.getElementById('app'); ap.hidden = !S.open;
-  if(S.open) renderApp();
+ const root=document.getElementById('root');
+ const keep=document.querySelector('.main'),st=keep?keep.scrollTop:0;
+ root.innerHTML=toolbar()+'<div class="phone"><div class="notch"></div><div class="screen"><div class="stat'+(S.intro?' dk':'')+'"><span>9:41</span><span>5G \u25AA\u25AA\u25AA</span></div><div class="frame">'+(S.tg==='chat'?tgView():S.intro?introView():appView())+'</div>'+(S.tg==='push'?'<button class="push" data-act="tgchat"><span class="sm mut" style="display:flex;justify-content:space-between"><b style="font-weight:600;color:var(--ink)">IL MURO</b><span>ora</span></span><span style="display:block">'+esc(S.tgmsg.text)+'</span></button>':'')+'<div class="home"></div></div>'+sheetView()+(S.toast?'<div class="tw" id="toast"><div class="toast" role="status">'+esc(S.toast)+'</div></div>':'')+'</div>';
+ const m=document.querySelector('.main');if(m)m.scrollTop=st;
 }
-function renderApp(){
-  var sch = document.getElementById('sch'), tabs = document.getElementById('tabs'), h='', t='';
-  if(LIVE && !D){
-    sch.style.background=''; tabs.hidden=true; tabs.innerHTML='';
-    sch.innerHTML = '<div class="top"><h1>LoZio</h1></div><div class="pad"><div class="dim">'+(ERR==='non_registrato' ? 'Non ti trovo tra i giocatori. Scrivi a LoZio.' : ERR==='non_riconosciuto' ? 'Riapri la mini app dal bot di LoZio.' : ERR ? 'Non riesco a collegarmi. Riprova tra poco.' : 'Un attimo…')+'</div></div>';
-    return;
-  }
-  if(S.ruolo==='g'){
-    h = S.gs==='home'?gHome():S.gs==='invito'?gInvito():S.gs==='orari'?gOrari():S.gs==='amico'?gAmico():gChat();
-    var sg = S.gs==='invito' ? 'home' : S.gs;
-    t = [['home','Tattiche'],['orari','Disponibilità'],['amico','Invita'],['chat','Chat']].map(function(x){var nn = (x[0]==='chat' && LIVE && sg!=='chat') ? chatNuovi() : 0; return '<button class="'+(sg===x[0]?'on':'')+'" data-a="gs" data-v="'+x[0]+'">'+x[1]+(nn?'<span class="bd">'+nn+'</span>':'')+'</button>'}).join('');
-  } else {
-    h = S.ms==='home'?mHome():S.ms==='tattiche'?mTatt():S.ms==='partita'?mDett():S.ms==='invita'?mInvita():mGioc();
-    if(S.ms==='partita'){
-      h += '<div style="flex:1 1 auto"></div><div class="foot">'+
-        (S.edit ? '<button class="btn dark" style="flex:1 1 0;height:52px;font-size:16px" data-a="salvaMod">Salva modifiche</button><button class="btn" style="width:110px;height:52px;font-size:16px" data-a="chiudiMod">Indietro</button>'
-        : S.confAnn ? '<button class="btn danger" style="flex:1 1 0;height:52px;font-size:16px" data-a="annullaSi">Sì, annulla</button><button class="btn" style="width:110px;height:52px;font-size:16px" data-a="chiudiMod">No</button>'
-        : S.pick ? '<button class="btn" style="flex:1 1 0;height:52px;font-size:16px" data-a="chiudiMod">Indietro</button>'
-        : '<button class="btn dark" style="flex:1 1 0;height:52px;font-size:15px;padding:0 6px" data-a="pick">Invita altri</button><button class="btn" style="flex:1 1 0;height:52px;font-size:15px;padding:0 6px" data-a="mod">Modifica</button><button class="btn danger" style="flex:1 1 0;height:52px;font-size:15px;padding:0 6px" data-a="annulla">Annulla</button>')+'</div>';
-    }
-    var sez = S.ms==='partita' ? 'tattiche' : S.ms;
-    var live = LIVE && D && D.ruolo==='m';
-    var nHome = live ? (D.proposta && D.proposta.stato==='in_attesa' ? 1 : 0) : (S.prop==='aperta' ? 1 : 0);
-    var nTatt = live ? (D.nonChiuse||[]).length : (S.avv==='aperto' && !S.marOff ? 1 : 0);
-    var bad = { home:nHome, tattiche:nTatt };
-    t = [['home','Home'],['tattiche','Tattiche'],['giocatori','Giocatori'],['invita','Invita']].map(function(x){return '<button class="'+(sez===x[0]?'on':'')+'" data-a="ms" data-v="'+x[0]+'">'+x[1]+(bad[x[0]]?'<span class="bd">'+bad[x[0]]+'</span>':'')+'</button>'}).join('');
-  }
-  var radice = S.ruolo==='g' ? S.gs==='home' : (S.ms==='home' && !S.edit && !S.pick && !S.confAnn);
-  var hb = document.getElementById('hb'); hb.dataset.a = radice ? 'close' : 'back'; hb.textContent = radice ? '× Chiudi' : '‹ Indietro';
-  try{ var BB = window.Telegram && Telegram.WebApp && Telegram.WebApp.BackButton; if(BB){ if(radice) BB.hide(); else BB.show(); } }catch(e){}
-  sch.innerHTML = h; var cb=document.getElementById('cbox'); if(cb) cb.scrollTop=cb.scrollHeight; tabs.innerHTML = t; tabs.hidden = !t;
-  if(S.gs==='invito' && S.ruolo==='g'){ sch.style.background='var(--inv-bg)'; } else { sch.style.background=''; }
+function toolbar(){
+ const b=(sc,l)=>'<button class="tb'+(S.sc===sc?' on':'')+'" data-act="scen" data-a="'+sc+'">'+l+'</button>';
+ return '<div class="bar"><div class="lbl">Prototipo · tocca per provare</div>'+b('new','Nuovo giocatore')+b('player','Giocatore con sessione')+b('coach','Coach')+b('arrivo','Scheda in arrivo')+b('prenota','Notifica al coach')+
+  (S.sc!=='new'&&S.area==='player'?'<button class="tb'+(S.late?' on':'')+'" data-act="late">Mancano meno di 2 ore</button>':'')+'</div>';
+}
+function introView(){
+ const skip='<button class="tb" style="position:absolute;top:14px;right:14px;z-index:2;background:rgba(0,0,0,.45);color:#fff;border-color:rgba(255,255,255,.4)" data-act="skip">Salta</button>';
+ const stage=S.introPlay?
+  '<video id="vid" src="il-muro.mp4" poster="poster.jpg" autoplay playsinline controls style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000"></video>'+skip:
+  '<svg class="court" viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><g fill="none" stroke="rgba(255,255,255,.35)" stroke-width="2"><rect x="30" y="40" width="240" height="320"/><path d="M30 200h240M150 120v160M30 120h240M30 280h240"/></g></svg>'+skip+
+  '<div class="tt"><b>IL MURO</b><p style="letter-spacing:.16em;font-size:12px;text-transform:uppercase;margin-top:8px">Area Allenamento \u00b7 Padel Village</p><button class="play" data-act="play" aria-label="Guarda il video">'+ic('play')+'</button></div>';
+ return '<div class="intro"><div class="poster">'+stage+'</div><div style="padding:16px"><p style="font:700 22px/1.1 var(--disp);letter-spacing:.04em">Come funziona Il Muro</p><p class="sm" style="opacity:.75;margin-top:6px">Un video di circa 50 secondi. Si vede la prima volta e si pu\u00f2 saltare.</p>'+
+ '<button class="btn sec" style="margin-top:16px" data-act="skip">Vai alla prenotazione</button></div></div>';
+}
+function tgView(){
+ return '<div style="flex:1;display:flex;flex-direction:column;background:var(--bg);min-height:0"><div class="row" style="padding:10px 14px;background:var(--card);border-bottom:1px solid var(--line)"><span style="font-size:20px">\u2190</span><div style="width:34px;height:34px;border-radius:50%;background:var(--brand);color:var(--onbrand);display:grid;place-items:center;font:700 14px var(--disp)">IM</div><div><b style="font-weight:600">IL MURO</b><br><span class="sm mut">bot</span></div></div>'+
+ '<div style="flex:1;padding:16px;display:flex;flex-direction:column;gap:6px"><p class="sm mut" style="text-align:center">Oggi</p><div class="bub co">'+esc(S.tgmsg.text)+'<div class="sm mut" style="text-align:right;margin-top:4px;font-size:11px">18:42</div></div>'+
+ '<button class="btn" style="background:var(--soft);color:var(--brand);max-width:86%;min-height:44px" data-act="tgopen">'+esc(S.tgmsg.btn)+'</button></div></div>';
+}
+function secTitle(){
+ if(S.area==='coach')return S.ctab==='slot'?'Slot':(S.comp?'Nuova scheda':'Schede');
+ if(S.tab==='prenota')return 'Prenota';
+ if(S.tab==='scheda')return S.sView==='create'?'Crea scheda':'Scheda';
+ return 'Coach';
+}
+function appView(){
+ const coach=S.area==='coach';
+ const canBack=S.hist.length>0||!!S.comp;
+ const head='<div class="appbar"><div class="row" style="min-width:0">'+(canBack?'<button class="tb" data-act="goback" aria-label="Indietro" style="font-size:18px;padding:5px 12px">\u2190</button>':'')+'<div class="brand" style="min-width:0;text-transform:uppercase">'+secTitle()+'<small>Il Muro \u00b7 '+(coach?'Area coach':'Padel Village')+'</small></div></div>'+
+  (S.role==='coach'?'<button class="tb" style="white-space:nowrap;flex:none" data-act="area" data-a="'+(coach?'player':'coach')+'">'+(coach?'Giocatore':'← Coach')+'</button>':'')+'</div>';
+ let body,nav;
+ if(coach){body=S.ctab==='slot'?'<div class="seg"><button class="sg'+(S.cview==='week'?'':' on')+'" data-act="cview" data-a="day">Giorno</button><button class="sg'+(S.cview==='week'?' on':'')+'" data-act="cview" data-a="week">Settimana</button></div>'+coachSlots():coachSchede();
+  const n=S.requests.length+S.levelTests.length;
+  nav='<nav class="nav n2"><button class="'+(S.ctab==='slot'?'on':'')+'" data-act="ctab" data-a="slot">'+ic('cal')+'Slot</button><button class="'+(S.ctab==='sch'?'on':'')+'" data-act="ctab" data-a="sch">'+ic('list')+'Schede'+(n?'<span class="bdg">'+n+'</span>':'')+'</button></nav>';}
+ else{body=S.tab==='prenota'?(S.pv==='home'?pHome():pBook()):S.tab==='scheda'?pScheda():pChat();
+  nav='<nav class="nav n3"><button class="'+(S.tab==='prenota'?'on':'')+'" data-act="ptab" data-a="prenota">'+ic('cal')+'Prenota</button><button class="'+(S.tab==='scheda'?'on':'')+'" data-act="ptab" data-a="scheda">'+ic('list')+'Scheda</button><button class="'+(S.tab==='coach'?'on':'')+'" data-act="ptab" data-a="coach">'+ic('chat')+'Coach</button></nav>';}
+ return head+'<div class="main">'+body+'</div>'+nav;
 }
 
-var bt, bh;
-function hideBanner(){ clearTimeout(bt); clearTimeout(bh); document.getElementById('banner').hidden = true; }
-function mostraBanner(){
-  if(!S.open) return;
-  var g = S.ruolo==='g';
-  if(g && S.invito!=='aperto' && S.invito!=='dopo') return;
-  var b = document.getElementById('banner');
-  b.innerHTML = g
-    ? '<span><b>Nuovo invito</b><br>Sabato 7 novembre, 09:30</span><button data-a="bnr" data-v="invito">Rispondi</button><button class="x" data-a="bx" aria-label="Chiudi avviso">×</button>'
-    : '<span><b>Sara Conte ha detto Ci sono</b><br>Sabato 7: ora 3 su 3</span><button data-a="bnr" data-v="det">Vedi</button><button class="x" data-a="bx" aria-label="Chiudi avviso">×</button>';
-  b.hidden = false;
-  clearTimeout(bh); bh = setTimeout(hideBanner, 9000);
+/* ---------- area giocatore: prenota ---------- */
+function pHome(){
+ const mine=mineB();let h='';
+ if(S.pnotif&&!S.tg)h+='<div class="card" style="border-color:var(--brand);background:var(--soft)"><p class="fh" style="margin:0 0 4px">Notifica Telegram \u00b7 IL MURO</p><p><b style="font-weight:600">Il tuo coach ti ha preparato la scheda'+(S.pnotif.sess?' per la sessione di '+esc(S.pnotif.sess):'')+'.</b></p><button class="btn sm2" style="margin-top:10px" data-act="pnot" data-a="'+S.pnotif.id+'">Apri scheda</button></div>';
+ if(!mine.length){h+='<div class="card"><h2>Ciao '+esc(S.me.name.split(' ')[0])+'</h2><p class="mut" style="margin-top:6px">Non hai ancora nessuna sessione in programma. Una sessione dura 20 minuti: 5 € da solo, 10 € con il coach. Si paga al circolo.</p></div>';}
+ else{h+='<p class="fh">La tua prossima sessione</p>';
+  mine.forEach((b,i)=>{const late=i===0&&S.late;
+   h+='<div class="card"><p class="mut sm">'+longDay(b.date)+'</p><p style="font:700 28px/1.1 var(--disp);letter-spacing:.03em;margin:2px 0 8px">'+rangeOf(b)+'</p><div class="row wrap">'+'<span class="pill none">'+PURP[b.purpose]+'</span>'+whoPill(b)+(b.level?lvPill(b.level):'')+'</div>'+
+   '<p class="sm" style="margin:10px 0 4px">'+esc(bring(b))+'</p><p class="sm mut">Prezzo '+price(b.who)*b.slots.length+' €, da pagare al circolo. Poi '+remind(b)+'.</p>'+
+   (b.focus?'<p class="sm" style="margin-top:6px"><span class="mut">Vuoi allenare:</span> '+esc(b.focus)+'. Il coach ti prepara la scheda.</p>':'')+(b.away?'<p class="sm err" style="margin-top:8px">Il coach non c’è in quell’orario: ti ha scritto su Telegram per decidere.</p>':'')+
+   (S.me.schede.length?'<button class="btn" style="margin-top:12px" data-act="opencard" data-a="'+S.me.schede[0].id+'">Apri scheda</button>':'')+(late?'<p class="sm" style="margin:10px 0 8px">Mancano meno di 2 ore: da qui non puoi più disdire.</p><button class="btn sec" data-act="ptab" data-a="coach">Scrivi al tuo coach</button>':'<button class="btn sec" style="margin-top:'+(S.me.schede.length?'8':'12')+'px" data-act="cancel" data-a="'+b.id+'">Disdici</button>')+'</div>';});}
+ h+='<button class="btn" data-act="newbook">Prenota una nuova sessione</button><button class="lnk" data-act="video">Come funziona Il Muro</button><button class="lnk sm" style="color:var(--ink2);font-weight:500" data-act="sheet" data-a="privacy">Privacy</button>';
+ return h;
 }
-function act(a, v){
-  if(a==='prepInv' || a==='invGio' || a==='nuovoInv'){ invitaG(a, v); return; }
-  if(LIVE && S.ruolo==='g' && actL(a, v)){ render(); return; }
-  if(LIVE && S.ruolo==='m' && actM(a, v)){ render(); return; }
-  if(a==='ruolo'){ S.ruolo=v; S.open=false; hideBanner(); }
-  else if(a==='bnr'){ hideBanner(); if(v==='invito'){ S.gs='invito'; } else { S.sel='sab'; S.ms='partita'; } }
-  else if(a==='bx'){ hideBanner(); }
-  else if(a==='open'){ S.open=true; if(S.ruolo==='g') S.gs=v; else S.ms=v; hideBanner(); bt=setTimeout(mostraBanner, 4000); }
-  else if(a==='back'){
-    if(S.ruolo==='g') S.gs='home';
-    else if(S.edit||S.pick){ S.edit=false; S.pick=false; }
-    else S.ms = S.ms==='partita' ? 'tattiche' : 'home';
-  }
-  else if(a==='close'){ S.open=false; hideBanner(); }
-  else if(a==='dots'){ flash('Menu di Telegram'); }
-  else if(a==='gs'){ S.gs=v; }
-  else if(a==='ciSono'){ S.invito='si'; S.gs='home'; flash('Segnato, ti aspetta LoZio in campo.'); }
-  else if(a==='nonPosso'){ S.invito='no'; S.gs='home'; flash('Va bene, sarà per la prossima.'); }
-  else if(a==='piuTardi'){ S.invito='dopo'; S.gs='home'; flash('Va bene, aspetto la tua risposta.'); }
-  else if(a==='susp'){ S.sosp=!S.sosp; flash(S.sosp?'Partite Tattiche sospese.':'Bentornato! Ti riattivo.'); }
-  else if(a==='nonRiesco2'){ S.invito='no'; flash('LoZio è stato avvisato.'); }
-  else if(a==='nonRiesco'){ S.nonRiesco=true; flash('LoZio è stato avvisato.'); }
-  else if(a==='orario'){ S.orari[v]=!S.orari[v]; aggiornaDirty(); }
-  else if(a==='freq'){ S.due = v==='2'; aggiornaDirty(); }
-  else if(a==='salva'){ S.salvato=snap(); S.dirty=false; flash('Disponibilità salvate.'); }
-  else if(a==='amico'){ flash(v==='wa' ? 'Si apre WhatsApp con il messaggio già scritto.' : 'Si apre Telegram con il messaggio già scritto.'); }
-  else if(a==='liv'){ S.liv=v; }
-  else if(a==='tipo'){ S.tipo=v; }
-  else if(a==='apri'){ S.prop='si'; P.lun={liv:S.liv,tipo:S.tipo}; flash('Invitati 5 giocatori.'); }
-  else if(a==='no'){ S.prop='no'; }
-  else if(a==='avv'){ S.avv=v; S.ms='tattiche'; flash(({annullata:'Partita annullata, giocatori avvisati.',aspetta:'Aspetto ancora, ti riscrivo domani alle 9.',altri:'Invitati altri 3 giocatori.'})[v]); }
-  else if(a==='det'){ S.sel=v; S.ms='partita'; S.edit=false; S.pick=false; }
-  else if(a==='ms'){ S.ms=v; S.edit=false; S.pick=false; }
-  else if(a==='altri'){ S.pick=false; flash('Invitati altri 3 giocatori.'); }
-  else if(a==='rip'){ if(v==='prop') S.prop='aperta'; else S.avv='aperto'; }
-  else if(a==='lvl'){ S.chiusi[v]=!S.chiusi[v]; }
-  else if(a==='sug'){ inviaChat(DOM[v], v); }
-  else if(a==='invia'){ var inp=document.getElementById('cin'); inviaChat(inp && inp.value, 'libero'); }
-  else if(a==='pick'){ S.pick=true; }
-  else if(a==='inv1'){ (S.gia[S.sel]=S.gia[S.sel]||[]).push(v); S.pick=false; flash('Invitato: '+v+'.'); }
-  else if(a==='mod'){ S.edit=true; }
-  else if(a==='chiudiMod'){ S.edit=false; S.pick=false; }
-  else if(a==='eliv'){ P[S.sel].liv=v; }
-  else if(a==='etipo'){ P[S.sel].tipo=v; }
-  else if(a==='salvaMod'){ S.edit=false; flash('Modifica salvata, gli invitati sono avvisati.'); }
-  else if(a==='annulla'){ if(S.sel==='sab') S.sabOff=true; else if(S.sel==='mar') S.marOff=true; else S.lunOff=true; S.ms='tattiche'; flash('Partita annullata, giocatori avvisati.'); }
-  render();
+function slotState(d,t){
+ const b=bookingAt(d,t);
+ if(S.draft.sel.indexOf(sk(d,t))>=0)return 'on';
+ if(b&&b.player===S.me.name)return 'mine';
+ if(b)return 'busy';
+ if(S.draft.who==='coach'&&isAbs(d,t))return 'away';
+ return '';
 }
-document.addEventListener('input', function(e){ if(e.target.id==='ninv') S.ninv = e.target.value; });
-document.addEventListener('keydown', function(e){ if(e.key==='Enter' && e.target.id==='cin'){ e.preventDefault(); act('invia'); } if(e.key==='Enter' && e.target.id==='ninv'){ e.preventDefault(); act('prepInv'); } });
-document.addEventListener('click', function(e){ var el=e.target.closest('[data-a]'); if(el && el.dataset.a==='privacy'){ if(LIVE){ e.preventDefault(); apri("https://padelvillage.github.io/lozio-miniapp/privacy.html", false); } return; } if(el) act(el.dataset.a, el.dataset.v); });
-(function(){
-  var q = new URLSearchParams(location.search), WA = window.Telegram && Telegram.WebApp;
-  if((WA && WA.initData) || q.get('v')){
-    document.body.classList.add('tgm');
-    S.ruolo = q.get('v')==='m' ? 'm' : 'g';
-    S.open = true;
-    if(WA){ try{ WA.ready(); WA.expand(); WA.BackButton.onClick(function(){ act('back'); }); }catch(e){} }
-    if(WA && WA.initData){
-      LIVE = true; INIT = WA.initData; START = { s:q.get('s'), p:q.get('p'), i:q.get('i') };
-      carica();
-      setInterval(function(){ if(!document.hidden) carica(true); }, 20000);
-      // Telegram tiene la mini app "chiusa ma contratta": alla riapertura ricarico i dati e controllo se c'è una versione nuova dell'app
-      var risveglio = function(){ carica(true); controllaVersione(); };
-      document.addEventListener('visibilitychange', function(){ if(!document.hidden) risveglio(); });
-      try{ WA.onEvent('activated', risveglio); }catch(e){}
-      setTimeout(controllaVersione, 3000);
-      setInterval(function(){ if(!document.hidden) controllaVersione(); }, 300000);
-    } else {
-      bt = setTimeout(mostraBanner, 4000);
-    }
-  }
-})();
-function fit(){ var k = Math.max(.45, Math.min(1, (window.innerHeight - 128) / 780)); document.documentElement.style.setProperty('--k', k); }
-S.salvato = snap();
-fit(); window.addEventListener('resize', fit);
-render();
+function pBook(){
+ const D=S.draft,fs=fasce(D.day),fi=Math.min(D.fi||0,fs.length-1),f=fs[fi];
+ const chip=(on,act,a,t)=>'<button class="sg'+(on?' on':'')+'" data-act="'+act+'" data-a="'+a+'">'+t+'</button>';
+ const free=x=>x.slots.filter(t=>{const s=slotState(D.day,t);return s===''||s==='on';}).length;
+ let h='';
+ h+='<div><p class="fh">Tipo di sessione</p><div class="seg3">'+chip(D.purpose==='allenamento','purp','allenamento','Allenamento')+chip(D.purpose==='racchette','purp','racchette','Test racchette')+chip(D.purpose==='livello','purp','livello','Test livello di gioco')+'</div></div>';
+ h+='<div><p class="fh">Con chi</p><div class="seg">'+chip(D.who==='solo','who','solo','Da solo \u00b7 5 \u20ac')+chip(D.who==='coach','who','coach','Con coach \u00b7 10 \u20ac')+'</div></div>';
+ h+='<div><p class="fh">Giorno</p><div class="days">'+DAYS.map(k=>{const p=shortDay(k).split(' ');return '<button class="day'+(D.day===k?' on':'')+'" data-act="day" data-a="'+k+'"><span>'+p[0]+'</span><b>'+p[1]+'</b></button>';}).join('')+'</div></div>';
+ h+='<div><p class="fh">Orario \u00b7 slot da 20 minuti</p><div class="seg" style="margin-bottom:8px">'+fs.map((x,i)=>'<button class="sg'+(i===fi?' on':'')+'" data-act="fas2" data-a="'+i+'">'+x.a+'\u2013'+x.b+'<br><span style="font-weight:500;font-size:12px">'+free(x)+' liberi</span></button>').join('')+'</div>'+
+  '<div class="grid4">'+f.slots.map(t=>{const st=slotState(D.day,t);return '<button class="sl '+st+'" data-act="slot" data-a="'+t+'" aria-pressed="'+(st==='on')+'">'+t+'</button>';}).join('')+'</div>'+
+  '<p class="mut" style="margin-top:6px;font-size:12px">Barrato: occupato. Tratteggiato: coach assente. Max 2 slot di fila.</p></div>';
+ const n=D.sel.length;
+ h+='<div class="foot">'+(S.err?'<p class="err" style="margin-bottom:6px">'+esc(S.err)+'</p>':'')+'<div class="row sp sm" style="margin-bottom:8px"><span><b style="font-weight:600">'+(n?n+(n===1?' slot':' slot')+' \u00b7 '+n*price(D.who)+' \u20ac':'Nessuno slot scelto')+'</b></span><span class="mut">Si paga al circolo</span></div><button class="btn" data-act="confirm">Prenota</button></div>';
+ return h;
+}
+
+/* ---------- area giocatore: scheda ---------- */
+function valsHtml(b){const d=t=>t?'<span class="mut" style="display:block;font-size:12px;line-height:1.2;margin-top:2px">'+t+'</span>':'';return '<div class="vals"><div><small>Spin</small><b>'+b.spin+'</b>'+d(b.spinD)+'</div><div><small>Distanza</small><b>'+b.dist+'</b>'+d(b.distD)+'</div><div><small>Frequenza</small><b>'+b.freq+'</b>'+d(b.freqD)+'</div></div><p class="sm"><span class="mut">Posizione:</span> '+b.pos+'</p>';}
+const MARG=5,WORK=20-2-MARG;
+const split18=n=>Array.from({length:n},(_,i)=>Math.floor(WORK/n)+(i<WORK%n?1:0));
+const margHtml='<div class="blk" style="border-style:dashed"><div class="row sp"><b style="font-weight:600">Margine</b><span class="pill none">'+MARG+' min</span></div><p class="sm mut">Per arrivare, sistemarti e le pause tra un blocco e l\u2019altro.</p></div>';
+const sameSet=(a,b)=>a.spin===b.spin&&a.dist===b.dist&&a.freq===b.freq&&a.pos===b.pos;
+function schedaCard(s){
+ const tot=s.blocks.reduce((a,b)=>a+b.mins,0)+MARG,co=s.by==='coach';
+ let h='<div class="row sp wrap"><h2>La tua scheda</h2>'+lvPill(s.level)+'</div><p class="mut sm">'+(co?'Preparata dal tuo coach':'Creata da te')+' \u00b7 '+s.date+' \u00b7 '+tot+' minuti</p>';
+ if(co)h+='<div class="card" style="background:var(--soft);border-color:var(--brand)"><p class="sm"><b style="font-weight:600">Alla macchina ci pensa il coach.</b> Tu pensa solo a giocare: ecco cosa farai.</p></div>';
+ h+=s.blocks.map((b,i)=>'<div class="blk"><div class="row sp"><b style="font-weight:600">'+(i+1)+'. '+esc(b.name)+'</b><span class="pill none">'+b.mins+' min</span></div><p class="sm mut">'+esc(b.focus)+(b.colpo?' \u00b7 '+esc(b.colpo):'')+'</p>'+(co?'':(i>0&&sameSet(b,s.blocks[i-1])?'<p class="sm" style="margin-top:8px"><span class="pill coach">Stesso settaggio di prima</span> Non cambiare nulla sulla macchina.</p>':valsHtml(b)))+'</div>').join('');
+ h+=margHtml;
+ if(co)h+='<details class="card"><summary class="sm" style="cursor:pointer;min-height:32px">Valori della macchina</summary><p class="sm mut" style="margin:6px 0 10px">Ti servono solo se ti alleni da solo con questa scheda.</p>'+s.blocks.map(b=>'<p class="sm" style="margin-top:8px"><b style="font-weight:600">'+esc(b.name)+'</b></p>'+valsHtml(b)).join('')+'</details>';
+ else h+='<div class="card"><p class="fh">Suggerimenti</p><p class="sm"><b style="font-weight:600">Riscaldamento.</b> I primi 2 minuti tieni la frequenza a 3,4 sec per abituare vista e braccio.</p><p class="sm" style="margin-top:6px"><b style="font-weight:600">Cambio angolazione.</b> La macchina spara in una sola direzione: per variare l\u2019angolo sposta i piedi di 1 metro.</p><p class="sm" style="margin-top:6px"><b style="font-weight:600">Ciclo continuo.</b> Indirizza la palla verso la rete di raccolta: bastano 3\u20134 palline.</p></div>';
+ return h;
+}
+function pScheda(){
+ const me=S.me;
+ if(S.sView==='create')return pCreate();
+ let h='';
+ if(!me.schede.length){
+  h+='<h2>La tua scheda</h2><div class="card"><p>Non hai ancora una scheda di allenamento. Costruiscila da solo scegliendo gli allenamenti del tuo livello, oppure chiedila al coach.</p></div><button class="btn" data-act="mkcreate">Creane una da solo</button><button class="btn sec" data-act="gocoach">Prenota una sessione con il coach</button>';
+ }else{
+  const s=me.schede[Math.min(S.sIdx,me.schede.length-1)];
+  h+=schedaCard(s)+'<button class="btn" data-act="sheet" data-a="guida">Guida regolazione</button><button class="btn sec" data-act="mkcreate">Creane una nuova da solo</button>';
+  if(me.schede.length>1){h+='<p class="fh">Schede precedenti</p>'+me.schede.map((x,i)=>i===S.sIdx?'':'<button class="srow" data-act="sidx" data-a="'+i+'"><span class="m"><b style="font-weight:600">'+(x.by==='coach'?'Dal coach':'Creata da te')+' · '+x.date+'</b></span>'+lvPill(x.level)+'</button>').join('');}
+ }
+ return h+(me.schede.length?'':'<button class="lnk" data-act="sheet" data-a="guida">Guida regolazione</button>');
+}
+function pCreate(){
+ const C=S.create;let h='<h2>Crea la tua scheda</h2><div><p class="fh">Il tuo livello</p><div style="display:flex;flex-direction:column;gap:8px">'+
+  ['base','mid','adv'].map(l=>'<button class="opt'+(C.level===l?' on':'')+'" data-act="clevel" data-a="'+l+'"><span class="dot"></span><span><b>'+LV[l].name+'</b><span class="sm mut">'+LV[l].desc+'</span></span></button>').join('')+'</div></div>';
+ if(C.level){h+='<div><p class="fh">Scegli gli allenamenti (fino a 6 blocchi) · '+C.sel.length+' scelti</p><div style="display:flex;flex-direction:column;gap:8px">'+
+  drillsOf(C.level).map(d=>'<button class="opt'+(C.sel.indexOf(d.id)>=0?' on':'')+'" data-act="cdr" data-a="'+d.id+'"><span class="dot"></span><span><b>'+esc(d.name)+'</b><span class="sm mut">'+esc(d.focus)+(d.colpo?' \u00b7 '+esc(d.colpo):'')+'</span></span></button>').join('')+'</div></div>'+
+  (C.sel.length?'<div><p class="fh">Minuti per blocco</p>'+C.sel.map((id,i)=>'<div class="blk"><b style="font-weight:600">'+(i+1)+'. '+esc(drill(id).name)+'</b><div class="stp" style="margin-top:8px"><button data-act="cmin" data-a="'+i+'" data-b="-1" aria-label="Meno un minuto">\u2212</button><b>'+C.mins[i]+' min</b><button data-act="cmin" data-a="'+i+'" data-b="1" aria-label="Pi\u00f9 un minuto">+</button></div></div>').join('')+'<div class="card row sp" style="margin-top:8px"><span>Totale dei blocchi</span><b style="font-weight:600;color:'+(C.mins.reduce((x,y)=>x+y,0)===WORK?'var(--brand)':'var(--accent)')+'">'+C.mins.reduce((x,y)=>x+y,0)+' min su '+WORK+'</b></div></div>':'')+'<p class="sm mut">La macchina tira ogni blocco con un solo settaggio: la palla arriva sempre uguale e sei tu a muoverti, a destra, a sinistra, avanti o indietro.</p><p class="sm mut">La scheda parte con 2 minuti di riscaldamento, poi hai '+WORK+' minuti da distribuire come vuoi tra i blocchi. Gli ultimi '+MARG+' minuti sono un margine per arrivare, sistemarti e fare pause: 20 minuti in tutto.</p>'+(S.err?'<p class="err">'+esc(S.err)+'</p>':'')+'<button class="btn" data-act="csave">Crea la mia scheda</button>';}
+ return h;
+}
+
+/* ---------- area giocatore: chat col coach ---------- */
+function pChat(){
+ if(!unlocked())return '<h2>Il tuo coach</h2><div class="card"><p>La chat si apre quando prenoti una sessione. Con il coach puoi chiedere una scheda su misura.</p></div><button class="btn" data-act="gocoach">Prenota una sessione con il coach</button>';
+ const m=S.me.chat.map(x=>{if(x.card){const s=S.me.schede.find(q=>q.id===x.card);return '<div class="bub co">'+esc(x.text)+'<div class="card" style="margin-top:8px;padding:10px"><p class="fh" style="margin:0 0 4px">Nuova scheda</p><p class="sm">'+(s?LV[s.level].name+' · '+s.blocks.reduce((a,b)=>a+b.mins,0)+' minuti':'')+'</p><button class="btn sm2" style="margin-top:8px" data-act="opencard" data-a="'+x.card+'">Apri scheda</button></div></div>';}
+  return '<div class="bub '+(x.from==='me'?'me':'co')+'">'+esc(x.text)+'</div>';}).join('');
+ const pend=S.requests.some(r=>r.player===S.me.name);
+ return '<h2>Il tuo coach</h2><div class="msgs">'+(m||'<p class="mut sm">Scrivi al coach: ti risponde qui.</p>')+'</div>'+
+  (hasCoachSess()?'<button class="btn sec" data-act="askscheda">'+(pend?'Scheda già richiesta':'Chiedi una scheda')+'</button>':'')+
+  '<form data-form="chat" class="row"><input class="inp" id="chat-in" type="text" placeholder="Scrivi al coach" autocomplete="off"><button class="btn sm2" style="min-height:46px" type="submit">Invia</button></form>'+
+  '<p class="sm mut">Il coach ti risponde da Telegram e ti arriva una notifica.</p>';
+}
+
+/* ---------- area coach ---------- */
+const legendHtml=()=>{const sw=(c,t)=>'<span style="display:inline-flex;align-items:center;gap:5px"><i style="width:12px;height:12px;border-radius:3px;background:'+c+';display:inline-block"></i>'+t+'</span>';return '<div class="sm row wrap" style="gap:6px 14px">'+sw('var(--brand)','Con coach')+sw('var(--solo)','Da solo')+sw('var(--accent)','Da risolvere')+'<span style="display:inline-flex;align-items:center;gap:5px"><i style="width:12px;height:12px;border-radius:3px;background:var(--abs);display:inline-block"></i>Non ci sei</span></div>';};
+function coachWeek(){
+ const hrs=new Set();DAYS.forEach(k=>fasce(k).forEach(f=>f.slots.forEach(t=>hrs.add(Math.floor(mm(t)/60)))));
+ const H=[...hrs].sort((a,b)=>a-b);
+ let h='<div style="display:grid;grid-template-columns:34px repeat(7,1fr);gap:3px;align-items:center"><span></span>'+DAYS.map(k=>{const p=shortDay(k).split(' ');return '<button class="day" style="width:auto;padding:4px 0" data-act="wday" data-a="'+k+'" data-b="-1"><span style="font-size:11px">'+p[0]+'</span><b style="font-size:17px">'+p[1]+'</b></button>';}).join('');
+ H.forEach(hr=>{h+='<span class="sm mut" style="font:600 13px var(--disp)">'+String(hr).padStart(2,'0')+':00</span>';
+  DAYS.forEach(k=>{const sl=[];fasce(k).forEach(f=>f.slots.forEach(t=>{if(Math.floor(mm(t)/60)===hr)sl.push(t);}));
+   if(!sl.length){h+='<span style="height:26px;border-radius:7px;background:var(--line);opacity:.35"></span>';return;}
+   const fi=fasce(k).findIndex(f=>f.slots.indexOf(sl[0])>=0);
+   const seg=t=>{const q=bookingAt(k,t);const bg=q?(q.away?'var(--accent)':q.who==='coach'?'var(--brand)':'var(--solo)'):isAbs(k,t)?'var(--abs)':'transparent';return '<span style="flex:1;background:'+bg+'"></span>';};
+   h+='<button class="cc" style="min-height:26px;padding:0;overflow:hidden;flex-direction:row;align-items:stretch;gap:1px;background:var(--card)" data-act="wday" data-a="'+k+'" data-b="'+fi+'" aria-label="'+shortDay(k)+' ore '+hr+'">'+sl.map(seg).join('')+'</button>';});});
+ const sw=(c,t)=>'<span style="display:inline-flex;align-items:center;gap:5px"><i style="width:12px;height:12px;border-radius:3px;background:'+c+';display:inline-block"></i>'+t+'</span>';
+ h+='</div><div class="sm row wrap" style="gap:6px 14px">'+sw('var(--brand)','Con coach')+sw('var(--solo)','Da solo')+sw('var(--accent)','Da risolvere')+'<span style="display:inline-flex;align-items:center;gap:5px"><i style="width:12px;height:12px;border-radius:3px;background:var(--abs);display:inline-block"></i>Non ci sei</span></div><p class="mut" style="font-size:12px">Ogni casella \u00e8 un\u2019ora, divisa nei suoi slot da 20 minuti: una sola sessione per slot. Tocca una casella per aprire il giorno.</p>';
+ return h;
+}
+function coachSlots(){
+ if(S.cview==='week')return coachWeek();
+ const d=S.cday,fs=fasce(d),fi=Math.min(S.cfi||0,fs.length-1),f=fs[fi];
+ let h='<div class="row sp"><button class="tb" data-act="cnav" data-a="-1" aria-label="Giorno prima">\u2190</button><h2 style="text-align:center;font-size:20px;white-space:nowrap">'+longDay(d)+'</h2><button class="tb" data-act="cnav" data-a="1" aria-label="Giorno dopo">\u2192</button></div>';
+ const cnt=x=>x.slots.filter(t=>bookingAt(d,t)&&bookingAt(d,t).slots[0]===t).length;
+ h+='<div class="seg">'+fs.map((x,i)=>'<button class="sg'+(i===fi?' on':'')+'" data-act="cfas" data-a="'+i+'">'+x.a+'\u2013'+x.b+'<br><span style="font-weight:500;font-size:12px">'+cnt(x)+' prenotati</span></button>').join('')+'</div>';
+ h+='<div class="grid4">'+f.slots.map(t=>{const q=bookingAt(d,t),ab=isAbs(d,t);
+  if(q){const first=q.slots[0]===t,nm=q.player.split(' ')[0]+(q.player.split(' ')[1]?' '+q.player.split(' ')[1]:'');return '<button class="cc '+(q.away?'warn':q.who==='coach'?'coach':'solo')+(S.hl&&S.hl.date===d&&S.hl.slot===t?' hl':'')+'" data-act="cslot" data-a="'+t+'"><b>'+t+'</b><i>'+(first?esc(nm):'\u2193 segue')+'</i></button>';}
+  return '<button class="cc'+(ab?' abs':'')+'" data-act="cslot" data-a="'+t+'"><b>'+t+'</b><i>'+(ab?'Non ci sei':'Libero')+'</i></button>';}).join('')+'</div>';
+ h+=''+legendHtml()+'<button class="btn sec" data-act="sheet" data-a="fascia">Segnati assente su una fascia</button>';
+ return h;
+}
+function coachSchede(){
+ if(S.comp)return composer();
+ const it=S.requests.map(r=>Object.assign({typ:'s'},r)).concat(S.levelTests.map(t=>Object.assign({typ:'t',slot:''},t)));
+ if(!it.length)return '<h2>Da fare</h2><div class="card"><p class="mut">Non c\u2019\u00e8 niente da preparare.</p></div>';
+ const key=r=>r.date?r.date+(r.slot||''):'9999';
+ const rs=it.sort((a,b)=>key(a)<key(b)?-1:key(a)>key(b)?1:0);
+ const grp={};rs.forEach(r=>{(grp[r.date||'none']=grp[r.date||'none']||[]).push(r);});
+ let h='<h2>Da fare</h2><p class="sm mut" style="margin-top:-6px">Schede da preparare e test di livello da chiudere.</p>';
+ const so=S.sopen||(S.sopen={});
+ Object.keys(grp).sort().forEach(d=>{
+  const lab=d==='none'?'Senza sessione prenotata':(d===DAYS[0]?'Oggi \u00b7 ':d===DAYS[1]?'Domani \u00b7 ':'')+shortDay(d).replace(' nov',' novembre');
+  const op=d in so?so[d]:(d==='none'||d<=DAYS[1]);
+  h+='<div style="margin-top:-4px"><button class="card" data-act="dtog" data-a="'+d+'" aria-expanded="'+op+'" style="width:100%;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:11px 14px;text-align:left;'+(op?'border-bottom-left-radius:0;border-bottom-right-radius:0;border-bottom-color:transparent;':'')+'"><b style="font-weight:600;'+(d===DAYS[0]?'color:var(--accent)':'')+'">'+lab+'</b><span class="row" style="gap:8px"><span class="pill none">'+grp[d].length+'</span><span aria-hidden="true" style="color:var(--ink2)">'+(op?'\u25BE':'\u25B8')+'</span></span></button>';
+  if(op){h+='<div class="card" style="padding:0 14px;border-top-left-radius:0;border-top-right-radius:0;border-top:0">';
+  grp[d].forEach(r=>{const t=r.typ==='t';
+   h+='<div class="row sp" style="gap:10px;padding:8px 0;border-top:1px solid var(--line)"><div style="min-width:0;flex:1"><div class="row" style="gap:8px;flex-wrap:nowrap">'+(r.slot?'<b style="font-weight:700;font-variant-numeric:tabular-nums">'+r.slot+'</b>':'')+'<b style="font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(r.player)+'</b></div><div class="row" style="gap:6px;margin-top:3px;flex-wrap:wrap"><span class="pill none">'+(t?'Test livello':r.purp==='racchette'?'Test racchette':'Allenamento')+'</span>'+(t?'<span class="sm mut">livello da assegnare</span>':'<span class="sm mut">'+(r.level?LV[r.level].name:'Livello da definire')+'</span>')+'</div>'+(t?'':'<p class="sm" style="margin-top:3px;line-height:1.3"><span class="mut">Vuole:</span> '+esc(r.focus||'da decidere')+'</p>')+'</div>'+
+   (t?'<button class="btn sec sm2" style="min-height:34px;padding:5px 12px;flex:none" data-act="lvl" data-a="'+r.id+'">Livello</button>':'<button class="btn sm2" style="min-height:34px;padding:5px 12px;flex:none" data-act="prep" data-a="'+r.id+'">Prepara</button>')+'</div>';});
+  h+='</div>';}
+  h+='</div>';});
+ return h;
+}
+function composer(){
+ const C=S.comp,list=drillsOf(C.level);
+ const tot=2+MARG+C.mins.reduce((a,b)=>a+b,0);
+ let h='<div class="totbar" style="position:sticky;top:-16px;z-index:6;margin:-16px -16px 0;padding:10px 16px;background:var(--card);border-bottom:2px solid '+(tot===20?'var(--brand)':'var(--accent)')+';display:flex;justify-content:space-between;align-items:center"><span>Totale scheda</span><b style="font-weight:700;font-size:18px;color:'+(tot===20?'var(--brand)':'var(--accent)')+'">'+tot+' / 20 min</b></div><h2>Scheda per '+esc(C.player)+'</h2>'+(C.purp==='racchette'?'<p class="sm mut" style="margin-top:-8px">Test racchette: prepara un allenamento per provare le racchette.</p>':'')+'<div><p class="fh">Livello</p><div class="seg3">'+['base','mid','adv'].map(l=>'<button class="sg'+(C.level===l?' on':'')+'" data-act="clv" data-a="'+l+'">'+LV[l].name+'</button>').join('')+'</div></div>';
+ h+='<div class="blk"><div class="row sp"><b style="font-weight:600">Riscaldamento · dritto e rovescio</b><span class="pill none">2 min</span></div><p class="sm mut">Uguale per tutti i livelli.</p></div>';
+ C.sel.forEach((id,i)=>{h+='<div class="blk"><div class="row sp" style="margin-bottom:6px"><p class="fh" style="margin:0">Blocco '+(i+1)+'</p>'+(C.sel.length>1?'<button class="lnk" style="min-height:32px;padding:0;color:var(--accent)" data-act="cdel" data-a="'+i+'">Togli blocco</button>':'')+'</div><select class="inp" id="cb'+i+'" data-chg="csel" data-a="'+i+'">'+list.map(d=>'<option value="'+d.id+'"'+(d.id===id?' selected':'')+'>'+esc(d.name)+'</option>').join('')+'</select>'+
+  '<div class="stp" style="margin-top:8px"><button data-act="cm" data-a="'+i+'" data-b="-1" aria-label="Meno un minuto">−</button><b>'+C.mins[i]+' min</b><button data-act="cm" data-a="'+i+'" data-b="1" aria-label="Più un minuto">+</button></div></div>';});
+ h+=C.sel.length<6?'<button class="btn sec" data-act="cadd">Aggiungi blocco</button>':'';
+ h+=margHtml;
+ 
+ h+='<div><p class="fh">Messaggio al giocatore</p><textarea class="inp" id="cmsg" rows="2" placeholder="Es. Parti piano, poi alza la frequenza">'+esc(C.msg)+'</textarea></div>'+(S.err?'<p class="err">'+esc(S.err)+'</p>':'')+'<button class="btn" data-act="csend">Invia scheda</button>';
+ return h;
+}
+
+/* ---------- sheets ---------- */
+function sheetView(){
+ if(!S.sheet)return '';
+ const x=S.sheet;let c='';
+ const close='<button class="btn sec" data-act="close">Chiudi</button>';
+ if(x.t==='guida'){c='<h2>Guida regolazione</h2><p class="sm mut">La macchina tira ogni blocco con un solo settaggio: la palla arriva sempre uguale e sei tu a muoverti. Per cambiare colpo si ferma la macchina e si cambia settaggio. Imposta la macchina in base al tuo livello e al colpo da allenare. Spin e distanza vanno da 1 a 10, la frequenza è il tempo tra una palla e l’altra.</p><div class="blk"><b style="font-weight:600">'+WARM.name+'</b> · 2 min'+valsHtml(WARM)+'</div>'+
+  ['base','mid','adv'].map(l=>'<p class="fh" style="margin-top:6px">'+lvPill(l)+'</p>'+drillsOf(l).filter(d=>!d.colpo).map(d=>'<div class="blk" style="margin-bottom:8px"><b style="font-weight:600">'+esc(d.name)+'</b><p class="sm mut">'+esc(d.focus)+'</p>'+valsHtml(d)+'</div>').join('')).join('')+close;}
+ else if(x.t==='focus'){c='<h2>Cosa vuoi allenare?</h2><p class="sm mut">Il coach prepara la scheda in base a quello che scegli. Puoi sceglierne più di uno.</p><div class="seg">'+Object.keys(FOC).map(k=>'<button class="sg'+(S.fsel.indexOf(k)>=0?' on':'')+'" data-act="fch" data-a="'+k+'">'+FOC[k]+'</button>').join('')+'</div><button class="btn" data-act="fok">Invia al coach</button><button class="btn sec" data-act="fskip">Salta</button>';}
+ else if(x.t==='sent'){const st=(n,t,s)=>'<div class="row" style="align-items:flex-start;gap:12px"><span class="pill coach" style="min-width:26px;text-align:center">'+n+'</span><span><b style="font-weight:600">'+t+'</b><br><span class="sm mut">'+s+'</span></span></div>';
+  c='<h2>Richiesta inviata</h2><p class="sm">'+esc(x.what)+'</p>'+st(1,'Il coach prepara la scheda','Di solito prima della tua sessione.')+st(2,'Ti arriva una notifica su Telegram','Appena la scheda \u00e8 pronta.')+st(3,'Poi apri la scheda quando sei al campo','La trovi nel menu Scheda. Alla macchina ci pensa il coach.')+'<button class="btn" data-act="close">Ho capito</button>';}
+ else if(x.t==='lvl'){const t=S.levelTests.find(q=>q.id===x.id);c=t?'<h2>Che livello ha '+esc(t.player)+'?</h2><p class="sm mut">Test fatto '+esc(t.when)+'.</p><div class="seg3">'+['base','mid','adv'].map(l=>'<button class="sg" data-act="setlv" data-a="'+t.id+'" data-b="'+l+'">'+LV[l].name+'</button>').join('')+'</div>'+close:'';}
+ else if(x.t==='privacy'){c='<h2>Privacy</h2><p class="sm">Titolare del trattamento: Padel Village ASD, Via Foresto Est 1/D, 31025 Santa Lucia di Piave (TV). Contatto: padelvillage.club@gmail.com.</p><p class="sm">Per prenotare usiamo il tuo nome e il tuo identificativo Telegram, le prenotazioni, le schede di allenamento e i messaggi scambiati con il coach. Il coach li vede per gestire le sessioni.</p><p class="sm mut">Bozza: il testo definitivo va rivisto prima della pubblicazione.</p>'+close;}
+ else if(x.t==='cancel'){const b=S.bookings.find(q=>q.id===x.a);c='<h2>Vuoi disdire?</h2><p>'+(b?longDay(b.date)+', '+rangeOf(b):'')+'</p><p class="sm mut">Lo slot torna libero per gli altri.</p><button class="btn warn" data-act="cancelok" data-a="'+x.a+'">Sì, disdici</button>'+close;}
+ else if(x.t==='slot'){const b=bookingAt(x.d,x.a);if(!b){c='';}else{c='<h2>'+esc(b.player)+'</h2><p class="mut">'+longDay(b.date)+', '+rangeOf(b)+'</p><div class="row wrap"><span class="pill none">'+PURP[b.purpose]+'</span>'+whoPill(b)+(b.level?lvPill(b.level):'')+'</div><p class="sm">'+esc(bring(b))+'</p>'+(b.focus?'<p class="sm"><span class="mut">Vuole allenare:</span> '+esc(b.focus)+'</p>':'')+
+   (b.away?'<p class="sm err">Hai già avvisato il giocatore: sceglie lui se tenere lo slot da solo, spostarsi o disdire.</p>':'<button class="btn sec" data-act="'+(b.who==='coach'?'absask':'abssolo')+'" data-a="'+x.d+'" data-b="'+x.a+'">Segnati assente in questo slot</button>')+close;}}
+ else if(x.t==='absask'){const b=bookingAt(x.d,x.a);c='<h2>Hai una prenotazione con te</h2><p>'+esc(b.player)+' ha prenotato con il coach alle '+x.a+'. Se ti segni assente, gli arriva su Telegram la scelta: tenere lo slot da solo, spostarsi in un altro orario o disdire.</p><button class="btn warn" data-act="absok" data-a="'+x.d+'" data-b="'+x.a+'">Segnati assente e avvisa</button>'+close;}
+ else if(x.t==='fascia'){c='<h2>Assenza su una fascia</h2><p class="sm mut">'+longDay(S.cday)+'</p>'+fasce(S.cday).map((f,i)=>{const all=f.slots.every(t=>isAbs(S.cday,t));const cs=f.slots.filter(t=>{const b=bookingAt(S.cday,t);return b&&b.who==='coach'&&!all;}).length;
+   return '<div class="blk"><div class="row sp"><b style="font-weight:600">'+f.a+'–'+f.b+'</b><span class="pill '+(all?'abs':'none')+'">'+(all?'Non ci sei':'Ci sei')+'</span></div>'+(cs&&!all?'<p class="sm mut" style="margin:6px 0">Include '+cs+(cs===1?' prenotazione':' prenotazioni')+' con il coach: il giocatore riceve un avviso su Telegram.</p>':'')+'<button class="btn sec" style="margin-top:10px" data-act="fas" data-a="'+i+'">'+(all?'Togli l’assenza':'Segna assente tutta la fascia')+'</button></div>';}).join('')+close;}
+ return '<div class="shw"><div class="bd" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">'+c+'</div></div>';
+}
+
+/* ---------- azioni ---------- */
+const snap=()=>({tab:S.tab,pv:S.pv,sView:S.sView,sIdx:S.sIdx,ctab:S.ctab});
+const ACT={
+ goback(){if(S.comp){S.comp=null;}else{const x=S.hist.pop();if(x)Object.assign(S,x);}S.err='';render();top0();},
+ scen(a){S=seed(a);render();top0();},
+ late(){S.late=!S.late;render();},
+ skip(){S.hist=[];S.intro=false;S.introPlay=false;S.pv='home';S.tab='prenota';render();},
+ play(){S.introPlay=true;render();},
+ video(){S.intro=true;S.introPlay=false;render();},
+ area(a){S.area=a;S.hist=[];S.comp=null;render();top0();},
+ ptab(a){S.hist=[];S.tab=a;if(a==='prenota')S.pv='home';S.sView='main';S.err='';render();top0();},
+ ctab(a){S.hist=[];S.ctab=a;S.comp=null;render();top0();},
+ newbook(){S.hist.push(snap());S.pv='book';S.err='';S.draft.sel=[];render();top0();},
+ back(){S.pv='home';render();},
+ purp(a){S.draft.purpose=a;if(a==='livello')S.draft.who='coach';pruneSel();render();},
+ who(a){S.draft.who=a;if(a==='solo'&&S.draft.purpose==='livello')S.draft.purpose='allenamento';pruneSel();render();},
+ day(a){S.draft.day=a;S.draft.fi=0;S.err='';render();},
+ fas2(a){S.draft.fi=+a;S.err='';render();},
+ slot(a){const d=S.draft.day,k=sk(d,a),i=S.draft.sel.indexOf(k);S.err='';
+  if(i>=0){S.draft.sel.splice(i,1);render();return;}
+  const st=slotState(d,a);
+  if(st==='busy')return say('Questo slot è già prenotato.');
+  if(st==='away')return say('Con il coach non è disponibile in questo orario. Da solo sì.');
+  if(st==='mine')return say('Hai già prenotato questo slot.');
+  const times=myTimes(d).concat(S.draft.sel.filter(x=>x.indexOf(d+'|')===0).map(x=>x.split('|')[1]),[a]);
+  if(maxRun(times)>2)return say('Al massimo 2 slot di fila. Scegli uno slot staccato.');
+  S.draft.sel.push(k);render();},
+ confirm(){const D=S.draft;const D0={purpose:D.purpose,who:D.who};if(!D.sel.length){S.err='Scegli almeno uno slot.';render();return;}
+  const byDay={};D.sel.forEach(k=>{const p=k.split('|');(byDay[p[0]]=byDay[p[0]]||[]).push(p[1]);});
+  let first=null;const made=[];
+  Object.keys(byDay).sort().forEach(d=>{const ts=byDay[d].sort();let run=[];const flush=()=>{if(!run.length)return;
+    const b={id:'n'+Date.now()+run[0],date:d,slots:run.slice(),purpose:D.purpose,who:D.who,level:S.me.level,player:S.me.name};S.bookings.push(b);made.push(b);if(!first)first=b;
+    if(D.who==='coach')S.feed.unshift({id:'f'+b.id,text:S.me.name+' ha prenotato con il coach: '+longDay(d).toLowerCase()+', '+rangeOf(b)});
+    if(D.purpose==='livello')S.levelTests.push({id:'t'+b.id,player:S.me.name,when:longDay(d).toLowerCase()});run=[];};
+   ts.forEach(t=>{if(run.length&&mm(t)-mm(run[run.length-1])!==20)flush();run.push(t);});flush();});
+  S.draft={purpose:'allenamento',who:'solo',day:DAYS[0],fi:0,sel:[]};S.pv='home';S.hist=[];
+  say('Prenotato. Si paga al circolo e '+remind(first)+'.');top0();
+  if(D0.who==='coach'&&D0.purpose!=='livello'){S.fsel=[];S.toast=null;S.sheet={t:'focus',ids:made.map(b=>b.id)};render();}},
+ fch(a){const i=S.fsel.indexOf(a);if(a==='coach'){S.fsel=i>=0?[]:['coach'];}else{S.fsel=S.fsel.filter(x=>x!=='coach');if(i>=0)S.fsel.splice(i,1);else S.fsel.push(a);}render();},
+ fok(){const ids=S.sheet.ids,b=S.bookings.find(q=>q.id===ids[0]);const lab=S.fsel.length?(S.fsel[0]==='coach'?'sceglie il coach':S.fsel.map(x=>FOC[x]).join(', ').toLowerCase()):'';
+  if(!S.fsel.length){S.sheet={t:'sent',what:'Il coach sceglie lui cosa farti allenare.'};return render();}
+  S.bookings.forEach(q=>{if(ids.indexOf(q.id)>=0)q.focus=lab;});
+  S.requests.push({id:'r'+Date.now(),player:S.me.name,level:S.me.level,sess:longDay(b.date).toLowerCase()+', '+tt(mm(b.slots[0])),date:b.date,slot:b.slots[0],focus:lab,purp:b.purpose});
+  S.feed.unshift({id:'f'+Date.now(),text:S.me.name+' vuole allenare: '+lab+' ('+longDay(b.date).toLowerCase()+', '+rangeOf(b)+')'});
+  S.sheet={t:'sent',what:'Hai scelto: '+lab+'.'};render();},
+ fskip(){S.sheet={t:'sent',what:'Il coach sceglie lui cosa farti allenare.'};render();},
+ tgchat(){S.tg='chat';render();},
+ tgopen(){if(S.tgmsg&&S.tgmsg.kind==='day'){const m=S.tgmsg;S.tg=null;S.area='coach';S.ctab='slot';S.cview='day';S.cday=m.date;S.cfi=Math.max(0,fasce(m.date).findIndex(f=>f.slots.indexOf(m.slot)>=0));S.hl={date:m.date,slot:m.slot};S.hist=[];render();top0();return;}
+  S.hist=[{tab:'prenota',pv:'home',sView:'main',sIdx:0,ctab:'slot'}];S.tg=null;S.pnotif=null;S.tab='scheda';S.sView='main';S.sIdx=0;render();top0();},
+ pnot(a){S.pnotif=null;ACT.opencard(a);},
+ cancel(a){S.sheet={t:'cancel',a:a};render();},
+ cancelok(a){const b=S.bookings.find(q=>q.id===a);S.bookings=S.bookings.filter(q=>q.id!==a);
+  if(b&&b.who==='coach')S.feed.unshift({id:'f'+Date.now(),text:S.me.name+' ha disdetto la sessione con il coach: '+longDay(b.date).toLowerCase()+', '+rangeOf(b)});
+  S.sheet=null;say('Sessione disdetta. Lo slot è di nuovo libero.');},
+ sheet(a){S.sheet={t:a};render();},
+ close(){S.sheet=null;render();},
+ gocoach(){S.hist.push(snap());S.tab='prenota';S.pv='book';S.draft.who='coach';S.draft.sel=[];render();top0();},
+ mkcreate(){S.hist.push(snap());S.sView='create';S.create={level:S.me.level,sel:[],mins:[]};S.err='';render();top0();},
+ sback(){S.sView='main';render();},
+ clevel(a){S.create.level=a;S.create.sel=[];S.create.mins=[];S.err='';render();},
+ cdr(a){const C=S.create,s=C.sel,i=s.indexOf(a);S.err='';if(i>=0)s.splice(i,1);else if(s.length<6)s.push(a);else return say('Al massimo 6 blocchi. Togline uno per sceglierne un altro.');C.mins=split18(s.length);render();},
+ cmin(a,b){const C=S.create,i=+a,v=C.mins[i]+(+b);if(v>=1&&v<=16)C.mins[i]=v;S.err='';render();},
+ cadd(){keepMsg();const l=drillsOf(S.comp.level);if(S.comp.sel.length>=6)return say('Al massimo 6 blocchi.');S.comp.sel.push(l[0].id);S.comp.mins.push(2);render();},
+ cdel(a){keepMsg();S.comp.sel.splice(+a,1);S.comp.mins.splice(+a,1);render();},
+ csave(){const C=S.create;if(C.sel.length<1){S.err='Scegli almeno un allenamento.';render();return;}
+  const tm=C.mins.reduce((x,y)=>x+y,0);if(tm!==WORK){S.err='I blocchi devono fare '+WORK+' minuti in totale (ora '+tm+').';render();return;}
+  S.me.level=C.level;S.me.schede.unshift({id:'s'+Date.now(),by:'me',level:C.level,date:'3 novembre',blocks:[WARM].concat(C.sel.map(id=>blockOf(id,C.mins[C.sel.indexOf(id)])))});
+  S.sView='main';S.sIdx=0;S.hist=[];say('Scheda creata. La trovi qui quando arrivi alla macchina.');top0();},
+ sidx(a){S.sIdx=+a;render();top0();},
+ opencard(a){S.hist.push(snap());S.sIdx=Math.max(0,S.me.schede.findIndex(s=>s.id===a));S.tab='scheda';S.sView='main';render();top0();},
+ askscheda(){if(S.requests.some(r=>r.player===S.me.name))return say('Hai già chiesto una scheda: il coach la sta preparando.');
+  S.me.chat.push({from:'me',text:'Ciao coach, mi prepari una scheda?'});S.requests.push({id:'r'+Date.now(),player:S.me.name,level:S.me.level,note:'Chiede una scheda'});say('Richiesta inviata al coach.');},
+ dtog(a){const so=S.sopen||(S.sopen={});const cur=a in so?so[a]:(a==='none'||a<=DAYS[1]);so[a]=!cur;render();},
+ lvl(a){S.sheet={t:'lvl',id:a};render();},
+ stab(a){S.stab=a;render();top0();},
+ cview(a){S.hl=null;S.cview=a;render();top0();},
+ wday(a,b){S.cday=a;S.cview='day';S.cfi=Math.max(0,+b);render();top0();},
+ cfas(a){S.cfi=+a;render();},
+ cnav(a){S.hl=null;const i=DAYS.indexOf(S.cday)+(+a);if(i>=0&&i<DAYS.length){S.cday=DAYS[i];S.cfi=0;}render();},
+ fdel(a){S.feed=S.feed.filter(f=>f.id!==a);render();},
+ cslot(a){const d=S.cday,b=bookingAt(d,a);
+  if(b){S.sheet={t:'slot',d:d,a:a};render();return;}
+  if(isAbs(d,a)){delete S.absent[sk(d,a)];say('Di nuovo libero: '+a);}else{S.absent[sk(d,a)]=true;say('Assente alle '+a+'. Da solo si può ancora prenotare.');}},
+ abssolo(a,b){S.absent[sk(a,b)]=true;S.sheet=null;say('Assente alle '+b+'. La sessione da solo resta valida.');},
+ absask(a,b){S.sheet={t:'absask',d:a,a:b};render();},
+ absok(a,b){const bk=bookingAt(a,b);S.absent[sk(a,b)]=true;if(bk)bk.away=true;S.sheet=null;say('Avviso inviato a '+(bk?bk.player:'')+' su Telegram.');},
+ fas(a){const f=fasce(S.cday)[+a],all=f.slots.every(t=>isAbs(S.cday,t));let n=0;
+  f.slots.forEach(t=>{if(all)delete S.absent[sk(S.cday,t)];else{S.absent[sk(S.cday,t)]=true;const b=bookingAt(S.cday,t);if(b&&b.who==='coach'&&!b.away){b.away=true;n++;}}});
+  S.sheet=null;say(all?'Assenza tolta.':'Fascia segnata assente.'+(n?' Avvisati '+n+' giocatori.':''));},
+ prep(a){const r=S.requests.find(q=>q.id===a),lv=r.level||'mid',l=drillsOf(lv);S.comp={reqId:a,purp:r.purp,player:r.player,level:lv,sel:[0,1,2].map(i=>l[i%l.length].id),mins:[5,4,4],msg:''};S.err='';render();top0();},
+ cback(){S.comp=null;S.err='';render();},
+ clv(a){keepMsg();const l=drillsOf(a);S.comp.level=a;S.comp.sel=[0,1,2].map(i=>l[i%l.length].id);S.comp.mins=[5,4,4];render();},
+ cm(a,b){keepMsg();const i=+a,v=S.comp.mins[i]+(+b);if(v>=1&&v<=15)S.comp.mins[i]=v;render();},
+ csend(){keepMsg();const C=S.comp,tot=2+MARG+C.mins.reduce((x,y)=>x+y,0);
+  if(tot!==20){S.err='Riscaldamento, blocchi e margine devono fare 20 minuti in totale (ora '+tot+').';render();return;}
+  const sc={id:'s'+Date.now(),by:'coach',level:C.level,date:'3 novembre',blocks:[WARM].concat(C.sel.map((id,i)=>blockOf(id,C.mins[i])))};
+  if(C.player===S.me.name){const rq=S.requests.find(r=>r.id===C.reqId),nb=mineB()[0],sess=(rq&&rq.sess)||(nb?longDay(nb.date).toLowerCase()+', '+tt(mm(nb.slots[0])):'');S.pnotif={id:sc.id,sess:sess};S.me.schede.unshift(sc);S.me.chat.push({from:'co',text:C.msg||'Ecco la tua scheda. Buon allenamento!',card:sc.id});}
+  S.requests=S.requests.filter(r=>r.id!==C.reqId);S.comp=null;S.err='';say('Scheda inviata. Notifica Telegram a '+C.player);top0();},
+ setlv(a,b){S.sheet=null;const t=S.levelTests.find(q=>q.id===a);if(t.player===S.me.name)S.me.level=b;S.levelTests=S.levelTests.filter(q=>q.id!==a);say(t.player+' ora è '+LV[b].name+'.');}
+};
+function pruneSel(){const D=S.draft;if(D.who==='coach')D.sel=D.sel.filter(k=>{const p=k.split('|');return !isAbs(p[0],p[1]);});}
+function keepMsg(){const e=document.getElementById('cmsg');if(e&&S.comp)S.comp.msg=e.value;}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(!t)return;const f=ACT[t.dataset.act];if(f)f(t.dataset.a,t.dataset.b);});
+document.addEventListener('change',e=>{const t=e.target;if(t.dataset&&t.dataset.chg==='csel'){keepMsg();S.comp.sel[+t.dataset.a]=t.value;render();}});
+document.addEventListener('submit',e=>{const f=e.target;if(f.dataset&&f.dataset.form==='chat'){e.preventDefault();const v=document.getElementById('chat-in').value.trim();if(!v)return;
+ S.me.chat.push({from:'me',text:v});S.feed.unshift({id:'f'+Date.now(),text:S.me.name+' ti scrive: '+v});render();const i=document.getElementById('chat-in');if(i)i.focus();}});
+document.addEventListener('ended',e=>{if(e.target.id==='vid'&&S&&S.intro)ACT.skip();},true);
+S=seed('new');render();
 </script>
-
+</body>
 </html>
