@@ -218,7 +218,9 @@ function seed(sc){
   draft:{purpose:'allenamento',who:'solo',day:DAYS[0],fi:0,sel:[]},create:{level:null,sel:[]},
   absent:{'2026-11-03|13:00':true},feed:[],
   requests:[{id:'r1',player:'Marco R.',level:'mid',date:'2026-11-03',slot:'12:00',focus:'dritto e rovescio'},{id:'r2',player:'Anna M.',level:'adv',date:'2026-11-03',slot:'21:00',focus:'bandeja e vibora'},{id:'r3',player:'Paolo G.',level:'base',date:'2026-11-04',slot:'12:20',focus:'dritto e rovescio'},{id:'r4',player:'Elisa C.',level:'mid',date:'2026-11-04',slot:'18:20',focus:'palleggio di fondo'},{id:'r5',player:'Giulia B.',level:'mid',date:'2026-11-05',slot:'17:20',focus:'volée'},{id:'r6',player:'Chiara L.',level:'mid',date:'2026-11-05',slot:'13:00',focus:'dritto e rovescio',purp:'racchette'},{id:'r7',player:'Nicola S.',level:'adv',date:'2026-11-06',slot:'17:00',focus:'dritto e rovescio, volée'},{id:'r8',player:'Marta V.',level:'base',date:'2026-11-06',slot:'22:00',focus:'palleggio di fondo'},{id:'r9',player:'Fabio D.',level:'mid',date:'2026-11-07',slot:'09:30',focus:'sceglie il coach'},{id:'r10',player:'Davide F.',level:'adv',date:'2026-11-07',slot:'10:30',focus:'volée'},{id:'r11',player:'Irene B.',level:'adv',date:'2026-11-08',slot:'15:20',focus:'bandeja e vibora'},{id:'r12',player:'Stefano R.',level:'mid',date:'2026-11-08',slot:'16:40',focus:'smash e por 3'},{id:'r13',player:'Laura P.',level:'base',date:'2026-11-09',slot:'12:40',focus:'dritto e rovescio'},{id:'r14',player:'Elena P.',level:null,note:'Chiede una scheda'}],
-  levelTests:[{id:'t1',player:'Davide F.',when:'lunedì 2 novembre',date:'2026-11-02'}]};
+  levelTests:[{id:'t1',player:'Davide F.',when:'lunedì 2 novembre',date:'2026-11-02'}],
+  inbox:[{id:'p1',name:'Lidia B.',last:'Ciao coach, posso spostare la sessione di domani?',pending:true},{id:'p2',name:'Marco R.',last:'Grazie coach!',pending:false},{id:'p3',name:'Marco R. (2)',last:'A che ora finisce la mia sessione?',pending:true}],
+  threads:{p1:[{from:'pl',text:'Ciao coach, posso spostare la sessione di domani?'}],p2:[{from:'pl',text:'Posso venire anche venerdì?'},{from:'co',text:'Certo, prenota pure lo slot che preferisci.'},{from:'pl',text:'Grazie coach!'}],p3:[{from:'pl',text:'A che ora finisce la mia sessione?'}]},thread:null};
  if(sc==='new'){
   return Object.assign(base,{intro:true,me:{name:'Paolo V.',level:null,schede:[],chat:[],hadCoach:false,played:false},bookings:others});}
  const sofia={name:'Sofia C.',level:'mid',hadCoach:true,played:true,
@@ -228,6 +230,7 @@ function seed(sc){
  base.me=sofia;base.bookings=bk;
  if(sc==='arrivo'){base.tg='push';base.pnotif={id:'s1',sess:'mercoled\u00ec 4 novembre, 18:20'};base.tgmsg={kind:'scheda',text:'Il tuo coach ti ha preparato la scheda per la sessione di mercoled\u00ec 4 novembre, 18:20.',btn:'Apri scheda'};}
  if(sc==='prenota'){base.role='coach';base.area='coach';base.tg='push';base.tgmsg={kind:'day',text:'Davide F. ha prenotato con il coach: sabato 7 novembre, 10:30.',btn:'Apri giorno',date:'2026-11-07',slot:'10:30'};}
+ if(sc==='msg'){base.role='coach';base.area='coach';base.tg='push';base.tgmsg={kind:'msg',text:'Messaggio da Lidia B.: Ciao coach, posso spostare la sessione di domani?',btn:'Rispondi a Lidia B.',pid:'p1'};}
  if(sc==='coach'){base.role='coach';base.area='coach';base.feed=[{id:'f1',text:'Davide F. ha prenotato con il coach: sabato 7 novembre, 10:30'}];}
  return base;
 }
@@ -256,7 +259,7 @@ function render(){
 function toolbar(){
  if(LIVE)return '';
  const b=(sc,l)=>'<button class="tb'+(S.sc===sc?' on':'')+'" data-act="scen" data-a="'+sc+'">'+l+'</button>';
- return '<div class="bar"><div class="lbl">Prototipo · tocca per provare</div>'+b('new','Nuovo giocatore')+b('player','Giocatore con sessione')+b('coach','Coach')+b('arrivo','Scheda in arrivo')+b('prenota','Notifica al coach')+
+ return '<div class="bar"><div class="lbl">Prototipo · tocca per provare</div>'+b('new','Nuovo giocatore')+b('player','Giocatore con sessione')+b('coach','Coach')+b('arrivo','Scheda in arrivo')+b('prenota','Notifica al coach')+b('msg','Messaggio al coach')+
   (S.sc!=='new'&&S.area==='player'?'<button class="tb'+(S.late?' on':'')+'" data-act="late">Mancano meno di 2 ore</button>':'')+'</div>';
 }
 function introView(){
@@ -274,20 +277,20 @@ function tgView(){
  '<button class="btn" style="background:var(--soft);color:var(--brand);max-width:86%;min-height:44px" data-act="tgopen">'+esc(S.tgmsg.btn)+'</button></div></div>';
 }
 function secTitle(){
- if(S.area==='coach')return S.ctab==='slot'?'Slot':(S.comp?'Nuova scheda':'Schede');
+ if(S.area==='coach')return S.ctab==='slot'?'Slot':S.ctab==='msg'?(S.thread?S.thread.name:'Messaggi'):(S.comp?'Nuova scheda':'Schede');
  if(S.tab==='prenota')return 'Prenota';
  if(S.tab==='scheda')return S.sView==='create'?'Crea scheda':'Scheda';
  return 'Coach';
 }
 function appView(){
  const coach=S.area==='coach';
- const canBack=S.hist.length>0||!!S.comp;
+ const canBack=S.hist.length>0||!!S.comp||!!(S.area==='coach'&&S.ctab==='msg'&&S.thread);
  const head='<div class="appbar"><div class="row" style="min-width:0">'+(canBack?'<button class="tb" data-act="goback" aria-label="Indietro" style="font-size:18px;padding:5px 12px">\u2190</button>':'')+'<div class="brand" style="min-width:0;text-transform:uppercase">'+secTitle()+'<small>Il Muro \u00b7 '+(coach?'Area coach':'Padel Village')+'</small></div></div>'+
   '<div class="row" style="flex:none;gap:6px">'+(coach?'<button class="tb" style="white-space:nowrap" data-act="sheet" data-a="invita">Consiglia</button>':'')+(S.role==='coach'?'<button class="tb" style="white-space:nowrap" data-act="area" data-a="'+(coach?'player':'coach')+'">'+(coach?'Giocatore':'← Coach')+'</button>':'')+'</div>'+'</div>';
  let body,nav;
- if(coach){body=S.ctab==='slot'?'<div class="seg"><button class="sg'+(S.cview==='week'?'':' on')+'" data-act="cview" data-a="day">Giorno</button><button class="sg'+(S.cview==='week'?' on':'')+'" data-act="cview" data-a="week">Settimana</button></div>'+coachSlots():coachSchede();
-  const n=S.requests.length+S.levelTests.length;
-  nav='<nav class="nav n2"><button class="'+(S.ctab==='slot'?'on':'')+'" data-act="ctab" data-a="slot">'+ic('cal')+'Slot</button><button class="'+(S.ctab==='sch'?'on':'')+'" data-act="ctab" data-a="sch">'+ic('list')+'Schede'+(n?'<span class="bdg">'+n+'</span>':'')+'</button></nav>';}
+ if(coach){body=S.ctab==='slot'?'<div class="seg"><button class="sg'+(S.cview==='week'?'':' on')+'" data-act="cview" data-a="day">Giorno</button><button class="sg'+(S.cview==='week'?' on':'')+'" data-act="cview" data-a="week">Settimana</button></div>'+coachSlots():S.ctab==='msg'?coachMsgs():coachSchede();
+  const n=S.requests.length+S.levelTests.length,pm=S.inbox.filter(x=>x.pending).length;
+  nav='<nav class="nav n3"><button class="'+(S.ctab==='slot'?'on':'')+'" data-act="ctab" data-a="slot">'+ic('cal')+'Slot</button><button class="'+(S.ctab==='sch'?'on':'')+'" data-act="ctab" data-a="sch">'+ic('list')+'Schede'+(n?'<span class="bdg">'+n+'</span>':'')+'</button><button class="'+(S.ctab==='msg'?'on':'')+'" data-act="ctab" data-a="msg">'+ic('chat')+'Messaggi'+(pm?'<span class="bdg">'+pm+'</span>':'')+'</button></nav>';}
  else{body=S.tab==='prenota'?(S.pv==='home'?pHome():pBook()):S.tab==='scheda'?pScheda():pChat();
   nav='<nav class="nav n3"><button class="'+(S.tab==='prenota'?'on':'')+'" data-act="ptab" data-a="prenota">'+ic('cal')+'Prenota</button><button class="'+(S.tab==='scheda'?'on':'')+'" data-act="ptab" data-a="scheda">'+ic('list')+'Scheda</button><button class="'+(S.tab==='coach'?'on':'')+'" data-act="ptab" data-a="coach">'+ic('chat')+'Coach</button></nav>';}
  return head+'<div class="main">'+body+'</div>'+nav;
@@ -438,6 +441,14 @@ function coachSchede(){
   h+='</div>';});
  return h;
 }
+const inits=n=>String(n).replace(/\(\d+\)/,'').trim().split(/\s+/).map(p=>p.charAt(0)).join('').slice(0,2).toUpperCase();
+function coachMsgs(){
+ if(S.thread){const T=S.thread;
+  const m=T.msgs.map(x=>'<div class="bub '+(x.from==='co'?'me':'co')+'">'+esc(x.text)+'</div>').join('');
+  return '<div class="msgs">'+(m||'<p class="mut sm">Ancora nessun messaggio.</p>')+'</div><form data-form="cchat" class="row"><input class="inp" id="cchat-in" type="text" placeholder="Scrivi a '+esc(T.name)+'" autocomplete="off"><button class="btn sm2" style="min-height:46px" type="submit">Invia</button></form><p class="sm mut">Il giocatore riceve il messaggio su Telegram con un avviso.</p>';}
+ if(!S.inbox.length)return '<h2>Messaggi</h2><div class="card"><p class="mut">Nessun giocatore ti ha ancora scritto.</p></div>';
+ return '<h2>Messaggi</h2><p class="sm mut" style="margin-top:-6px">Il pallino verde indica chi aspetta una tua risposta.</p>'+S.inbox.map(x=>'<button class="card" data-act="mopen" data-a="'+esc(x.id)+'" style="width:100%;display:flex;gap:12px;align-items:center;text-align:left;padding:11px 14px"><span style="flex:none;width:38px;height:38px;border-radius:50%;background:var(--soft);color:var(--brand);display:grid;place-items:center;font:700 14px var(--disp)">'+esc(inits(x.name))+'</span><span style="min-width:0;flex:1"><b style="font-weight:600;display:block">'+esc(x.name)+'</b><span class="sm mut" style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(x.pending?'':'Tu: ')+esc(x.last)+'</span></span>'+(x.pending?'<i style="flex:none;width:11px;height:11px;border-radius:50%;background:var(--brand)" aria-label="Da rispondere"></i>':'')+'</button>').join('');
+}
 function composer(){
  const C=S.comp;
  let h=totBar(C.mins.reduce((a,b)=>a+b,0))+'<h2>Scheda per '+esc(C.player)+'</h2>'+(C.purp==='racchette'?'<p class="sm mut" style="margin-top:-8px">Test racchette: prepara un allenamento per provare le racchette.</p>':'')+lvPick(C,'comp','clv');
@@ -473,7 +484,7 @@ function sheetView(){
 /* ---------- azioni ---------- */
 const snap=()=>({tab:S.tab,pv:S.pv,sView:S.sView,sIdx:S.sIdx,ctab:S.ctab});
 const ACT={
- goback(){if(S.comp){S.comp=null;}else{const x=S.hist.pop();if(x)Object.assign(S,x);}S.err='';render();top0();},
+ goback(){if(S.comp){S.comp=null;}else if(S.area==='coach'&&S.ctab==='msg'&&S.thread){S.thread=null;}else{const x=S.hist.pop();if(x)Object.assign(S,x);}S.err='';render();top0();},
  scen(a){S=seed(a);render();top0();},
  late(){S.late=!S.late;render();},
  skip(){try{localStorage.setItem('muro_intro','1');}catch(e){}S.hist=[];S.intro=false;S.introPlay=false;S.pv='home';S.tab='prenota';render();},
@@ -481,7 +492,8 @@ const ACT={
  video(){S.intro=true;S.introPlay=false;render();},
  area(a){S.area=a;S.hist=[];S.comp=null;render();top0();},
  ptab(a){S.hist=[];S.tab=a;if(a==='prenota')S.pv='home';S.sView='main';S.err='';render();top0();},
- ctab(a){S.hist=[];S.ctab=a;S.comp=null;render();top0();},
+ ctab(a){S.hist=[];S.ctab=a;S.comp=null;S.thread=null;render();top0();},
+ mopen(a){const x=S.inbox.find(q=>q.id===a);if(!x)return;S.thread={id:a,name:x.name,msgs:(S.threads[a]||[]).slice()};render();top0();},
  newbook(){S.hist.push(snap());S.pv='book';S.err='';S.draft.sel=[];render();top0();},
  back(){S.pv='home';render();},
  purp(a){S.draft.purpose=a;if(a==='livello')S.draft.who='coach';pruneSel();render();},
@@ -517,7 +529,7 @@ const ACT={
   S.sheet={t:'sent',what:'Hai scelto: '+lab+'.'};render();},
  fskip(){S.sheet={t:'sent',what:'Il coach sceglie lui cosa farti allenare.'};render();},
  tgchat(){S.tg='chat';render();},
- tgopen(){if(S.tgmsg&&S.tgmsg.kind==='day'){const m=S.tgmsg;S.tg=null;S.area='coach';S.ctab='slot';S.cview='day';S.cday=m.date;S.cfi=Math.max(0,fasce(m.date).findIndex(f=>f.slots.indexOf(m.slot)>=0));S.hl={date:m.date,slot:m.slot};S.hist=[];render();top0();return;}
+ tgopen(){if(S.tgmsg&&S.tgmsg.kind==='msg'){S.tg=null;S.area='coach';S.ctab='msg';S.hist=[];ACT.mopen(S.tgmsg.pid);return;}if(S.tgmsg&&S.tgmsg.kind==='day'){const m=S.tgmsg;S.tg=null;S.area='coach';S.ctab='slot';S.cview='day';S.cday=m.date;S.cfi=Math.max(0,fasce(m.date).findIndex(f=>f.slots.indexOf(m.slot)>=0));S.hl={date:m.date,slot:m.slot};S.hist=[];render();top0();return;}
   S.hist=[{tab:'prenota',pv:'home',sView:'main',sIdx:0,ctab:'slot'}];S.tg=null;S.pnotif=null;S.tab='scheda';S.sView='main';S.sIdx=0;render();top0();},
  pnot(a){S.pnotif=null;ACT.opencard(a);},
  cancel(a){S.sheet={t:'cancel',a:a};render();},
@@ -580,7 +592,10 @@ function pruneSel(){const D=S.draft;if(D.who==='coach')D.sel=D.sel.filter(k=>{co
 function keepMsg(){const e=document.getElementById('cmsg');if(e&&S.comp)S.comp.msg=e.value;}
 document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(!t)return;const f=ACT[t.dataset.act];if(f)f(t.dataset.a,t.dataset.b);});
 document.addEventListener('change',e=>{const t=e.target;if(t.dataset&&t.dataset.chg==='csel'){keepMsg();S.comp.sel[+t.dataset.a]=t.value;render();}});
-document.addEventListener('submit',e=>{const f=e.target;if(f.dataset&&f.dataset.form==='chat'){e.preventDefault();const v=document.getElementById('chat-in').value.trim();if(!v)return;
+document.addEventListener('submit',e=>{const f=e.target;if(f.dataset&&f.dataset.form==='cchat'){e.preventDefault();const v=document.getElementById('cchat-in').value.trim();if(!v||!S.thread)return;
+ if(typeof LIVE!=='undefined'&&LIVE){api('rispondi',{giocatore:S.thread.id,testo:v}).then(r=>{if(r.errore)return say(ERRMSG.x);return loadThread(S.thread.id).then(()=>reload(true));}).then(()=>{const i=document.getElementById('cchat-in');if(i)i.focus();}).catch(FAIL);return;}
+ S.thread.msgs.push({from:'co',text:v});S.threads[S.thread.id]=S.thread.msgs.slice();const it=S.inbox.find(q=>q.id===S.thread.id);if(it){it.last=v;it.pending=false;}render();const i=document.getElementById('cchat-in');if(i)i.focus();return;}
+if(f.dataset&&f.dataset.form==='chat'){e.preventDefault();const v=document.getElementById('chat-in').value.trim();if(!v)return;
  if(LIVE){api('scrivi',{testo:v}).then(()=>reload(true)).then(()=>{const i=document.getElementById('chat-in');if(i)i.focus();}).catch(FAIL);return;}
  S.me.chat.push({from:'me',text:v});S.feed.unshift({id:'f'+Date.now(),text:S.me.name+' ti scrive: '+v});render();const i=document.getElementById('chat-in');if(i)i.focus();}});
 document.addEventListener('ended',e=>{if(e.target.id==='vid'&&S&&S.intro)ACT.skip();},true);
@@ -594,23 +609,25 @@ async function api(az,extra){
  if(r.status===401)throw new Error('auth');
  if(!r.ok&&!j.errore)throw new Error('rete');
  return j;}
+async function loadThread(id){const r=await api('chat_giocatore',{giocatore:id});const x=S.inbox.find(q=>q.id===id);S.thread={id:id,name:(x&&x.name)||r.name||'Giocatore',msgs:r.msgs||[]};render();}
 function FAIL(e){say(e&&e.message==='auth'?'Apri Il Muro da Telegram per continuare.':'Non riesco a collegarmi. Riprova tra poco.');}
 let lastJson='';
 function applyState(r){
  DAYS.length=0;r.giorni.forEach(x=>DAYS.push(x));
  S.today=r.oggi;S.nowMin=r.adesso;
  S.me=Object.assign({},r.me,{schede:r.me.schede.map(s=>Object.assign({},s,{blocks:[WARM].concat((s.blocks||[]).filter(b=>drill(b.id)).map(b=>blockOf(b.id,b.mins)))}))});
- S.bookings=r.bookings;S.absent=r.absent;S.requests=r.requests;S.levelTests=r.levelTests;
+ S.bookings=r.bookings;S.absent=r.absent;S.requests=r.requests;S.levelTests=r.levelTests;S.inbox=r.inbox||[];
  S.role=r.ruolo==='c'?'coach':'player';
  if(DAYS.indexOf(S.draft.day)<0)S.draft.day=DAYS[0];
  if(DAYS.indexOf(S.cday)<0)S.cday=DAYS[0];}
 async function reload(force){
  const r=await api('stato');const js=JSON.stringify(r);
  if(!force&&js===lastJson)return false;
- lastJson=js;applyState(r);render();return true;}
+ lastJson=js;applyState(r);if(S.thread&&S.area==='coach'){try{const t=await api('chat_giocatore',{giocatore:S.thread.id});S.thread.msgs=t.msgs||[];}catch(e){}}render();return true;}
 function applyStart(){
  const s=Q.get('s');
  if(s==='giorno'&&S.role==='coach'){const d=Q.get('d'),t=Q.get('t');S.intro=false;S.area='coach';S.ctab='slot';S.cview='day';S.cday=d;S.cfi=Math.max(0,fasce(d).findIndex(f=>f.slots.indexOf(t)>=0));S.hl={date:d,slot:t};}
+ else if(s==='msg'&&S.role==='coach'){S.intro=false;S.area='coach';S.ctab='msg';const g=Q.get('g');if(g)loadThread(g).catch(()=>{});}
  else if(s==='scheda'){S.intro=false;S.tab='scheda';S.sView='main';S.sIdx=Math.max(0,S.me.schede.findIndex(x=>x.id===Q.get('i')));}
  else if(s==='chat'){S.intro=false;S.tab='coach';}
  else if(s==='prenota'){S.intro=false;S.tab='prenota';S.pv='book';S.draft.sel=[];}}
@@ -663,6 +680,7 @@ if(LIVE){
   async absok(a,b){const bk=bookingAt(a,b);try{await api('assenza_avvisa',{data:a,inizio:b});S.sheet=null;await reload(true);say('Avviso inviato a '+(bk?bk.player:'')+' su Telegram.');}catch(e){FAIL(e);}},
   async fas(a){const f=fasce(S.cday)[+a],all=f.slots.every(t=>isAbs(S.cday,t));
    try{const r=await api('assenza_fascia',{data:S.cday,fascia:+a,on:!all});S.sheet=null;await reload(true);say(all?'Assenza tolta.':'Fascia segnata assente.'+(r.avvisati?' Avvisati '+r.avvisati+' giocatori.':''));}catch(e){FAIL(e);}},
+  async mopen(a){try{await loadThread(a);top0();}catch(e){FAIL(e);}},
   async csend(){keepMsg();const C=S.comp,tot=2+MARG+C.mins.reduce((x,y)=>x+y,0);
    if(tot!==20){S.err='Riscaldamento, blocchi e margine devono fare 20 minuti in totale (ora '+tot+').';render();return;}
    try{const r=await api('prepara',{richiesta:C.reqId,livello:C.level,blocchi:C.sel.map((id,i)=>({id:id,mins:C.mins[i]})),messaggio:C.msg});
