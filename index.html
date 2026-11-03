@@ -451,7 +451,7 @@ function coachSlots(){
  h+='<div class="grid4">'+f.slots.map(t=>{const q=bookingAt(d,t),ab=isAbs(d,t);
   if(q){const first=q.slots[0]===t,nm=q.player.split(' ')[0]+(q.player.split(' ')[1]?' '+q.player.split(' ')[1]:'');return '<button class="cc '+(q.away?'warn':q.who==='coach'?'coach':'solo')+(S.hl&&S.hl.date===d&&S.hl.slot===t?' hl':'')+'" data-act="cslot" data-a="'+t+'"><b>'+t+'</b><i>'+(first?esc(nm):'\u2193 segue')+'</i></button>';}
   return '<button class="cc'+(ab?' abs':'')+'" data-act="cslot" data-a="'+t+'"><b>'+t+'</b><i>'+(ab?'Non ci sei':'Libero')+'</i></button>';}).join('')+'</div>';
- h+=''+legendHtml()+'<button class="btn sec" data-act="sheet" data-a="fascia">Segnati assente su una fascia</button>';
+ h+=''+legendHtml()+'<p class="sm mut">Tocca uno slot per segnarti assente solo in quell\u2019orario.</p><button class="btn sec" data-act="sheet" data-a="fascia">Assente per tutta una fascia</button>';
  return h;
 }
 function coachSchede(){
@@ -512,7 +512,7 @@ function sheetView(){
  else if(x.t==='slot'){const b=bookingAt(x.d,x.a);if(!b){c='';}else{c='<h2>'+esc(b.player)+'</h2><p class="mut">'+longDay(b.date)+', '+rangeOf(b)+'</p><div class="row wrap"><span class="pill none">'+PURP[b.purpose]+'</span>'+whoPill(b)+(b.level?lvPill(b.level):'')+'</div><p class="sm">'+esc(bring(b))+'</p>'+(b.focus?'<p class="sm"><span class="mut">Vuole allenare:</span> '+esc(b.focus)+'</p>':'')+
    (b.away?'<p class="sm err">Hai già avvisato il giocatore: sceglie lui se tenere lo slot da solo, spostarsi o disdire.</p>':'<button class="btn sec" data-act="'+(b.who==='coach'?'absask':'abssolo')+'" data-a="'+x.d+'" data-b="'+x.a+'">Segnati assente in questo slot</button>')+close;}}
  else if(x.t==='absask'){const b=bookingAt(x.d,x.a);c='<h2>Hai una prenotazione con te</h2><p>'+esc(b.player)+' ha prenotato con il coach alle '+x.a+'. Se ti segni assente, gli arriva su Telegram la scelta: tenere lo slot da solo, spostarsi in un altro orario o disdire.</p><button class="btn warn" data-act="absok" data-a="'+x.d+'" data-b="'+x.a+'">Segnati assente e avvisa</button>'+close;}
- else if(x.t==='fascia'){c='<h2>Assenza su una fascia</h2><p class="sm mut">'+longDay(S.cday)+'</p>'+fasce(S.cday).map((f,i)=>{const all=f.slots.every(t=>isAbs(S.cday,t));const cs=f.slots.filter(t=>{const b=bookingAt(S.cday,t);return b&&b.who==='coach'&&!all;}).length;
+ else if(x.t==='fascia'){c='<h2>Assente per tutta una fascia</h2><p class="sm mut">'+longDay(S.cday)+'</p>'+fasce(S.cday).map((f,i)=>{const all=f.slots.every(t=>isAbs(S.cday,t));const cs=f.slots.filter(t=>{const b=bookingAt(S.cday,t);return b&&b.who==='coach'&&!all;}).length;
    return '<div class="blk"><div class="row sp"><b style="font-weight:600">'+f.a+'–'+f.b+'</b><span class="pill '+(all?'abs':'none')+'">'+(all?'Non ci sei':'Ci sei')+'</span></div>'+(cs&&!all?'<p class="sm mut" style="margin:6px 0">Include '+cs+(cs===1?' prenotazione':' prenotazioni')+' con il coach: il giocatore riceve un avviso su Telegram.</p>':'')+'<button class="btn sec" style="margin-top:10px" data-act="fas" data-a="'+i+'">'+(all?'Togli l’assenza':'Segna assente tutta la fascia')+'</button></div>';}).join('')+close;}
  return '<div class="shw"><div class="bd" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">'+c+'</div></div>';
 }
