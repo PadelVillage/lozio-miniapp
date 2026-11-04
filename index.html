@@ -62,6 +62,9 @@ p{margin:0}
 .opt.on .dot::after{content:"";width:7px;height:7px;border-radius:50%;background:var(--onbrand)}
 .seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .seg3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tcards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.tcard{display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 4px 10px;border:1.5px solid var(--line);background:var(--card);border-radius:16px;color:var(--ink);font:inherit;text-align:center;min-height:0}.tcard .ti{font-size:24px;line-height:1.1}.tcard b{font-size:13px;font-weight:700;line-height:1.15}.tcard span.s{font-size:11px;color:var(--ink2)}.tcard.on{border-color:var(--brand);background:var(--soft)}
+.wseg{display:flex;background:var(--line);border-radius:14px;padding:4px;gap:4px}.wseg button{flex:1;border:0;background:transparent;border-radius:11px;padding:9px 4px;font:inherit;font-weight:600;color:var(--ink);min-height:0}.wseg button small{display:block;font-weight:500;font-size:11px;opacity:.8}.wseg button.on{background:var(--brand);color:var(--onbrand)}
+.ftabs{display:flex;margin-bottom:10px;border-bottom:1px solid var(--line)}.ftabs button{flex:1;border:0;background:transparent;border-bottom:3px solid transparent;margin-bottom:-1px;padding:8px 0 7px;font:inherit;font-weight:600;color:var(--ink2);min-height:0;text-align:center}.ftabs button small{display:block;font-weight:500;font-size:11px}.ftabs button.on{border-bottom-color:var(--brand);color:var(--brand)}
 .sg{line-height:1.15;border:1.5px solid var(--line);background:var(--card);border-radius:12px;min-height:48px;padding:6px 8px;font-weight:600;font-size:14px}
 .sg.on{border-color:var(--brand);background:var(--soft);color:var(--brand)}
 .days{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
@@ -338,10 +341,11 @@ function pBook(){
  const chip=(on,act,a,t)=>'<button class="sg'+(on?' on':'')+'" data-act="'+act+'" data-a="'+a+'">'+t+'</button>';
  const free=x=>x.slots.filter(t=>{const s=slotState(D.day,t);return s===''||s==='on';}).length;
  let h='';
- h+='<div><p class="fh">Tipo di sessione</p><div class="seg3">'+chip(D.purpose==='allenamento','purp','allenamento','Allenamento')+chip(D.purpose==='racchette','purp','racchette','Test racchette')+chip(D.purpose==='livello','purp','livello','Test livello di gioco')+'</div></div>';
- h+='<div><p class="fh">Con chi</p><div class="seg">'+chip(D.who==='solo','who','solo','Da solo \u00b7 5 \u20ac')+chip(D.who==='coach','who','coach','Con coach \u00b7 10 \u20ac')+'</div></div>';
+ const tc=(k,ic,t,sub)=>'<button class="tcard'+(D.purpose===k?' on':'')+'" data-act="purp" data-a="'+k+'" aria-pressed="'+(D.purpose===k)+'"><span class="ti" aria-hidden="true">'+ic+'</span><b>'+t+'</b></button>';
+ h+='<div><p class="fh">Tipo di sessione</p><div class="tcards">'+tc('allenamento','\uD83C\uDFAF','Allenamento')+tc('racchette','\uD83C\uDFBE','Test racchette')+tc('livello','\uD83D\uDCCA','Test livello')+'</div></div>';
+ h+='<div><p class="fh">Con chi</p><div class="wseg"><button class="'+(D.who==='solo'?'on':'')+'" data-act="who" data-a="solo" aria-pressed="'+(D.who==='solo')+'">Da solo<small>5 \u20ac</small></button><button class="'+(D.who==='coach'?'on':'')+'" data-act="who" data-a="coach" aria-pressed="'+(D.who==='coach')+'">Con coach<small>10 \u20ac</small></button></div></div>';
  h+='<div><p class="fh">Giorno</p><div class="days">'+DAYS.map(k=>{const p=shortDay(k).split(' ');return '<button class="day'+(D.day===k?' on':'')+'" data-act="day" data-a="'+k+'"><span>'+p[0]+'</span><b>'+p[1]+'</b></button>';}).join('')+'</div></div>';
- h+='<div><p class="fh">Orario \u00b7 slot da 20 minuti</p><div class="seg" style="margin-bottom:8px">'+fs.map((x,i)=>'<button class="sg'+(i===fi?' on':'')+'" data-act="fas2" data-a="'+i+'">'+x.a+'\u2013'+x.b+'<br><span style="font-weight:500;font-size:12px">'+free(x)+' liberi</span></button>').join('')+'</div>'+
+ h+='<div><p class="fh">Orario \u00b7 slot da 20 minuti</p><div class="ftabs">'+fs.map((x,i)=>'<button class="'+(i===fi?'on':'')+'" data-act="fas2" data-a="'+i+'">'+x.a+'\u2013'+x.b+'<small>'+free(x)+' liberi</small></button>').join('')+'</div>'+
   '<div class="grid4">'+f.slots.filter(t=>slotState(D.day,t)!=='away').map(t=>{const st=slotState(D.day,t);return '<button class="sl '+(st==='mine'?'busy':st)+'" data-act="slot" data-a="'+t+'" aria-pressed="'+(st==='on')+'">'+t+'</button>';}).join('')+'</div>'+
   '<p class="mut" style="margin-top:6px;font-size:12px">Barrato: occupato. Max 2 slot di fila.</p></div>';
  const n=D.sel.length;
